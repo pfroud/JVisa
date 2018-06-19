@@ -15,12 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Modifications by Peter Froud, Lumenetix Inc
+ * June 2018
+ */
 package jvisa;
 
 /**
- * exception class for VISA exceptions
+ * Exception for VISA operations.
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
+ * @author Peter Froud (pfroud@lumenetix.com)
  */
 public class JVisaException extends Exception {
 

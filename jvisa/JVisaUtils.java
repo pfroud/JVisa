@@ -24,39 +24,19 @@
  */
 package jvisa;
 
-import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import java.nio.ByteBuffer;
 
 import visatype.VisatypeLibrary;
 
 /**
- * This class provides Java wrapper functions around the native Windows VISA API.
+ * Contains static utility functions.
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
- * @author Peter Froud
+ * @author Peter Froud (pfroud@lumenetix.com)
  *
- * TODO Test instantiating more than one instrument.
- *
- * TODO Throw exception instead of returning status.
  */
-public class JVisa {
-
-    public final JVisaInterface visaLib;
-
-    /**
-     * Constructor loads the native library.It tries to load nivisa64.dll (National Instruments).
-     */
-    public JVisa() {
-        String visaLibName = "nivisa64.dll";
-        // 32-bit Windows is not supported. See also
-        // http://stackoverflow.com/questions/21486086/cant-load-personal-dll-with-jna-from-netbeans
-        visaLib = (JVisaInterface) Native.loadLibrary(visaLibName, JVisaInterface.class);
-    }
-
-    public JVisaResourceManager getResourceManager() throws JVisaException {
-        return new JVisaResourceManager(this);
-    }
+public class JVisaUtils {
 
     //<editor-fold defaultstate="collapsed" desc="stuff I'm not implementing">
     /**

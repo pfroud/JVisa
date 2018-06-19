@@ -15,6 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 </p>
 
+<p>
+Modifications by Peter Froud, Lumenetix Inc, June 2018
+</p>
+ 
 <h2>Projects</h2>
 <p>
     There are two <a href="http://www.netbeans.org">NetBeans 8</a> projects, 

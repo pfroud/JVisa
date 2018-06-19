@@ -1,154 +1,192 @@
+/**
+ * @license
+ *
+ * Copyright 2014-2018 Günter Fuchs (gfuchs@acousticmicroscopy.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Modifications by Peter Froud, Lumenetix Inc
+ * June 2018
+ */
 package jvisa;
 
+import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import java.nio.ByteBuffer;
-import static jvisa.JVisa.stringToByteBuffer;
+import static jvisa.JVisaUtils.stringToByteBuffer;
+import visatype.VisatypeLibrary;
 
 /**
+ * The Visa resource manager manages and communicates with resources, attributes, events, etc.
  *
- * @author Peter Froud
+ * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
+ * @author Peter Froud (pfroud@lumenetix.com)
+ *
  */
 public class JVisaResourceManager {
 
-    /**
-     * What is called viSession in Visa DLL becomes Handle in JVisa so that viSession is not mistaken for a Java object. The handle gets initialized only once when this class is loaded (first time only initialization).
-     */
+    /* resourceManagerHandle is a unique logical identifier to the Visa session.
+    The C API calls this ViSession.*/
     private final NativeLong resourceManagerHandle;
-    private final JVisa jVisaInstance;
-    public final JVisaInterface visaLib;
 
+    public final JVisaLibrary library;
 
-    /*
-    creates a session for a default resource manager.
+    /**
+     * Creates a session for a default resource manager.
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viopendefaultrm/
+     *
+     * 32-bit Windows is not supported.<br>
+     * See http://stackoverflow.com/questions/21486086/cant-load-personal-dll-with-jna-from-netbeans
+     *
+     * @throws JVisaException if the resource manager couldn't be opened
+     * @throws UnsatisfiedLinkError if the Visa DLL couldn't be loaded
      */
-    public JVisaResourceManager(JVisa jVisaInstance) throws JVisaException {
-        this.jVisaInstance = jVisaInstance;
-        this.visaLib = jVisaInstance.visaLib;
+    public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
+        library = (JVisaLibrary) Native.loadLibrary("nivisa64.dll", JVisaLibrary.class);
 
-        NativeLongByReference pViSession = new NativeLongByReference();
-        NativeLong nativeStatus = visaLib.viOpenDefaultRM(pViSession);
+        NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
+        NativeLong nativeStatus = library.viOpenDefaultRM(pointerToResourceManagerHandle);
 
-        JVisa.throwForStatus(nativeStatus, "viOpenDefaultRM");
-        resourceManagerHandle = pViSession.getValue();
+        JVisaUtils.throwForStatus(nativeStatus, "viOpenDefaultRM");
+        resourceManagerHandle = pointerToResourceManagerHandle.getValue();
     }
 
     /**
-     * closes the resource manager.
+     * Closes the resource manager.
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclose/
      *
-     * @throws jvisa.JVisaException
+     * @throws jvisa.JVisaException if the resource manager couldn't be closed
      */
     public void close() throws JVisaException {
-        NativeLong nativeStatus = visaLib.viClose(resourceManagerHandle);
-        JVisa.throwForStatus(nativeStatus, "viClose");
+        NativeLong nativeStatus = library.viClose(resourceManagerHandle);
+        JVisaUtils.throwForStatus(nativeStatus, "viClose");
     }
 
-    public void getExtendedResourceInformation(String resourceName) {
-        // instrument does not need to be open for this to work
-
-        ByteBuffer resourceNameBuf = JVisa.stringToByteBuffer(resourceName);
-        if (resourceNameBuf == null) {
-            System.err.println("stringToByteBuffer() failed");
-            return;
-        }
+    /**
+     * Returns the alias for an instrument. The instrument does not need to be opened.
+     *
+     * Aliases are stored in "C:\ProgramData\National Instruments\NIvisa\visaconf.ini".<br>
+     * You can also use NI MAX (National Instruments Measurement & Automation Explorer).<br>
+     * I don't think the DLL lets you set aliases.
+     *
+     * @param resourceName name of the resource to get the alias for
+     * @return the alias, or empty string(?) if the specified resource doesn't have an alias
+     * @throws jvisa.JVisaException if the API call to get the alias failed
+     */
+    public String getInstrumentAlias(String resourceName) throws JVisaException {
+        ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
+        ByteBuffer aliasBuf = ByteBuffer.allocate(128);
 
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viparsersrcex/
-        ByteBuffer alias = ByteBuffer.allocate(128);
-
-        NativeLong visaStatus = visaLib.viParseRsrcEx(resourceManagerHandle, //ViSession sesn
-                resourceNameBuf, //ViRsrc rsrcName
+        NativeLong visaStatus = library.viParseRsrcEx(
+                resourceManagerHandle,
+                resourceNameBuf,
                 new NativeLongByReference(), //ViPUInt16 intfType
                 new NativeLongByReference(), //ViPUInt16 intfNum
                 new NativeLongByReference(), //ViChar rsrcClass[]
                 ByteBuffer.allocate(128), //ViChar expandedUnaliasedName[]
-                alias //ViChar aliasIfExists[]
+                aliasBuf
         );
-
-        System.out.println("the alias is " + new String(alias.array()));
-
+        JVisaUtils.throwForStatus(visaStatus, "viParseRsrcEx");
+        return new String(aliasBuf.array()).trim();
     }
 
     /**
-     * opens an instrument session.
+     * Opens an instrument session.
      *
-     * @param resourceName string that contains the instrument address and bus interface, for example TCPIP::192.168.1.106::INSTR
-     * @return status of the operation
-     * @throws jvisa.JVisaException
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viopen/
+     *
+     * @param resourceName name of the resource to open, for example TCPIP::192.168.1.106::INSTR
+     * @return a JVisaInstrument instance for the instrument
+     * @throws jvisa.JVisaException if the instrument couldn't be opened
      */
     public JVisaInstrument openInstrument(String resourceName) throws JVisaException {
         NativeLongByReference instrumentHandle = new NativeLongByReference();
+        ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
 
-        ByteBuffer resourceNameNative = JVisa.stringToByteBuffer(resourceName);
-
-        NativeLong visaStatus = visaLib.viOpen(resourceManagerHandle,
-                resourceNameNative, // byte buffer for instrument string
-                new NativeLong(0), // access mode (locking or not). 0:Use Visa default
-                new NativeLong(0), // timeout, only when access mode equals locking
-                instrumentHandle // pointer to instrument object
+        NativeLong visaStatus = library.viOpen(resourceManagerHandle,
+                resourceNameBuf,
+                new NativeLong(0), // ViAccessMode accessMode - 0 for default access mode
+                new NativeLong(0), // ViUInt32 openTimeout - how long to wait before returning error. Only when the access mode equals locking?
+                instrumentHandle
         );
-
-        JVisa.throwForStatus(visaStatus, "viOpen");
-
+        JVisaUtils.throwForStatus(visaStatus, "viOpen");
         return new JVisaInstrument(this, instrumentHandle, resourceName);
-
     }
 
-    public void findResources() throws JVisaException {
+    public String[] findResources() throws JVisaException {
 
-        // this is not a regular expression. the question mark is wildcard for a single character
-        ByteBuffer searchExpression = stringToByteBuffer("?*");
+        /*
+         National Instruments says this is a regular expression but they're liars.
+         Here, the question mark "matches any one character" which is not what it does in a regex.
+         The star does the same thing as in a real regular expression.
+         */
+        ByteBuffer filterExpression = stringToByteBuffer("?*");
 
         NativeLongByReference countPtr = new NativeLongByReference();
-
         NativeLongByReference findList = new NativeLongByReference();
 
         final int descrLen = 256;
         ByteBuffer descr = ByteBuffer.allocate(descrLen);
 
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindrsrc/
-        NativeLong visaStatus = visaLib.viFindRsrc(
-                resourceManagerHandle,
-                searchExpression, findList,
-                countPtr, descr);
+        NativeLong visaStatus = library.viFindRsrc(resourceManagerHandle,
+                filterExpression, findList, countPtr, descr);
+        JVisaUtils.throwForStatus(visaStatus, "viFindRsrc");
 
-        JVisa.throwForStatus(visaStatus, "viFindRsrc");
+        long numFound = countPtr.getValue().longValue();
+        String[] rv = new String[(int) numFound];
+        if (numFound > 0) {
+            rv[0] = new String(descr.array()).trim();
+        }
 
-        long numberFound = countPtr.getValue().longValue();
-
-        System.out.printf("Found %d VISA resources:\n", numberFound);
-        System.out.println(new String(descr.array()).trim());
-
-        for (int i = 1; i < numberFound; i++) {
+        for (int i = 1; i < numFound; i++) {
             descr = ByteBuffer.allocate(descrLen);
 
             // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindnext/
-            visaStatus = visaLib.viFindNext(findList.getValue(), descr);
+            visaStatus = library.viFindNext(findList.getValue(), descr);
 
-            JVisa.throwForStatus(visaStatus, "viFindNext");
-            System.out.println(new String(descr.array()).trim());
-
+            JVisaUtils.throwForStatus(visaStatus, "viFindNext");
+            rv[i] = new String(descr.array()).trim();
         }
-
+        return rv;
     }
 
     /**
-     * converts a VISA status to a descriptive string.
+     * Converts a VISA status code to a human-readable description.
+     *
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vistatusdesc/
      *
      * @param statusCode
      * @return status description
      */
     public String getStatusDescription(NativeLong statusCode) {
 
-        ByteBuffer description = ByteBuffer.allocate(256);
+        ByteBuffer errDescBuf = ByteBuffer.allocate(256);
 
-        NativeLong errorCode = visaLib.viStatusDesc(resourceManagerHandle, statusCode, description);
-        // what do if viStatusDesc returns error?
+        NativeLong errorCode = library.viStatusDesc(resourceManagerHandle, statusCode, errDescBuf);
 
-        return new String(description.array()).trim();
+        long errorCodeLong = errorCode.longValue();
+        if (errorCodeLong != VisatypeLibrary.VI_SUCCESS) {
+            System.err.printf("viStatusDesc() returned 0x%H while trying to get description for code 0x%H\n",
+                    errorCodeLong, statusCode.longValue());
+            return "<couldn't get description for the status code>";
+        }
+        return new String(errDescBuf.array()).trim();
     }
 
 }
