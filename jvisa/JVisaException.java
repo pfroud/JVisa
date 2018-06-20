@@ -46,7 +46,7 @@ public class JVisaException extends Exception {
     }
 
     public JVisaException(long statusCode, String cFunctionName) {
-        super(String.format("visa error in %s(): error code is %d", cFunctionName, statusCode));
+        super(String.format("Visa error in %s(): error code is %d", cFunctionName, statusCode));
     }
 
 }
