@@ -60,7 +60,7 @@ public class JVisaResourceManager {
         NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
         NativeLong nativeStatus = library.viOpenDefaultRM(pointerToResourceManagerHandle);
 
-        JVisaUtils.throwForStatus(nativeStatus, "viOpenDefaultRM");
+        JVisaUtils.throwForStatus(this, nativeStatus, "viOpenDefaultRM");
         resourceManagerHandle = pointerToResourceManagerHandle.getValue();
     }
 
@@ -73,7 +73,7 @@ public class JVisaResourceManager {
      */
     public void close() throws JVisaException {
         NativeLong nativeStatus = library.viClose(resourceManagerHandle);
-        JVisaUtils.throwForStatus(nativeStatus, "viClose");
+        JVisaUtils.throwForStatus(this, nativeStatus, "viClose");
     }
 
     /**
@@ -101,7 +101,7 @@ public class JVisaResourceManager {
                 ByteBuffer.allocate(128), //ViChar expandedUnaliasedName[]
                 aliasBuf
         );
-        JVisaUtils.throwForStatus(visaStatus, "viParseRsrcEx");
+        JVisaUtils.throwForStatus(this, visaStatus, "viParseRsrcEx");
         return new String(aliasBuf.array()).trim();
     }
 
@@ -124,7 +124,7 @@ public class JVisaResourceManager {
                 new NativeLong(0), // ViUInt32 openTimeout - how long to wait before returning error. Only when the access mode equals locking?
                 instrumentHandle
         );
-        JVisaUtils.throwForStatus(visaStatus, "viOpen");
+        JVisaUtils.throwForStatus(this, visaStatus, "viOpen");
         return new JVisaInstrument(this, instrumentHandle, resourceName);
     }
 
@@ -146,7 +146,7 @@ public class JVisaResourceManager {
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindrsrc/
         NativeLong visaStatus = library.viFindRsrc(resourceManagerHandle,
                 filterExpression, findList, countPtr, descr);
-        JVisaUtils.throwForStatus(visaStatus, "viFindRsrc");
+        JVisaUtils.throwForStatus(this, visaStatus, "viFindRsrc");
 
         long numFound = countPtr.getValue().longValue();
         String[] rv = new String[(int) numFound];
@@ -160,7 +160,7 @@ public class JVisaResourceManager {
             // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindnext/
             visaStatus = library.viFindNext(findList.getValue(), descr);
 
-            JVisaUtils.throwForStatus(visaStatus, "viFindNext");
+            JVisaUtils.throwForStatus(this, visaStatus, "viFindNext");
             rv[i] = new String(descr.array()).trim();
         }
         return rv;

@@ -202,15 +202,16 @@ public class JVisaUtils {
 
     /**
      *
+     * @param rm
      * @param nativeStatus
      * @param cFunctionName
      * @throws JVisaException
      */
-    public static void throwForStatus(NativeLong nativeStatus, String cFunctionName) throws JVisaException {
+    public static void throwForStatus(JVisaResourceManager rm, NativeLong nativeStatus, String cFunctionName) throws JVisaException {
         long statusCode = nativeStatus.longValue();
         if (statusCode != VisatypeLibrary.VI_SUCCESS) {
             //TODO need to get status description here somehow, but that needs the resource manager
-            throw new JVisaException(statusCode, cFunctionName);
+            throw new JVisaException(statusCode, cFunctionName, rm.getStatusDescription(nativeStatus));
         }
     }
 

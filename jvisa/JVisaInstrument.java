@@ -38,12 +38,12 @@ public class JVisaInstrument {
     private final static int DEFAULT_BUFFER_SIZE = 1024;
 
     private final NativeLong instrumentHandle;
-    private final JVisaResourceManager resourceManager;
+    private final JVisaResourceManager rm;
     private final JVisaLibrary visaLib;
     public final String resourceName;
 
     public JVisaInstrument(JVisaResourceManager resourceManager, NativeLongByReference instrumentHandle, String resourceName) {
-        this.resourceManager = resourceManager;
+        this.rm = resourceManager;
         this.visaLib = resourceManager.library;
         this.instrumentHandle = instrumentHandle.getValue();
         this.resourceName = resourceName;
@@ -133,7 +133,7 @@ public class JVisaInstrument {
         NativeLongByReference returnCount = new NativeLongByReference();
         NativeLong visaStatus = visaLib.viWrite(instrumentHandle, buffer, new NativeLong(commandLength), returnCount);
 
-        JVisaUtils.throwForStatus(visaStatus, "viWrite");
+        JVisaUtils.throwForStatus(rm, visaStatus, "viWrite");
 
         long count = returnCount.getValue().longValue();
         if (count != commandLength) {
@@ -156,7 +156,7 @@ public class JVisaInstrument {
         ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
 
         NativeLong visaStatus = visaLib.viRead(instrumentHandle, responseBuf, new NativeLong(bufferSize), readCountNative);
-        JVisaUtils.throwForStatus(visaStatus, "viRead");
+        JVisaUtils.throwForStatus(rm, visaStatus, "viRead");
 
         long readCount = readCountNative.getValue().longValue();
         if (readCount < 1) {
@@ -180,14 +180,14 @@ public class JVisaInstrument {
         ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
 
         NativeLong visaStatus = visaLib.viRead(instrumentHandle, responseBuf, new NativeLong(bufferSize), readCountNative);
-        JVisaUtils.throwForStatus(visaStatus, "viRead");
+        JVisaUtils.throwForStatus(rm, visaStatus, "viRead");
 
         long readCount = readCountNative.getValue().longValue();
         if (readCount < 1) {
             throw new JVisaException("read zero bytes from instrument");
         }
 
-        return new String(responseBuf.array(), 0, (int) readCount);
+        return new String(responseBuf.array(), 0, (int) readCount).trim();
     }
 
     /**
@@ -284,7 +284,7 @@ public class JVisaInstrument {
      */
     public void clear() throws JVisaException {
         NativeLong visaStatus = visaLib.viClear(instrumentHandle);
-        JVisaUtils.throwForStatus(visaStatus, "viClear");
+        JVisaUtils.throwForStatus(rm, visaStatus, "viClear");
     }
 
     /**
@@ -296,7 +296,7 @@ public class JVisaInstrument {
      */
     public void closeInstrument() throws JVisaException {
         NativeLong visaStatus = visaLib.viClose(instrumentHandle);
-        JVisaUtils.throwForStatus(visaStatus, "viClose");
+        JVisaUtils.throwForStatus(rm, visaStatus, "viClose");
     }
 
 }
