@@ -18,6 +18,10 @@
 /**
  * Modifications by Peter Froud, Lumenetix Inc
  * June 2018
+ *
+ * Very useful tool: NI IO Trace
+ * "C:\Program Files (x86)\National Instruments\NI IO Trace\NI IO Trace.exe"
+ * Shows calls to nivisa.dll!
  */
 package jvisa;
 

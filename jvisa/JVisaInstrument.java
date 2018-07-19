@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
 
 /**
  * Represents a Visa instrument.
- * 
+ *
  * To use, call openInstrument() from a JVisaResourceManager instance.
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
@@ -122,7 +122,7 @@ public class JVisaInstrument {
      * Sends a command to the instrument.
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viwrite/
-     * 
+     *
      * @param command the command to send
      * @throws jvisa.JVisaException if the write fails
      */
@@ -168,7 +168,7 @@ public class JVisaInstrument {
 
     /**
      * Reads a string from the instrument, e.g. a command response.
-     * 
+     *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viread/
      *
      * @param bufferSize size of response buffer in bytes
@@ -277,7 +277,7 @@ public class JVisaInstrument {
      */
     /**
      * Clears the device input and output buffers. The corresponding VISA function is not implemented in the libreVisa library.
-     * 
+     *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclear/
      *
      * @throws jvisa.JVisaException if the clear operation failed
@@ -289,7 +289,7 @@ public class JVisaInstrument {
 
     /**
      * Closes an instrument session.
-     * 
+     *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclose/
      *
      * @throws jvisa.JVisaException if the instrument couldn't be closed
@@ -297,6 +297,17 @@ public class JVisaInstrument {
     public void closeInstrument() throws JVisaException {
         NativeLong visaStatus = visaLib.viClose(instrumentHandle);
         JVisaUtils.throwForStatus(rm, visaStatus, "viClose");
+    }
+
+    /*
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_tmo_value/
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/visetattribute/
+     */
+    public void setTimeout(int timeoutMilliseconds) throws JVisaException {
+        NativeLong visaStatus = visaLib.viSetAttribute(instrumentHandle, new NativeLong(JVisaLibrary.VI_ATTR_TMO_VALUE),
+                new NativeLong(timeoutMilliseconds));
+
+        JVisaUtils.throwForStatus(rm, visaStatus, "viSetAttribute");
     }
 
 }
