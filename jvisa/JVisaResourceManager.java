@@ -58,6 +58,7 @@ public class JVisaResourceManager {
      * @throws JVisaException if the resource manager couldn't be opened
      * @throws UnsatisfiedLinkError if the Visa DLL couldn't be loaded
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
         library = (JVisaLibrary) Native.loadLibrary("nivisa64.dll", JVisaLibrary.class);
 
@@ -135,7 +136,7 @@ public class JVisaResourceManager {
     public String[] findResources() throws JVisaException {
 
         /*
-         National Instruments says this is a regular expression but they're liars.
+         National Instruments says the filter is a regular expression but they're liars.
          Here, the question mark "matches any one character" which is not what it does in a regex.
          The star does the same thing as in a real regular expression.
          */
@@ -192,5 +193,7 @@ public class JVisaResourceManager {
         }
         return new String(errDescBuf.array()).trim();
     }
+    
+    
 
 }

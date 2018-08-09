@@ -21,6 +21,7 @@
  */
 package jvisa;
 
+import com.sun.jna.Memory;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import java.nio.ByteBuffer;
@@ -308,6 +309,20 @@ public class JVisaInstrument {
                 new NativeLong(timeoutMilliseconds));
 
         JVisaUtils.throwForStatus(rm, visaStatus, "viSetAttribute");
+    }
+
+     /*
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_tmo_value/
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vigetattribute/
+     */
+    public String getAttribute(int attr) throws JVisaException {
+        Memory mem = new Memory(256);
+
+        NativeLong visaStatus = visaLib.viGetAttribute(instrumentHandle, new NativeLong(attr), mem);
+        JVisaUtils.throwForStatus(rm, visaStatus, "viGetAttribute");
+
+        // apparently we can't dispose or free or finalize a Memory, just need to let JVM call finalize()
+        return mem.getString(0, new String());
     }
 
 }
