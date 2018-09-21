@@ -140,33 +140,33 @@ public class JVisaResourceManager {
          Here, the question mark "matches any one character" which is not what it does in a regex.
          The star does the same thing as in a real regular expression.
          */
-        ByteBuffer filterExpression = stringToByteBuffer("?*");
+        ByteBuffer filterExpression = stringToByteBuffer("USB?*");
 
         NativeLongByReference countPtr = new NativeLongByReference();
-        NativeLongByReference findList = new NativeLongByReference();
+        NativeLongByReference findListPtr = new NativeLongByReference();
 
-        final int descrLen = 256;
-        ByteBuffer descr = ByteBuffer.allocate(descrLen);
+        final int RESOURCE_NAME_MAX_LEN = 256;
+        ByteBuffer descrBuf = ByteBuffer.allocate(RESOURCE_NAME_MAX_LEN);
 
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindrsrc/
         NativeLong visaStatus = library.viFindRsrc(resourceManagerHandle,
-                filterExpression, findList, countPtr, descr);
+                filterExpression, findListPtr, countPtr, descrBuf);
         JVisaUtils.throwForStatus(this, visaStatus, "viFindRsrc");
 
-        long numFound = countPtr.getValue().longValue();
-        String[] rv = new String[(int) numFound];
+        int numFound = (int) countPtr.getValue().longValue();
+        String[] rv = new String[numFound];
         if (numFound > 0) {
-            rv[0] = new String(descr.array()).trim();
+            rv[0] = new String(descrBuf.array()).trim();
         }
 
         for (int i = 1; i < numFound; i++) {
-            descr = ByteBuffer.allocate(descrLen);
+            descrBuf = ByteBuffer.allocate(RESOURCE_NAME_MAX_LEN);
 
             // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindnext/
-            visaStatus = library.viFindNext(findList.getValue(), descr);
-
+            visaStatus = library.viFindNext(findListPtr.getValue(), descrBuf);
             JVisaUtils.throwForStatus(this, visaStatus, "viFindNext");
-            rv[i] = new String(descr.array()).trim();
+
+            rv[i] = new String(descrBuf.array()).trim();
         }
         return rv;
     }
@@ -193,7 +193,5 @@ public class JVisaResourceManager {
         }
         return new String(errDescBuf.array()).trim();
     }
-    
-    
 
 }
