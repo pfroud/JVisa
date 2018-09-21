@@ -295,7 +295,7 @@ public class JVisaInstrument {
      *
      * @throws jvisa.JVisaException if the instrument couldn't be closed
      */
-    public void closeInstrument() throws JVisaException {
+    public void close() throws JVisaException {
         NativeLong visaStatus = visaLib.viClose(instrumentHandle);
         JVisaUtils.throwForStatus(rm, visaStatus, "viClose");
     }
@@ -311,7 +311,7 @@ public class JVisaInstrument {
         JVisaUtils.throwForStatus(rm, visaStatus, "viSetAttribute");
     }
 
-     /*
+    /*
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_tmo_value/
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vigetattribute/
      */
@@ -323,6 +323,18 @@ public class JVisaInstrument {
 
         // apparently we can't dispose or free or finalize a Memory, just need to let JVM call finalize()
         return mem.getString(0, new String());
+    }
+
+    public String getManufacturerName() throws JVisaException {
+        return getAttribute(JVisaLibrary.VI_ATTR_MANF_NAME);
+    }
+
+    public String getModelName() throws JVisaException {
+        return getAttribute(JVisaLibrary.VI_ATTR_MODEL_NAME);
+    }
+
+    public String getSerialNumber() throws JVisaException {
+        return getAttribute(JVisaLibrary.VI_ATTR_USB_SERIAL_NUM);
     }
 
 }
