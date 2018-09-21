@@ -27,7 +27,6 @@ package jvisa;
 import com.sun.jna.NativeLong;
 import java.nio.ByteBuffer;
 
-import visatype.VisatypeLibrary;
 
 /**
  * Contains static utility functions.
@@ -209,8 +208,7 @@ public class JVisaUtils {
      */
     public static void throwForStatus(JVisaResourceManager rm, NativeLong nativeStatus, String cFunctionName) throws JVisaException {
         long statusCode = nativeStatus.longValue();
-        if (statusCode != VisatypeLibrary.VI_SUCCESS) {
-            //TODO need to get status description here somehow, but that needs the resource manager
+        if (statusCode != 0) {
             throw new JVisaException(statusCode, cFunctionName, rm.getStatusDescription(nativeStatus));
         }
     }

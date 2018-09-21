@@ -30,7 +30,6 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import java.nio.ByteBuffer;
 import static jvisa.JVisaUtils.stringToByteBuffer;
-import visatype.VisatypeLibrary;
 
 /**
  * The Visa resource manager manages and communicates with resources, attributes, events, etc.
@@ -186,7 +185,7 @@ public class JVisaResourceManager {
         NativeLong errorCode = library.viStatusDesc(resourceManagerHandle, statusCode, errDescBuf);
 
         long errorCodeLong = errorCode.longValue();
-        if (errorCodeLong != VisatypeLibrary.VI_SUCCESS) {
+        if (errorCodeLong != 0) {
             System.err.printf("viStatusDesc() returned 0x%H while trying to get description for code 0x%H\n",
                     errorCodeLong, statusCode.longValue());
             return "<couldn't get description for the status code>";
