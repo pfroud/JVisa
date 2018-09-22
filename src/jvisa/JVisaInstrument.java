@@ -16,8 +16,7 @@
  * limitations under the License.
  */
 /**
- * Modifications by Peter Froud, Lumenetix Inc
- * June 2018
+ * Modifications by Peter Froud, June 2018
  */
 package jvisa;
 
@@ -32,7 +31,7 @@ import java.nio.ByteBuffer;
  * To use, call openInstrument() from a JVisaResourceManager instance.
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
- * @author Peter Froud (pfroud@lumenetix.com)
+ * @author Peter Froud
  */
 public class JVisaInstrument {
 

@@ -16,8 +16,7 @@
  * limitations under the License.
  */
 /**
- * Modifications by Peter Froud, Lumenetix Inc
- * June 2018
+ * Modifications by Peter Froud, June 2018
  */
 package jvisa;
 

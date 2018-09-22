@@ -19,8 +19,7 @@
  * @todo Catch librevisa::exception.
  */
 /**
- * Modifications by Peter Froud, Lumenetix Inc
- * June 2018
+ * Modifications by Peter Froud, June 2018
  */
 package jvisa;
 
@@ -32,7 +31,7 @@ import java.nio.ByteBuffer;
  * Contains static utility functions.
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
- * @author Peter Froud (pfroud@lumenetix.com)
+ * @author Peter Froud
  *
  */
 public class JVisaUtils {

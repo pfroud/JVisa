@@ -16,8 +16,7 @@
  * limitations under the License.
  */
 /**
- * Modifications by Peter Froud, Lumenetix Inc
- * June 2018
+ * Modifications by Peter Froud, June 2018
  *
  * Very useful tool: NI IO Trace
  * "C:\Program Files (x86)\National Instruments\NI IO Trace\NI IO Trace.exe"
@@ -35,7 +34,7 @@ import static jvisa.JVisaUtils.stringToByteBuffer;
  * The Visa resource manager manages and communicates with resources, attributes, events, etc.
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
- * @author Peter Froud (pfroud@lumenetix.com)
+ * @author Peter Froud
  *
  */
 public class JVisaResourceManager {

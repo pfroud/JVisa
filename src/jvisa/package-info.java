@@ -16,7 +16,7 @@ limitations under the License.
 </p>
 
 <p>
-Modifications by Peter Froud, Lumenetix Inc, June 2018
+Modifications by Peter Froud, June 2018
 </p>
  
 <h2>Projects</h2>
