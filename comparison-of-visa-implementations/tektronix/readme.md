@@ -1,4 +1,4 @@
-# Tektrotekx TekVISA aka OpenChoice 
+# Tektronix TekVISA aka OpenChoice 
 
 ![TekVISA Instrument Manager screenshot](tek-instrument-manager.PNG)
 
