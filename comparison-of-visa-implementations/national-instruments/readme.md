@@ -1,4 +1,4 @@
-# National Instruments NI-VISA-VISA
+# National Instruments NI-VISA
 
 ![NI-VISA Measurement & Automation Explorer screenshot](NI-measurement-and-automation-explorer.PNG)
 

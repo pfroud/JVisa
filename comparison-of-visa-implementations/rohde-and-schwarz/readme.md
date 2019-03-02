@@ -6,5 +6,4 @@
 
 ![R&S VISA Trace Tool screenshot](RS-trace-tool.PNG)
 
-![R&S VISA Configure screenshot](RS-configure
-.PNG)
+![R&S VISA Configure screenshot](RS-configure.PNG)
