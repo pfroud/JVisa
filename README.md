@@ -17,7 +17,7 @@ G&uuml;nter set up [JNAerator](https://github.com/nativelibs4java/JNAerator) and
 However, there are some issues in the original JVisa:
 
 * Confusing inheritance between the `JVisa` and `JVisaInstrument` classes 
-* Only open one instrument can be opened at a time
+* Only one instrument can be opened at a time
 * C-style error handling and output arguments
 
 This fork of JVisa addresses those issues.
@@ -34,7 +34,7 @@ As far as I know, four companies have written their own VISA implementation: Nat
 
 The Nation Instruments one appears to be the most well-regarded. (For instance, [PyVISA](https://pyvisa.readthedocs.io/en/master/getting.html) supports only National Instruments.)
 
-A comparison of those VISA implementation will be in a separate file. 
+See my comparison of those VISA implementation [here](comparison-of-visa-implementations).
 
 
 ## Glossary
