@@ -1,8 +1,5 @@
 # JVisa
 
-<!-- TODO consider adding AbstractInstrument -->
-<!-- TODO add example code -->
-
 VISA (Virtual Instrument Software Architecture) is an API for communicating with test & measurement instruments.
 
 JVisa is a library for using VISA instruments in a Java program.
@@ -22,20 +19,31 @@ However, there are some issues in the original JVisa:
 
 This fork of JVisa addresses those issues.
 
-## Installing a VISA implementation
+## Getting started
 
-Before using JVisa, you must install a VISA implementation.
+### Installing a VISA implementation
 
-[According](https://www.tek.com/support/faqs/what-tekvisa-and-how-can-i-use-it-communicate-and-control-my-instrument) to Tektronix,
+You must install a VISA implementation to use JVisa. **[National Instrument NI-VISA](https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html) is recommended.**
 
->Each VISA [implementation] is comprised of a communications driver, a USBTMC driver (USB Test and Measurement Class driver), a VISA software library and documentation, an instrument connection manager, an instrument communication tool, and an instrument communication logger.
+As far as I know, four companies have written their own VISA implementation: Keysight, National Instruments, Rohde & Schwarz, and Tektronix.
 
-As far as I know, four companies have written their own VISA implementation: National Instruments, Keysight, Tektronix, and Rohde & Schwarz.
+The Nation Instruments implementation appears to be the most common. For instance, [PyVISA](https://pyvisa.readthedocs.io/en/master/getting.html) only supports NI-VISA, and Rigol software uses NI-VISA.
 
-The Nation Instruments one appears to be the most well-regarded. (For instance, [PyVISA](https://pyvisa.readthedocs.io/en/master/getting.html) supports only National Instruments.)
+I tried out all four implementations and took notes and screenshots. See my [comparison of VISA implementations](comparison-of-visa-implementations)..
 
-See my comparison of those VISA implementation [here](comparison-of-visa-implementations).
+### Example code
 
+The `[jvisa_example](jvisa_example)` folder contains a few example files. 
+
+The file `LowLevelExample.java` shows how to use the JVisa classes directly.
+
+There is also a small example of how to make a higher-level abstraction. The file `HighLevelExample.java` shows how `AbstractInstrument.java` and `PowerSupplyExample.java` let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
+
+## Limitations
+
+This fork of JVisa has only been tested on 64-bit Windows 7 and 10.
+
+Not all VISA command have methods implemented, but it's definitley enough to do instrument automation.
 
 ## Glossary
 
