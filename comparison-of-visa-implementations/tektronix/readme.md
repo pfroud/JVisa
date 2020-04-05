@@ -22,11 +22,15 @@ Speaking of the GUI, the design is hilariously outdated. Everything uses a viole
 
 Instrument Manager can other TekVISA utilities, and you can add your own to the list:
 
-![Dialog to add entry to list of utilities](tek-add-entry.png)
+<p align="center" style="text-align: center">
+<img src="tek-add-entry.png?raw=true" alt="Dialog to add entry to list of utilities">
+</p>
 
 Some TekVISA utilities have a Tools dropdown menu where you can launch other TekVISA utilities:
 
-![TekVISA tools drop-down menu](tek-tools-menus.png)
+<p align="center" style="text-align: center">
+<img src="tek-tools-menus.png?raw=true" alt="TekVISA tools drop-down menu">
+</p>
 
 The Talker Lister program has Notepad in its Tools menu (above left). When you click it, Windows Notepad opens like normal, but then Talker Listener starts typing into the blank Notepad file: `Talker Listener Script: <<Script0>>`
 How weird! That would be super confusing if you're weren't expecting it.
@@ -39,7 +43,9 @@ Instrument aliases are set with the Properties button in Instrument Manager.
 
 A system tray icon has a little popup menu where you can start Instrument Manager and Call Monitor:
 
-![TekVISA system tray menu](tek-system-tray.png)
+<p align="center" style="text-align: center">
+<img src="tek-system-tray.png?raw=true" alt="TekVISA system tray menu">
+</p>
 
 ### Install location
 
@@ -55,7 +61,9 @@ TekVISA should be installed in its own folder in Program Files, but there's no w
 
 The installer makes a folder in the Start Menu with links to tools, documentation, and examples:
 
-![TekVISA start menu folder](tek-start-menu-folder.png)
+<p align="center" style="text-align: center">
+<img src="tek-start-menu-folder.png?raw=true" alt="TekVISA start menu folder">
+</p>
 
 Looks good. But, some of the shortcuts don't work! Here's the target of Programming Manual shortcut:
 
@@ -65,18 +73,22 @@ Yes, they put shortcuts to a PDF reader instead of the PDF itself! This doesn't 
 
 ## Screenshots
 
-Instrument Manager
+Instrument Manager:
+<p align="center" style="text-align: center">
+<img src="tek-instrument-manager.PNG?raw=true" alt="TekVISA Instrument Manager screenshot">
+</p>
 
-![TekVISA Instrument Manager screenshot](tek-instrument-manager.PNG)
+Talker Listener:
+<p align="center" style="text-align: center">
+<img src="tek-talker-listener.PNG?raw=true" alt="TekVISA Talker Listener screenshot">
+</p>
 
-Talker Listener
+Call Monitor:
+<p align="center" style="text-align: center">
+<img src="tek-call-monitor.PNG?raw=true" alt="TekVISA Call Monitor screenshot">
+</p>
 
-![TekVISA Talker Listener screenshot](tek-talker-listener.PNG)
-
-Call Monitor
-
-![TekVISA Call Monitor screenshot](tek-call-monitor.PNG)
-
-Conflict Manager
-
-![TekVISA Conflict Manager screenshot](tek-conflict-manager.PNG)
+Conflict Manager:
+<p align="center" style="text-align: center">
+<img src="tek-conflict-manager.PNG?raw=true" alt="TekVISA Conflict Manager screenshot">
+</p>
