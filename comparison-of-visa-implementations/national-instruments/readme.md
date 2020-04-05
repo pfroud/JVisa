@@ -18,7 +18,9 @@ Most of the action happens in Measurement and Automation Explorer (MAX).
 
 MAX is the hub for [a dozen](https://knowledge.ni.com/KnowledgeArticleDetails?id=kA00Z000000P9KBSA0&l=en-US) devices/protocols supported by NI which makes UI complex. The left sidebar tree has a ton of stuff in it:
 
-![NI MAX sidebar tree](NI-MAX-sidebar-tree.png)
+<p align="center" style="text-align: center">
+<img src="NI-MAX-sidebar-tree.png?raw=true" alt="NI MAX sidebar tree">
+</p>
 
 The "Devices and Interfaces" tree shows connected instruments, which makes sense.
 
@@ -30,7 +32,9 @@ MAX can open the Interactive Control utility, which in turn can start I/O Trace.
 
 You can open the programming manual from the MAX Help menu:
 
-![NI MAX help menu](NI-MAX-help-menu-crop.png)
+<p align="center" style="text-align: center">
+<img src="NI-MAX-help-menu-crop.png?raw=true" alt="NI MAX help menu">
+</p>
 
 
 
@@ -40,24 +44,30 @@ MAX also has the alias manager inside of it.
 
 Handled correctly. There are links to all the tools, documentation, and examples.
 
-![NI-VISA start menu folder](NI-start-menu-folder.png)
+<p align="center" style="text-align: center">
+<img src="NI-start-menu-folder.png?raw=true" alt="NI-VISA start menu folder">
+</p>
 
 ## Screenshots
 
 Measurement and Automation Explorer (MAX):
-
-![NI-VISA Measurement & Automation Explorer screenshot](NI-measurement-and-automation-explorer.PNG)
+<p align="center" style="text-align: center">
+<img src="NI-measurement-and-automation-explorer.PNG?raw=true" alt="NI-VISA Measurement & Automation Explorer screenshot">
+</p>
 
 
 Interactive Control:
-
-![NI-VISA Interactive Control screenshot](NI-interactive-control.PNG)
+<p align="center" style="text-align: center">
+<img src="NI-interactive-control.PNG?raw=true" alt="NI-VISA Interactive Control screenshot">
+</p>
 
 I/O Trace:
-
-![NI-VISA IO Trace screenshot](NI-IO-trace.PNG)
+<p align="center" style="text-align: center">
+<img src="NI-IO-trace.PNG?raw=true" alt="NI-VISA IO Trace screenshot">
+</p>
 
 
 Conflict Manager inside MAX:
-
-![NI-VISA Conflict Manager screenshot](NI-conflict-manager-crop.PNG)
+<p align="center" style="text-align: center">
+<img src="NI-conflict-manager-crop.PNG?raw=true" alt="NI-VISA Conflict Manager screenshot">
+</p>
