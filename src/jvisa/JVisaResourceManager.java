@@ -77,7 +77,7 @@ public class JVisaResourceManager {
      * Returns the alias for an instrument. The instrument does not need to be opened.
      *
      * If you're using NI-VISA, aliases are stored in "C:\ProgramData\National Instruments\NIvisa\visaconf.ini".<br>
-     * You can also use NI MAX (National Instruments Measurement & Automation Explorer) to read and change aliases.<br>
+     * You can also use NI MAX (National Instruments Measurement &amp; Automation Explorer) to read and change aliases.<br>
      * I think the DLL only lets you read aliases, not change them.
      *
      * @param resourceName name of the resource to get the alias for

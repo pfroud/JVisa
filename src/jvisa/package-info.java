@@ -13,6 +13,18 @@
  * Modifications by Peter Froud, June 2018
  * </p>
  *
+ * <p>
+ * VISA (Virtual Instrument Software Architecture) is an API for communicating with test &amp; measurement instruments.
+ *
+ * JVisa is a library for using VISA instruments in a Java program.
+ *
+ * <a href="https://github.com/pfroud/JVisa">https://github.com/pfroud/JVisa</a>
+ * </p>
+ *
+ * <p>
+ * This package is the low-level interface the the visa DLL. To see a high-level example, look at the jvisa_example package.
+ * </p>
+ *
  * @author Günter Fuchs
  * @author Peter Froud
  * @version 0.6
