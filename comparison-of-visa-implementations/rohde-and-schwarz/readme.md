@@ -30,22 +30,28 @@ RsVisaConfigure is also the alias manager.
 
 Handled correctly. The installer makes a Start Menu folder with shortcuts to the three RsVisa programs, documentation, and examples.
 
-![R&S VISA start menu folder](RS-start-menu-folder.png)
+<p align="center" style="text-align: center">
+<img src="RS-start-menu-folder.png?raw=true" alt="R&S VISA start menu folder">
+</p>
 
 ## Screenshots
 
 RsVisaConfigure:
-
-![R&S VISA Configure screenshot](RS-configure.PNG)
+<p align="center" style="text-align: center">
+<img src="RS-configure.PNG?raw=true" alt="R&S VISA Configure screenshot">
+</p>
 
 RsVisaTester:
-
-![R&S VISA Tester screenshot](RS-tester.PNG)
+<p align="center" style="text-align: center">
+<img src="RS-tester.PNG?raw=true" alt="R&S VISA Tester screenshot">
+</p>
 
 RsVisaTraceTool:
-
-![R&S VISA Trace Tool screenshot](RS-trace-tool.PNG)
+<p align="center" style="text-align: center">
+<img src="RS-trace-tool.PNG?raw=true" alt="R&S VISA Trace Tool screenshot">
+</p>
 
 Conflict Manager (inside RsVisaConfigure):
-
-![R&S VISA Conflict Manager screenshot](RS-conflict-manager.PNG)
+<p align="center" style="text-align: center">
+<img src="RS-conflict-manager.PNG?raw=true" alt="R&S VISA Conflict Manager screenshot">
+</p>
