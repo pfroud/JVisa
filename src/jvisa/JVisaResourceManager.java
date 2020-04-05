@@ -17,10 +17,6 @@
  */
 /**
  * Modifications by Peter Froud, June 2018
- *
- * Very useful tool: NI IO Trace
- * "C:\Program Files (x86)\National Instruments\NI IO Trace\NI IO Trace.exe"
- * Shows calls to nivisa.dll!
  */
 package jvisa;
 
@@ -39,11 +35,10 @@ import static jvisa.JVisaUtils.stringToByteBuffer;
  */
 public class JVisaResourceManager {
 
-    /* resourceManagerHandle is a unique logical identifier to the Visa session.
-    The C API calls this ViSession.*/
-    private final NativeLong resourceManagerHandle;
+    // resourceManagerHandle is a unique logical identifier to the Visa session. In the C API, this is called ViSession.
+    private final NativeLong RESOURCE_MANAGER_HANDLE;
 
-    public final JVisaLibrary library;
+    public final JVisaLibrary VISA_LIBRARY;
 
     /**
      * Creates a session for a default resource manager.
@@ -58,13 +53,13 @@ public class JVisaResourceManager {
      */
     @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
-        library = (JVisaLibrary) Native.loadLibrary("nivisa64.dll", JVisaLibrary.class);
+        VISA_LIBRARY = (JVisaLibrary) Native.loadLibrary("nivisa64.dll", JVisaLibrary.class);
 
-        NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
-        NativeLong nativeStatus = library.viOpenDefaultRM(pointerToResourceManagerHandle);
+        final NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
+        final NativeLong nativeStatus = VISA_LIBRARY.viOpenDefaultRM(pointerToResourceManagerHandle);
 
         JVisaUtils.throwForStatus(this, nativeStatus, "viOpenDefaultRM");
-        resourceManagerHandle = pointerToResourceManagerHandle.getValue();
+        RESOURCE_MANAGER_HANDLE = pointerToResourceManagerHandle.getValue();
     }
 
     /**
@@ -75,28 +70,28 @@ public class JVisaResourceManager {
      * @throws jvisa.JVisaException if the resource manager couldn't be closed
      */
     public void close() throws JVisaException {
-        NativeLong nativeStatus = library.viClose(resourceManagerHandle);
+        final NativeLong nativeStatus = VISA_LIBRARY.viClose(RESOURCE_MANAGER_HANDLE);
         JVisaUtils.throwForStatus(this, nativeStatus, "viClose");
     }
 
     /**
      * Returns the alias for an instrument. The instrument does not need to be opened.
      *
-     * Aliases are stored in "C:\ProgramData\National Instruments\NIvisa\visaconf.ini".<br>
-     * You can also use NI MAX (National Instruments Measurement & Automation Explorer).<br>
-     * I don't think the DLL lets you set aliases.
+     * If you're using NI-VISA, aliases are stored in "C:\ProgramData\National Instruments\NIvisa\visaconf.ini".<br>
+     * You can also use NI MAX (National Instruments Measurement & Automation Explorer) to read and change aliases.<br>
+     * I think the DLL only lets you read aliases, not change them.
      *
      * @param resourceName name of the resource to get the alias for
      * @return the alias, or empty string(?) if the specified resource doesn't have an alias
      * @throws jvisa.JVisaException if the API call to get the alias failed
      */
     public String getInstrumentAlias(String resourceName) throws JVisaException {
-        ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
-        ByteBuffer aliasBuf = ByteBuffer.allocate(128);
+        final ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
+        final ByteBuffer aliasBuf = ByteBuffer.allocate(128);
 
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viparsersrcex/
-        NativeLong visaStatus = library.viParseRsrcEx(
-                resourceManagerHandle,
+        final NativeLong visaStatus = VISA_LIBRARY.viParseRsrcEx(
+                RESOURCE_MANAGER_HANDLE,
                 resourceNameBuf,
                 new NativeLongByReference(), //ViPUInt16 intfType
                 new NativeLongByReference(), //ViPUInt16 intfNum
@@ -118,10 +113,10 @@ public class JVisaResourceManager {
      * @throws jvisa.JVisaException if the instrument couldn't be opened
      */
     public JVisaInstrument openInstrument(String resourceName) throws JVisaException {
-        NativeLongByReference instrumentHandle = new NativeLongByReference();
-        ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
+        final NativeLongByReference instrumentHandle = new NativeLongByReference();
+        final ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
 
-        NativeLong visaStatus = library.viOpen(resourceManagerHandle,
+        final NativeLong visaStatus = VISA_LIBRARY.viOpen(RESOURCE_MANAGER_HANDLE,
                 resourceNameBuf,
                 new NativeLong(0), // ViAccessMode accessMode - 0 for default access mode
                 new NativeLong(0), // ViUInt32 openTimeout - how long to wait before returning error. Only when the access mode equals locking?
@@ -131,6 +126,14 @@ public class JVisaResourceManager {
         return new JVisaInstrument(this, instrumentHandle, resourceName);
     }
 
+    /**
+     * Search for connected VISA resources.
+     *
+     * Currently it is set to only search for USB instruments. You can change the filterExpression.
+     *
+     * @return array of VISA resource names found.
+     * @throws JVisaException if the process for finding instruments failed, or if no instruments were found.
+     */
     public String[] findResources() throws JVisaException {
 
         /*
@@ -138,31 +141,32 @@ public class JVisaResourceManager {
          Here, the question mark "matches any one character" which is not what it does in a regex.
          The star does the same thing as in a real regular expression.
          */
-        ByteBuffer filterExpression = stringToByteBuffer("USB?*");
+        final ByteBuffer filterExpression = stringToByteBuffer("USB?*");
 
-        NativeLongByReference countPtr = new NativeLongByReference();
-        NativeLongByReference findListPtr = new NativeLongByReference();
+        final NativeLongByReference countPtr = new NativeLongByReference();
+        final NativeLongByReference findListPtr = new NativeLongByReference();
 
-        final int RESOURCE_NAME_MAX_LEN = 256;
-        ByteBuffer descrBuf = ByteBuffer.allocate(RESOURCE_NAME_MAX_LEN);
+        final ByteBuffer descrBuf = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindrsrc/
-        NativeLong visaStatus = library.viFindRsrc(resourceManagerHandle,
+        final NativeLong visaStatus = VISA_LIBRARY.viFindRsrc(RESOURCE_MANAGER_HANDLE,
                 filterExpression, findListPtr, countPtr, descrBuf);
         JVisaUtils.throwForStatus(this, visaStatus, "viFindRsrc");
 
-        int numFound = (int) countPtr.getValue().longValue();
-        String[] rv = new String[numFound];
+        final int numFound = (int) countPtr.getValue().longValue();
+        final String[] rv = new String[numFound];
+
         if (numFound > 0) {
+            // the buffer gets populated with the first result
             rv[0] = new String(descrBuf.array()).trim();
         }
 
         for (int i = 1; i < numFound; i++) {
-            descrBuf = ByteBuffer.allocate(RESOURCE_NAME_MAX_LEN);
+            final ByteBuffer descrBufNext = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
             // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindnext/
-            visaStatus = library.viFindNext(findListPtr.getValue(), descrBuf);
-            JVisaUtils.throwForStatus(this, visaStatus, "viFindNext");
+            final NativeLong visaStatus2 = VISA_LIBRARY.viFindNext(findListPtr.getValue(), descrBufNext);
+            JVisaUtils.throwForStatus(this, visaStatus2, "viFindNext");
 
             rv[i] = new String(descrBuf.array()).trim();
         }
@@ -174,14 +178,15 @@ public class JVisaResourceManager {
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vistatusdesc/
      *
-     * @param statusCode
-     * @return status description
+     * @param statusCode return value from a DLL call
+     * @return human-readable description about the error code
      */
     public String getStatusDescription(NativeLong statusCode) {
 
+        // "Note  The size of the desc parameter should be at least 256 bytes."
         ByteBuffer errDescBuf = ByteBuffer.allocate(256);
 
-        NativeLong errorCode = library.viStatusDesc(resourceManagerHandle, statusCode, errDescBuf);
+        NativeLong errorCode = VISA_LIBRARY.viStatusDesc(RESOURCE_MANAGER_HANDLE, statusCode, errDescBuf);
 
         long errorCodeLong = errorCode.longValue();
         if (errorCodeLong != 0) {

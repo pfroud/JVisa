@@ -26,7 +26,7 @@ import com.sun.jna.ptr.NativeLongByReference;
 import java.nio.ByteBuffer;
 
 /**
- * Represents a Visa instrument.
+ * Represents a Visa instrument. This is a wrapper around the native C instrument handle.
  *
  * To use, call openInstrument() from a JVisaResourceManager instance.
  *
@@ -37,16 +37,16 @@ public class JVisaInstrument {
 
     private final static int DEFAULT_BUFFER_SIZE = 1024;
 
-    private final NativeLong instrumentHandle;
-    private final JVisaResourceManager rm;
-    private final JVisaLibrary visaLib;
-    public final String resourceName;
+    private final NativeLong INSTRUMENT_HANDLE;
+    private final JVisaResourceManager RESOURCE_MANAGER;
+    private final JVisaLibrary VISA_LIBRARY;
+    public final String RESOURCE_NAME;
 
     public JVisaInstrument(JVisaResourceManager resourceManager, NativeLongByReference instrumentHandle, String resourceName) {
-        this.rm = resourceManager;
-        this.visaLib = resourceManager.library;
-        this.instrumentHandle = instrumentHandle.getValue();
-        this.resourceName = resourceName;
+        RESOURCE_MANAGER = resourceManager;
+        VISA_LIBRARY = resourceManager.VISA_LIBRARY;
+        INSTRUMENT_HANDLE = instrumentHandle.getValue();
+        RESOURCE_NAME = resourceName;
     }
 
     /**
@@ -63,9 +63,7 @@ public class JVisaInstrument {
     }
 
     /**
-     * Sends a command and receives its response. It receives as many bytes as the instrument is sending.
-     *
-     * TODO peter: investigate receiving as many bytes as instrument sends. actually limited to 1024?
+     * Sends a command and receives its response. It receives as many bytes as the instrument is sending. (That is probably wrong, it can receive maximum DEFAULT_BUFFER_SIZE bytes)
      *
      * @param command string to send
      * @return response from instrument as a String
@@ -92,8 +90,6 @@ public class JVisaInstrument {
     /**
      * Sends a command and receives its response. It receives as many bytes as the instrument is sending.
      *
-     * TODO peter: investigate receiving as many bytes as instrument sends. actually limited to 1024?
-     *
      * @param command string to send
      * @return response from instrument as a ByteBuffer
      * @throws jvisa.JVisaException if the write fails or the read fails
@@ -104,21 +100,6 @@ public class JVisaInstrument {
     }
 
     /**
-     * sets the communication timeout.
-     *
-     * @param timeout in ms
-     * @return status of the operation
-     */
-    /*
-    public long setTimeout(int timeout) {
-        if (isLibreVisa) {
-            System.err.println("setTimeout() is not implemetned in Libre Visa.");
-        }
-        return setAttribute(JVisaInterface.VI_ATTR_TMO_VALUE,
-                timeout, getInstrumentHandle());
-    }
-     */
-    /**
      * Sends a command to the instrument.
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viwrite/
@@ -127,15 +108,15 @@ public class JVisaInstrument {
      * @throws jvisa.JVisaException if the write fails
      */
     public void write(String command) throws JVisaException {
-        ByteBuffer buffer = JVisaUtils.stringToByteBuffer(command);
-        int commandLength = command.length();
+        final ByteBuffer buffer = JVisaUtils.stringToByteBuffer(command);
+        final int commandLength = command.length();
 
-        NativeLongByReference returnCount = new NativeLongByReference();
-        NativeLong visaStatus = visaLib.viWrite(instrumentHandle, buffer, new NativeLong(commandLength), returnCount);
+        final NativeLongByReference returnCount = new NativeLongByReference();
+        final NativeLong visaStatus = VISA_LIBRARY.viWrite(INSTRUMENT_HANDLE, buffer, new NativeLong(commandLength), returnCount);
 
-        JVisaUtils.throwForStatus(rm, visaStatus, "viWrite");
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viWrite");
 
-        long count = returnCount.getValue().longValue();
+        final long count = returnCount.getValue().longValue();
         if (count != commandLength) {
             throw new JVisaException(String.format("Could only write %d instead of %d bytes.",
                     count, commandLength));
@@ -152,13 +133,13 @@ public class JVisaInstrument {
      * @throws jvisa.JVisaException if the read fails
      */
     protected ByteBuffer readBytes(int bufferSize) throws JVisaException {
-        NativeLongByReference readCountNative = new NativeLongByReference();
-        ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
+        final NativeLongByReference readCountNative = new NativeLongByReference();
+        final ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
 
-        NativeLong visaStatus = visaLib.viRead(instrumentHandle, responseBuf, new NativeLong(bufferSize), readCountNative);
-        JVisaUtils.throwForStatus(rm, visaStatus, "viRead");
+        final NativeLong visaStatus = VISA_LIBRARY.viRead(INSTRUMENT_HANDLE, responseBuf, new NativeLong(bufferSize), readCountNative);
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viRead");
 
-        long readCount = readCountNative.getValue().longValue();
+        final long readCount = readCountNative.getValue().longValue();
         if (readCount < 1) {
             throw new JVisaException("read zero bytes from instrument");
         }
@@ -176,13 +157,13 @@ public class JVisaInstrument {
      * @throws jvisa.JVisaException if the read fails
      */
     public String readString(int bufferSize) throws JVisaException {
-        NativeLongByReference readCountNative = new NativeLongByReference();
-        ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
+        final NativeLongByReference readCountNative = new NativeLongByReference();
+        final ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
 
-        NativeLong visaStatus = visaLib.viRead(instrumentHandle, responseBuf, new NativeLong(bufferSize), readCountNative);
-        JVisaUtils.throwForStatus(rm, visaStatus, "viRead");
+        final NativeLong visaStatus = VISA_LIBRARY.viRead(INSTRUMENT_HANDLE, responseBuf, new NativeLong(bufferSize), readCountNative);
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viRead");
 
-        long readCount = readCountNative.getValue().longValue();
+        final long readCount = readCountNative.getValue().longValue();
         if (readCount < 1) {
             throw new JVisaException("read zero bytes from instrument");
         }
@@ -201,81 +182,6 @@ public class JVisaInstrument {
     }
 
     /**
-     * reads a byte array from the instrument, usually a command response.
-     *
-     * @param response response byte array
-     * @param bufferSize size of response buffer in bytes
-     * @param expectedCount expected number of bytes in response. This parameter is only used under Linux / libreVisa.
-     * @return status of the operation
-     * @throws jvisa.JVisaException if viRead does not succeed
-     */
-    /*
-    public long read(JVisaReturnBytes response, int bufferSize, int expectedCount)
-            throws JVisaException {
-        long visaStatus;
-        try {
-            readCount = 0;
-            ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-            visaStatus = read(buffer, bufferSize);
-            if (visaStatus == VISA_JAVA_ERROR) {
-                return visaStatus;
-            }
-            if (isLibreVisa == false || expectedCount == 0) {
-                response.returnBytes = new byte[(int) readCount];
-                System.arraycopy(buffer.array(), 0, response.returnBytes, 0, (int) readCount);
-                return VisatypeLibrary.VI_SUCCESS;
-            }
-            // We did not get all data with one read. This happens when using the libreVisa library.
-            // The first chunk size is 12288 (0x3000) bytes.
-            int bytesLeft = expectedCount - (int) readCount;
-            int index = 0;
-            response.returnBytes = new byte[expectedCount];
-            System.arraycopy(buffer.array(), 0, response.returnBytes, index, (int) readCount);
-            while (bytesLeft > 0) {
-                index += readCount;
-                visaStatus = read(buffer, bufferSize);
-                if (visaStatus == VISA_JAVA_ERROR) {
-                    return visaStatus;
-                }
-                System.arraycopy(buffer.array(), 0, response.returnBytes, index, (int) readCount);
-                bytesLeft -= readCount;
-            }
-            // Attempting to read from the instrument when there are no bytes left in
-            // its output buffer crashes the libreVisa library.
-//      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//      baos.write(buffer.array(), 0, (int) readCount);
-//      
-//      int index = (int) readCount;
-//      while (readCount > 0) {
-//        index += readCount;
-//        visaStatus = read(buffer, bufferSize);
-//        if (visaStatus == VISA_JAVA_ERROR)
-//          return visaStatus;
-//        baos.write(buffer.array(), 0, (int) readCount);
-//      }
-//      response.returnBytes = baos.toByteArray();      
-
-            return VisatypeLibrary.VI_SUCCESS;
-        } catch (JVisaException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            throw new JVisaException(VISA_JAVA_ERROR);
-        }
-    }
-     */
-    /**
-     * reads a byte array from the instrument, usually a command response. It is used when the expected number of bytes in the response is unknown or or a Windows VISA library is used.
-     *
-     * @param response response byte array
-     * @param bufferSize size of response buffer in bytes
-     * @return status of the operation
-     * @throws jvisa.JVisaException if viRead does not succeed
-     */
-    /*
-    public long read(JVisaReturnBytes response, int bufferSize) throws JVisaException {
-        return read(response, bufferSize, 0);
-    }
-     */
-    /**
      * Clears the device input and output buffers. The corresponding VISA function is not implemented in the libreVisa library.
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclear/
@@ -283,8 +189,8 @@ public class JVisaInstrument {
      * @throws jvisa.JVisaException if the clear operation failed
      */
     public void clear() throws JVisaException {
-        NativeLong visaStatus = visaLib.viClear(instrumentHandle);
-        JVisaUtils.throwForStatus(rm, visaStatus, "viClear");
+        final NativeLong visaStatus = VISA_LIBRARY.viClear(INSTRUMENT_HANDLE);
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viClear");
     }
 
     /**
@@ -295,8 +201,8 @@ public class JVisaInstrument {
      * @throws jvisa.JVisaException if the instrument couldn't be closed
      */
     public void close() throws JVisaException {
-        NativeLong visaStatus = visaLib.viClose(instrumentHandle);
-        JVisaUtils.throwForStatus(rm, visaStatus, "viClose");
+        final NativeLong visaStatus = VISA_LIBRARY.viClose(INSTRUMENT_HANDLE);
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viClose");
     }
 
     /*
@@ -304,10 +210,12 @@ public class JVisaInstrument {
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/visetattribute/
      */
     public void setTimeout(int timeoutMilliseconds) throws JVisaException {
-        NativeLong visaStatus = visaLib.viSetAttribute(instrumentHandle, new NativeLong(JVisaLibrary.VI_ATTR_TMO_VALUE),
-                new NativeLong(timeoutMilliseconds));
+        final NativeLong visaStatus = VISA_LIBRARY.viSetAttribute(INSTRUMENT_HANDLE,
+                new NativeLong(JVisaLibrary.VI_ATTR_TMO_VALUE),
+                new NativeLong(timeoutMilliseconds)
+        );
 
-        JVisaUtils.throwForStatus(rm, visaStatus, "viSetAttribute");
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viSetAttribute");
     }
 
     /*
@@ -315,10 +223,10 @@ public class JVisaInstrument {
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vigetattribute/
      */
     public String getAttribute(int attr) throws JVisaException {
-        Memory mem = new Memory(256);
+        final Memory mem = new Memory(256);
 
-        NativeLong visaStatus = visaLib.viGetAttribute(instrumentHandle, new NativeLong(attr), mem);
-        JVisaUtils.throwForStatus(rm, visaStatus, "viGetAttribute");
+        final NativeLong visaStatus = VISA_LIBRARY.viGetAttribute(INSTRUMENT_HANDLE, new NativeLong(attr), mem);
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viGetAttribute");
 
         // apparently we can't dispose or free or finalize a Memory, just need to let JVM call finalize()
         return mem.getString(0, new String());
