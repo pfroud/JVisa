@@ -18,6 +18,8 @@
  */
 package jvisa_example;
 
+import java.util.Arrays;
+import java.util.List;
 import jvisa.JVisaInstrument;
 import jvisa.JVisaResourceManager;
 
@@ -29,6 +31,9 @@ import jvisa.JVisaResourceManager;
  * @author Peter Froud
  */
 public class PowerSupplyExample extends AbstractInstrument {
+
+    public static final String DESIRED_MANUFACTURER = "B&K Precision";
+    public static final List<String> DESIRED_MODELS = Arrays.asList(new String[]{"9201", "9202"});
 
     public PowerSupplyExample(JVisaResourceManager resourceManager, String resourceName) throws InstrumentException {
         super(resourceManager, resourceName);
