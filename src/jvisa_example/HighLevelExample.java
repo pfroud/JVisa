@@ -55,6 +55,14 @@ public class HighLevelExample {
             if (powerSupply == null) {
                 return;
             }
+
+            /*
+            If we were using the lower-level JVisaInstrument class, we would need to use the
+            write() method and and give a SCPI command like "source:voltage 12V".
+
+            Since we're using a higher-level class based on AbstractInstrument, we can call
+            a method like setVoltage().
+             */
             powerSupply.setVoltage(12);
             powerSupply.setCurrent(0.75);
             System.out.printf("Voltage: %.1f V\n", powerSupply.measureVoltage());
