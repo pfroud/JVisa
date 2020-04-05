@@ -6,6 +6,8 @@
 
 **Installer size:** 732 MB for the "full" installer. The "runtime" installer is only 122 MB. They don't explain what the difference is.
 
+**Link:** [download link](https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html)
+
 **DLL name:** `nivisa64.dll`
 
 **Documentation:** CHM file.

@@ -6,6 +6,8 @@
 
 **Installer size:** 33.7 MB
 
+**Link:** [download link](https://www.rohde-schwarz.com/us/applications/r-s-visa-application-note_56280-148812.html)
+
 **DLL name:** `RsVisa32.dll`
 
 **Documentation:** 103-page PDF.

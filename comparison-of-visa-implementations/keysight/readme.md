@@ -6,9 +6,12 @@
 
 **Installer size:** 260 MB
 
+**Link:** [download link](https://www.keysight.com/en/pd-1985909/io-libraries-suite?pm=DL&nid=-33330.977662&cc=US&lc=eng)
+
 **DLL name:** `agvisa32.dll` (Keysight used to be Agilent)
 
 **Documentation:** CHM file.
+
 
 **Examples:** not included in this install. Available as a [separate download](https://www.keysight.com/main/editorial.jspx?cc=US&lc=eng&ckey=2798637&nid=-33002.977662&id=2798637) from Keysight. It's a 1.6 MB zip file, might as well include it in the main installer. Six examples each in C, C#, Matlab, Python, and VB.NET. 
 

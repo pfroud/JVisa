@@ -6,6 +6,8 @@
 
 **Installer size:** 99.9 MB
 
+**Link:** [download link](https://www.tek.com/oscilloscope/tds7054-software/tekvisa-connectivity-software-v411)
+
 **DLL name:** `tkVisa32.dll` and `tkVisa64.dll`
 
 **Documentation:** 266-page PDF programming manual and a two-page PDF reference card. The reference card has a list of functions with one-sentence descriptions, a table of attributes, and four small code examples.
