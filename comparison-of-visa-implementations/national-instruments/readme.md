@@ -33,7 +33,7 @@ MAX can open the Interactive Control utility, which in turn can start I/O Trace.
 You can open the programming manual from the MAX Help menu:
 
 <p align="center" style="text-align: center">
-<img src="NI-MAX-help-menu-crop.png?raw=true" alt="NI MAX help menu">
+<img src="NI-MAX-help-menu.png?raw=true" alt="NI MAX help menu">
 </p>
 
 
@@ -69,5 +69,5 @@ I/O Trace:
 
 Conflict Manager inside MAX:
 <p align="center" style="text-align: center">
-<img src="NI-conflict-manager-crop.PNG?raw=true" alt="NI-VISA Conflict Manager screenshot">
+<img src="NI-conflict-manager-crop.png?raw=true" alt="NI-VISA Conflict Manager screenshot">
 </p>
