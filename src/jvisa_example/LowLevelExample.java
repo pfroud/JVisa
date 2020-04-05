@@ -23,6 +23,18 @@ import jvisa.JVisaInstrument;
 import jvisa.JVisaResourceManager;
 
 /**
+ * Example showing how to use JVisaResourceManager and JVisaInstrument.
+ *
+ * Here's what it does:<br>
+ * (1) Opens the default resource manager<br>
+ * (2) Searches for USB VISA instruments<br>
+ * (3) If any are instruments are found, it does this for each instrtument:<br>
+ * A. Opens the instrument<br>
+ * B. Sends the *IDN? command and prints the response<br>
+ * C. Closes the instrument<br>
+ * (4) Closes the resource manager
+ *
+ * This is a low-level example. To see how you could use higher-level classes, look at HighLevelExample.java.
  *
  * @author Peter Froud
  */
@@ -51,7 +63,6 @@ public class LowLevelExample {
             ex.printStackTrace();
             return;
         }
-
         if (resourceNames.length < 1) {
             System.err.println("Couldn't find any VISA resources");
             return;
@@ -59,7 +70,7 @@ public class LowLevelExample {
 
         for (int i = 0; i < resourceNames.length; i++) {
             try {
-                final JVisaInstrument instrument = resourceManager.openInstrument(resourceNames[0]);
+                final JVisaInstrument instrument = resourceManager.openInstrument(resourceNames[i]);
                 System.out.println(i + ", " + instrument.sendAndReceiveString("*IDN?"));
                 instrument.close();
             } catch (JVisaException ex) {

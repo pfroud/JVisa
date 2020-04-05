@@ -24,6 +24,13 @@ import jvisa.JVisaResourceManager;
 
 /**
  *
+ * Example showing how to use the higher-level AbstractInstrument and PowerSupplyExample classes.
+ *
+ * It starts the default resource manager, then searches for VISA instruments that will work with the PowerSupplyExample.<br>
+ * If any are found, a few read and write commands are sent. Then the instrument and resource manager are closed.
+ *
+ * This is a high-level example. To see how you could use lower-level classes, look at LowLevelExample.java.
+ *
  * @author Peter Froud
  */
 public class HighLevelExample {
