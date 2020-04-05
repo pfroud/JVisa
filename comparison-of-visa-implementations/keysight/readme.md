@@ -16,7 +16,9 @@
 
 Connection Expert is the main program. There's prominent buttons to launch Interactive IO and IO Monitor tools. The Tools menu has a list of everything - the way it should be.
 
-![Keysight Connection Expert tools menu](keysight-tools-menu.png)
+<p align="center" style="text-align: center">
+<img src="keysight-tools-menu.png?raw=true" alt="Keysight Connection Expert tools menu">
+</p>
 
 However, you can't open the documentation from Connection Expert.
 
@@ -24,13 +26,17 @@ However, you can't open the documentation from Connection Expert.
 
  A system tray program gives a menu with shortcuts to open Connection Expert, open all the utilities, change a few visa options, and open all the help files (.chm).
 
-![Keysight system tray](keysight-tray-icon-transparent.png)
+<p align="center" style="text-align: center">
+<img src="keysight-tray-icon.png?raw=true" alt="Keysight system tray">
+</p>
 
 ### Start menu folder
 
 The installer doesn't make a folder in the start menu!
 
-![Start menu entries](keysight-start-menu.png)
+<p align="center" style="text-align: center">
+<img src="keysight-start-menu.png?raw=true" alt="Start menu entries">
+</p>
 
 The result is that "IO Control" is under the letter I and "Keysight Connection Expert" is under the letter K. If there were other programs installed starting with I or K installed, that would be extremely annoying.
 
@@ -39,17 +45,21 @@ Also, the start menu doesn't have links to documentation or examples.
 ## Screenshots
 
 Connection Expert:
-
-![Keysight Connection Expert screenshot](keysight-connection-expert.PNG)
+<p align="center" style="text-align: center">
+<img src="keysight-connection-expert.PNG?raw=true" alt="Keysight Connection Expert screenshot">
+</p>
 
 Interactive IO:
+<p align="center" style="text-align: center">
+<img src="keysight-interactive-IO.PNG?raw=true" alt="Keysight Interactive IO screenshot">
+</p>
 
-![Keysight Interactive IO screenshot](keysight-interactive-IO.PNG)
-
-IO Monitor
-
-![Keysight IO Monitor screenshot](keysight-IO-monitor.PNG)
+IO Monitor:
+<p align="center" style="text-align: center">
+<img src="keysight-IO-monitor.PNG?raw=true" alt="Keysight IO Monitor screenshot">
+</p>
 
 Conflict manager (inside Connection Expert):
-
-![Keysight Conflict Manager screenshot](keysight-conflict-manager.PNG)
+<p align="center" style="text-align: center">
+<img src="keysight-conflict-manager.PNG?raw=true" alt="Keysight Conflict Manager screenshot">
+</p>
