@@ -35,7 +35,7 @@ import static jvisa.JVisaUtils.stringToByteBuffer;
  */
 public class JVisaResourceManager {
 
-    // resourceManagerHandle is a unique logical identifier to the Visa session. In the C API, this is called ViSession.
+    // A unique logical identifier to the Visa session. In the C API, this is called ViSession.
     private final NativeLong RESOURCE_MANAGER_HANDLE;
 
     public final JVisaLibrary VISA_LIBRARY;
@@ -51,7 +51,6 @@ public class JVisaResourceManager {
      * @throws JVisaException if the resource manager couldn't be opened
      * @throws UnsatisfiedLinkError if the Visa DLL couldn't be loaded
      */
-    @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
         VISA_LIBRARY = (JVisaLibrary) Native.loadLibrary("nivisa64.dll", JVisaLibrary.class);
 
@@ -153,24 +152,25 @@ public class JVisaResourceManager {
                 filterExpression, findListPtr, countPtr, descrBuf);
         JVisaUtils.throwForStatus(this, visaStatus, "viFindRsrc");
 
-        final int numFound = (int) countPtr.getValue().longValue();
-        final String[] rv = new String[numFound];
+        final int foundCount = (int) countPtr.getValue().longValue();
+        final String[] foundResources = new String[foundCount];
 
-        if (numFound > 0) {
-            // the buffer gets populated with the first result
-            rv[0] = new String(descrBuf.array()).trim();
+        if (foundCount > 0) {
+            // The buffer gets populated with the first result
+            foundResources[0] = new String(descrBuf.array()).trim();
         }
 
-        for (int i = 1; i < numFound; i++) {
+        for (int i = 1; i < foundCount; i++) {
+            // If more than one resources were found, we need to allocate a new buffer and call another function
             final ByteBuffer descrBufNext = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
             // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindnext/
             final NativeLong visaStatus2 = VISA_LIBRARY.viFindNext(findListPtr.getValue(), descrBufNext);
             JVisaUtils.throwForStatus(this, visaStatus2, "viFindNext");
 
-            rv[i] = new String(descrBuf.array()).trim();
+            foundResources[i] = new String(descrBuf.array()).trim();
         }
-        return rv;
+        return foundResources;
     }
 
     /**
@@ -184,15 +184,15 @@ public class JVisaResourceManager {
     public String getStatusDescription(NativeLong statusCode) {
 
         // "Note  The size of the desc parameter should be at least 256 bytes."
-        ByteBuffer errDescBuf = ByteBuffer.allocate(256);
+        final ByteBuffer errDescBuf = ByteBuffer.allocate(256);
 
-        NativeLong errorCode = VISA_LIBRARY.viStatusDesc(RESOURCE_MANAGER_HANDLE, statusCode, errDescBuf);
+        final NativeLong errorCode2 = VISA_LIBRARY.viStatusDesc(RESOURCE_MANAGER_HANDLE, statusCode, errDescBuf);
 
-        long errorCodeLong = errorCode.longValue();
-        if (errorCodeLong != 0) {
+        long errorCode2Long = errorCode2.longValue();
+        if (errorCode2Long != 0) {
             System.err.printf("viStatusDesc() returned 0x%H while trying to get description for code 0x%H\n",
-                    errorCodeLong, statusCode.longValue());
-            return "<couldn't get description for the status code>";
+                    errorCode2Long, statusCode.longValue());
+            return String.format("<couldn't get description for the status code %d>", statusCode.longValue());
         }
         return new String(errDescBuf.array()).trim();
     }
