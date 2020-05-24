@@ -24,6 +24,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import java.nio.ByteBuffer;
+import jvisa.eventhandling.JVisaEventHandle;
 
 /**
  * Represents a Visa instrument. This is a wrapper around the native C instrument handle.
@@ -242,6 +243,35 @@ public class JVisaInstrument {
 
     public String getSerialNumber() throws JVisaException {
         return getAttribute(JVisaLibrary.VI_ATTR_USB_SERIAL_NUM);
+    }
+
+    public void installServiceRequestHandler(JVisaEventHandle handle) throws JVisaException {
+        final NativeLong visaStatus = VISA_LIBRARY.viInstallHandler(INSTRUMENT_HANDLE,
+                new NativeLong(JVisaLibrary.VI_EVENT_SERVICE_REQ),
+                handle.CALLBACK,
+                handle.POINTER_TO_USER_DATA
+        );
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viInstallHandler");
+    }
+
+    public void uninstallServiceRequestHandler(JVisaEventHandle handle) throws JVisaException {
+        final NativeLong statusUninstall = VISA_LIBRARY.viUninstallHandler(INSTRUMENT_HANDLE,
+                new NativeLong(JVisaLibrary.VI_EVENT_SERVICE_REQ),
+                handle.CALLBACK,
+                handle.POINTER_TO_USER_DATA
+        );
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusUninstall, "viUninstallHandler");
+    }
+
+    public void enableServiceRequestEvent() throws JVisaException {
+
+        final NativeLong statusEnableEvent = VISA_LIBRARY.viEnableEvent(
+                INSTRUMENT_HANDLE,
+                new NativeLong(JVisaLibrary.VI_EVENT_SERVICE_REQ), //event type
+                (short) JVisaLibrary.VI_HNDLR, //mechanism
+                new NativeLong(0) //context
+        );
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viEnableEvent");
     }
 
 }

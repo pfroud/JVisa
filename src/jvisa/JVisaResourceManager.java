@@ -51,8 +51,9 @@ public class JVisaResourceManager {
      * @throws JVisaException if the resource manager couldn't be opened
      * @throws UnsatisfiedLinkError if the Visa DLL couldn't be loaded
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
-        VISA_LIBRARY = (JVisaLibrary) Native.loadLibrary("nivisa64.dll", JVisaLibrary.class);
+        VISA_LIBRARY = (JVisaLibrary) Native.load("nivisa64.dll", JVisaLibrary.class);
 
         final NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
         final NativeLong nativeStatus = VISA_LIBRARY.viOpenDefaultRM(pointerToResourceManagerHandle);
@@ -96,7 +97,7 @@ public class JVisaResourceManager {
                 new NativeLongByReference(), //ViPUInt16 intfNum
                 new NativeLongByReference(), //ViChar rsrcClass[]
                 ByteBuffer.allocate(128), //ViChar expandedUnaliasedName[]
-                aliasBuf
+                aliasBuf //ViChar aliasIfExists[]
         );
         JVisaUtils.throwForStatus(this, visaStatus, "viParseRsrcEx");
         return new String(aliasBuf.array()).trim();
