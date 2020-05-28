@@ -22,7 +22,10 @@
  * </p>
  *
  * <p>
- * This package is the low-level interface the the visa DLL. To see a high-level example, look at the jvisa_example package.
+ * This package is the low-level Java code to interface the the visa DLL.
+ * <p/>
+ * <p>
+ * To see a examples and higher-level abstractions, look in the {@code jvisa_example} package.
  * </p>
  *
  * @author Günter Fuchs

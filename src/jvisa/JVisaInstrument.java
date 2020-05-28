@@ -221,7 +221,6 @@ public class JVisaInstrument {
     }
 
     /*
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_tmo_value/
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vigetattribute/
      */
     public String getAttribute(int attr) throws JVisaException {
@@ -246,6 +245,9 @@ public class JVisaInstrument {
         return getAttribute(JVisaLibrary.VI_ATTR_USB_SERIAL_NUM);
     }
 
+    /*
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viinstallhandler/
+     */
     public void addEventHandler(JVisaEventHandler handle) throws JVisaException {
         final NativeLong visaStatus = VISA_LIBRARY.viInstallHandler(INSTRUMENT_HANDLE,
                 new NativeLong(handle.EVENT_TYPE.VALUE),
@@ -255,6 +257,9 @@ public class JVisaInstrument {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viInstallHandler");
     }
 
+    /*
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viuninstallhandler/
+     */
     public void removeEventHandler(JVisaEventHandler handle) throws JVisaException {
         final NativeLong statusUninstall = VISA_LIBRARY.viUninstallHandler(INSTRUMENT_HANDLE,
                 new NativeLong(handle.EVENT_TYPE.VALUE),
@@ -264,6 +269,9 @@ public class JVisaInstrument {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusUninstall, "viUninstallHandler");
     }
 
+    /*
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vienableevent/
+     */
     public void enableEvent(JVisaEventType eventType) throws JVisaException {
 
         final NativeLong statusEnableEvent = VISA_LIBRARY.viEnableEvent(
@@ -275,6 +283,9 @@ public class JVisaInstrument {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viEnableEvent");
     }
 
+    /*
+     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vidisableevent/
+     */
     public void disableEvent(JVisaEventType eventType) throws JVisaException {
 
         final NativeLong statusEnableEvent = VISA_LIBRARY.viDisableEvent(
