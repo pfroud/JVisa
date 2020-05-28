@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package jvisa_example;
+package jvisa_example.lowlevel;
 
 import jvisa.JVisaException;
 import jvisa.JVisaInstrument;

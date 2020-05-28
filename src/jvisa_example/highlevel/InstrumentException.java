@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package jvisa_example;
+package jvisa_example.highlevel;
 
 /**
  * The JVisaException class is from the lower abstraction level, so we don't want to throw that from our higher abstraction level.

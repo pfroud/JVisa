@@ -18,7 +18,19 @@
  * </p>
  *
  * <p>
- * This package is an example of a high-level wrapper around JVisaInstrument. To see the low-level code which communicates with the DLL, look at the jvisa package.
+ * This package contains examples of how to use JVisa. There are examples of two abstractions levels:
+ * </p>
+ *
+ * <p>
+ * The {@code lowlevel} package uses the classes {@code JVisaResourceManager} and {@code JVisaInstrument}.
+ * </p>
+ *
+ * <p>
+ * The {@code highlevel} package shows how to make an abstracted class for a specific instrument, in this case a power supply.
+ * </p>
+ *
+ * <p>
+ * To see the low-level Java code which communicates with the DLL, look at the {@code jvisa} package.
  * </p>
  *
  * @author Peter Froud

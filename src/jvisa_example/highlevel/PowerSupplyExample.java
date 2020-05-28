@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package jvisa_example;
+package jvisa_example.highlevel;
 
 import java.util.Arrays;
 import java.util.List;
