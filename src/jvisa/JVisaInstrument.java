@@ -24,7 +24,8 @@ import com.sun.jna.Memory;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import java.nio.ByteBuffer;
-import jvisa.eventhandling.JVisaEventHandle;
+import jvisa.eventhandling.JVisaEventHandler;
+import jvisa.eventhandling.JVisaEventType;
 
 /**
  * Represents a Visa instrument. This is a wrapper around the native C instrument handle.
@@ -245,33 +246,43 @@ public class JVisaInstrument {
         return getAttribute(JVisaLibrary.VI_ATTR_USB_SERIAL_NUM);
     }
 
-    public void installServiceRequestHandler(JVisaEventHandle handle) throws JVisaException {
+    public void addEventHandler(JVisaEventHandler handle) throws JVisaException {
         final NativeLong visaStatus = VISA_LIBRARY.viInstallHandler(INSTRUMENT_HANDLE,
-                new NativeLong(JVisaLibrary.VI_EVENT_SERVICE_REQ),
+                new NativeLong(handle.EVENT_TYPE.VALUE),
                 handle.CALLBACK,
-                handle.POINTER_TO_USER_DATA
+                handle.USER_DATA
         );
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viInstallHandler");
     }
 
-    public void uninstallServiceRequestHandler(JVisaEventHandle handle) throws JVisaException {
+    public void removeEventHandler(JVisaEventHandler handle) throws JVisaException {
         final NativeLong statusUninstall = VISA_LIBRARY.viUninstallHandler(INSTRUMENT_HANDLE,
-                new NativeLong(JVisaLibrary.VI_EVENT_SERVICE_REQ),
+                new NativeLong(handle.EVENT_TYPE.VALUE),
                 handle.CALLBACK,
-                handle.POINTER_TO_USER_DATA
+                handle.USER_DATA
         );
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusUninstall, "viUninstallHandler");
     }
 
-    public void enableServiceRequestEvent() throws JVisaException {
+    public void enableEvent(JVisaEventType eventType) throws JVisaException {
 
         final NativeLong statusEnableEvent = VISA_LIBRARY.viEnableEvent(
                 INSTRUMENT_HANDLE,
-                new NativeLong(JVisaLibrary.VI_EVENT_SERVICE_REQ), //event type
+                new NativeLong(eventType.VALUE),
                 (short) JVisaLibrary.VI_HNDLR, //mechanism
                 new NativeLong(0) //context
         );
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viEnableEvent");
+    }
+
+    public void disableEvent(JVisaEventType eventType) throws JVisaException {
+
+        final NativeLong statusEnableEvent = VISA_LIBRARY.viDisableEvent(
+                INSTRUMENT_HANDLE,
+                new NativeLong(eventType.VALUE),
+                (short) JVisaLibrary.VI_HNDLR //mechanism
+        );
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viDisableEvent");
     }
 
 }
