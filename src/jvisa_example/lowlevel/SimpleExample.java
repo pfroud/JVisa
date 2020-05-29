@@ -38,7 +38,7 @@ import jvisa.JVisaResourceManager;
  *
  * @author Peter Froud
  */
-public class LowLevelExample {
+public class SimpleExample {
 
     public static void main(String[] args) {
         JVisaResourceManager resourceManager;
