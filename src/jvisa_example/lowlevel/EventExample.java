@@ -29,6 +29,10 @@ import jvisa.eventhandling.JVisaEventType;
  */
 public class EventExample {
 
+    /*
+     * Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
+     * See https://github.com/java-native-access/jna/issues/830
+     */
     private final static JVisaEventHandler EVENT_HANDLER;
 
     static {
@@ -38,15 +42,16 @@ public class EventExample {
             public void invoke(NativeLong instrumentHandle, NativeLong eventType, NativeLong eventContext, Pointer userData) {
                 System.out.println("+-----------------------------------------------------------------------------------");
                 System.out.println("| Event callback happened:");
+
+                // The instrumentHandle argument equals the INSTRUMENT_HANDLE field of the JVisaInstrument on which the event handler is installed
                 System.out.println("| instrumentHandle = " + instrumentHandle);
+
                 System.out.println("|        eventType = " + JVisaEventType.parseInt(eventType.intValue()));
 
                 /*
-                 * The eventContext argument is used
-                For some event types, the eventContext can be used to get more information
-                 * pass eventContext as the first argument to viGetAttribute().
-                 *
+                 * The eventContext argument can be used to get details about the event, by passing it as the first argument to viGetAttribute().
                  * To see which events define what attributes, scroll to the bottom of http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/supportedevents/.
+                 * This example uses the SERVICE_REQ event type, which does not define any interesting attributes.
                  */
                 final String userDataStr;
                 if (userData == Pointer.NULL) {
@@ -60,19 +65,18 @@ public class EventExample {
         };
 
         /*
-         * You can supply arbitrary data when installing an event handler which will then get passed to the callback.
+         * When installing an event handler, you can supply arbitrary data which will be made available as an argument in the callback.
          * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/userhandleparameter/
          *
-         * Currently the userData is always a String, but you could easily change it to be any Java primitive type:
+         * Currently the userData is a String, but you could easily change it to be any Java primitive type:
          * In JVisaEventHandler, call a different set() method on USER_DATA.
          * In the JVisaEventCallback implementation, call a different get() method on userData.
          * https://java-native-access.github.io/jna/4.5.0/javadoc/com/sun/jna/Memory.html
          * https://java-native-access.github.io/jna/4.5.0/javadoc/com/sun/jna/Pointer.html
-         * Note that Memory is a subclass of Pointer.
          *
-         * I don't know how to send a pointer to an Object or C struct.
+         * I don't know how to send a an Object or C struct.
          */
-        final String userData = "Hello, world!";
+        final String userData = "Hello, world! This is userData.";
 
         EVENT_HANDLER = new JVisaEventHandler(JVisaEventType.SERVICE_REQ, callback, userData);
     }
@@ -81,30 +85,36 @@ public class EventExample {
         try {
             JVisaResourceManager rm = new JVisaResourceManager();
 
+            // Put your instrument's resource name here
             JVisaInstrument instr = rm.openInstrument("USB0::0xFFFF::0x9200::802243020746910064::INSTR");
 
+            /*
+             * Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
+             * See https://github.com/java-native-access/jna/issues/830
+             */
             instr.addEventHandler(EVENT_HANDLER);
+
             instr.enableEvent(JVisaEventType.SERVICE_REQ);
 
             /*
-             * This will depend on your instrument. Look in your instrument manaul.
-             *
+             * To trigger a service request event, we need to turn on some register bits.
+             * Recommended reading:
              * http://literature.cdn.keysight.com/litweb/pdf/ads2001/vsaprog/progfeat3.html
-             *
              * https://www.envox.hr/eez/bench-power-supply/psu-scpi-reference-manual/psu-scpi-registers-and-queues.html
+             *
+             * What bits to turn on will depend on your instrument and what you want to do. Refer to your instrument's manual.
              */
-            // Enable a bit in the Service Request Enable register
+            // Turn on a bit in the Service Request Enable register
             instr.write("*SRE " + (1 << 3));
 
             // Turn on a bit in the quesiontable status enable register
             instr.write("status:questionable:enable 1");
 
-            // Do something which will trigger the event
+            // Do something which will trigger the event. You'll need to change this step for your instrument.
             instr.write("output:state on");
 
             instr.removeEventHandler(EVENT_HANDLER);
             instr.disableEvent(JVisaEventType.SERVICE_REQ);
-
             instr.write("output:state off");
             instr.close();
             rm.close();
