@@ -296,4 +296,16 @@ public class JVisaInstrument {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viDisableEvent");
     }
 
+    /*
+     * https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vidiscardevents/
+     */
+    public void discardEvents(JVisaEventType eventType) throws JVisaException {
+        final NativeLong stauts = VISA_LIBRARY.viDiscardEvents(
+                INSTRUMENT_HANDLE,
+                new NativeLong(eventType.VALUE),
+                (short) JVisaLibrary.VI_ALL_MECH //mechanism
+        );
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, stauts, "viDiscardEvents");
+    }
+
 }

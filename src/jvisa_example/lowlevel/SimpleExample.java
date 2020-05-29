@@ -63,15 +63,17 @@ public class SimpleExample {
             ex.printStackTrace();
             return;
         }
-        if (resourceNames.length < 1) {
+        final int foundCount = resourceNames.length;
+        if (foundCount < 1) {
             System.err.println("Couldn't find any VISA resources");
             return;
         }
 
-        for (int i = 0; i < resourceNames.length; i++) {
+        System.out.printf("Found %d VISA instrument(s):\n", foundCount);
+        for (int i = 0; i < foundCount; i++) {
             try {
                 final JVisaInstrument instrument = resourceManager.openInstrument(resourceNames[i]);
-                System.out.println(i + ", " + instrument.sendAndReceiveString("*IDN?"));
+                System.out.printf("%d / %d: \"%s\"\n", i + 1, foundCount, instrument.sendAndReceiveString("*IDN?"));
                 instrument.close();
             } catch (JVisaException ex) {
                 ex.printStackTrace();

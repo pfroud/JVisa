@@ -17,6 +17,7 @@ package jvisa_example.lowlevel;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
+import jvisa.JVisaException;
 import jvisa.JVisaInstrument;
 import jvisa.JVisaResourceManager;
 import jvisa.eventhandling.JVisaEventCallback;
@@ -27,15 +28,15 @@ import jvisa.eventhandling.JVisaEventType;
  *
  * @author Peter Froud
  */
-public class EventExample {
+public class EventExampleNotStatic {
 
     /*
      * Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
      * See https://github.com/java-native-access/jna/issues/830
      */
-    private final static JVisaEventHandler EVENT_HANDLER;
+    private final JVisaEventHandler EVENT_HANDLER;
 
-    static {
+    public EventExampleNotStatic() {
         @SuppressWarnings("Convert2Lambda")
         JVisaEventCallback callback = new JVisaEventCallback() {
             @Override
@@ -81,50 +82,57 @@ public class EventExample {
         EVENT_HANDLER = new JVisaEventHandler(JVisaEventType.SERVICE_REQ, callback, userData);
     }
 
-    public static void main(String[] args) {
+    public void run() {
         try {
             JVisaResourceManager rm = new JVisaResourceManager();
 
             // Put your instrument's resource name here
             JVisaInstrument instr = rm.openInstrument("USB0::0xFFFF::0x9200::802243020746910064::INSTR");
-            System.out.println(instr.sendAndReceiveString("*IDN?"));
+            Thread.sleep(100);
 
-            /*
-             * Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
-             * See https://github.com/java-native-access/jna/issues/830
-             */
+            instr.write("voltage 1V");
+            instr.sendAndReceiveString("*STB?");
+            Thread.sleep(100);
+//            fakeRefreshTables(instr);
+            Thread.sleep(100);
+
             instr.addEventHandler(EVENT_HANDLER);
-
-            // Handler must be added before enabling event
+            Thread.sleep(100);
             instr.enableEvent(JVisaEventType.SERVICE_REQ);
+            Thread.sleep(100);
 
-            /*
-             * To trigger a service request event, we need to turn on some register bits.
-             * Recommended reading:
-             * http://literature.cdn.keysight.com/litweb/pdf/ads2001/vsaprog/progfeat3.html
-             * https://www.envox.hr/eez/bench-power-supply/psu-scpi-reference-manual/psu-scpi-registers-and-queues.html
-             *
-             * What bits to turn on will depend on your instrument and what you want to do. Refer to your instrument's manual.
-             */
-            // Turn on a bit in the Service Request Enable register
-//            instr.write("*SRE " + (1 << 3));
-            // Turn on a bit in the quesiontable status enable register
-//            instr.write("status:questionable:enable 1");
-//             Do something which will trigger the event. You'll need to change this step for your instrument.
             instr.write("output:state on");
+            Thread.sleep(100);
+//            fakeRefreshTables(instr);
+            Thread.sleep(100);
             instr.write("output:state off");
+            Thread.sleep(100);
+//            fakeRefreshTables(instr);
+            Thread.sleep(100);
             instr.sendAndReceiveString("*SRE?");
-
-            // uninstall handler also disablbes the event if no handlers remain
-//            instr.disableEvent(JVisaEventType.SERVICE_REQ);
+            Thread.sleep(100);
+//            fakeRefreshTables(instr);
+            Thread.sleep(100);
             instr.removeEventHandler(EVENT_HANDLER);
+            Thread.sleep(100);
             instr.close();
             rm.close();
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
 
+    private void fakeRefreshTables(JVisaInstrument instr) throws JVisaException {
+//        instr.sendAndReceiveString("status:questionable:condition?");
+//        instr.sendAndReceiveString("status:questionable:event?");
+//        instr.sendAndReceiveString("status:questionable:enable?");
+        instr.sendAndReceiveString("*STB?");
+//        instr.sendAndReceiveString("*SRE?");
+    }
+
+    public static void main(String[] args) {
+        new EventExampleNotStatic().run();
     }
 
 }
