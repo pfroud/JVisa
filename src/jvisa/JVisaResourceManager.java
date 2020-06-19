@@ -146,11 +146,11 @@ public class JVisaResourceManager {
         final NativeLongByReference countPtr = new NativeLongByReference();
         final NativeLongByReference findListPtr = new NativeLongByReference();
 
-        final ByteBuffer descrBuf = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
+        final ByteBuffer descrBufFirst = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindrsrc/
         final NativeLong visaStatus = VISA_LIBRARY.viFindRsrc(RESOURCE_MANAGER_HANDLE,
-                filterExpression, findListPtr, countPtr, descrBuf);
+                filterExpression, findListPtr, countPtr, descrBufFirst);
         JVisaUtils.throwForStatus(this, visaStatus, "viFindRsrc");
 
         final int foundCount = (int) countPtr.getValue().longValue();
@@ -158,7 +158,7 @@ public class JVisaResourceManager {
 
         if (foundCount > 0) {
             // The buffer gets populated with the first result
-            foundResources[0] = new String(descrBuf.array()).trim();
+            foundResources[0] = new String(descrBufFirst.array()).trim();
         }
 
         for (int i = 1; i < foundCount; i++) {
@@ -169,7 +169,7 @@ public class JVisaResourceManager {
             final NativeLong visaStatus2 = VISA_LIBRARY.viFindNext(findListPtr.getValue(), descrBufNext);
             JVisaUtils.throwForStatus(this, visaStatus2, "viFindNext");
 
-            foundResources[i] = new String(descrBuf.array()).trim();
+            foundResources[i] = new String(descrBufNext.array()).trim();
         }
         return foundResources;
     }
