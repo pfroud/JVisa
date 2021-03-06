@@ -24,10 +24,21 @@ import jvisa.eventhandling.JVisaEventHandler;
 import jvisa.eventhandling.JVisaEventType;
 
 /**
+ * This is a rudimentary example of how to use JVisa event handling.
+ *
+ * To use Visa event handling, you will need to be familiar with SCPI registers. Here are two articles I found helpful:<br>
+ * http://literature.cdn.keysight.com/litweb/pdf/ads2001/vsaprog/progfeat3.html<br>
+ * https://www.envox.hr/eez/bench-power-supply/psu-scpi-reference-manual/psu-scpi-registers-and-queues.html
+ *
+ * You will also need to know about the registers used by your instrument. Refer to your instrument's user manual or programming manual.
+ *
+ * The project was my first exposure to instrument registers and SCPI registers. Further, I think the instrument I used to develop the JVisa event handling code does not implement event handling very well.
+ *
+ * Consequently, I did not get event handling working reliably.
  *
  * @author Peter Froud
  */
-public class EventExample {
+public class EventHandlingExample {
 
     /*
      * Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
@@ -85,17 +96,14 @@ public class EventExample {
         try {
             JVisaResourceManager rm = new JVisaResourceManager();
 
-            // Put your instrument's resource name here
-            JVisaInstrument instr = rm.openInstrument("USB0::0xFFFF::0x9200::802243020746910064::INSTR");
-            System.out.println(instr.sendAndReceiveString("*IDN?"));
+            // Open the first instrument found
+            JVisaInstrument instr = rm.openInstrument(rm.findResources()[0]);
 
-            /*
-             * Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
-             * See https://github.com/java-native-access/jna/issues/830
-             */
+            // Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
+            // See https://github.com/java-native-access/jna/issues/830
             instr.addEventHandler(EVENT_HANDLER);
 
-            // Handler must be added before enabling event
+            // Event handler must be added before enabling the event type
             instr.enableEvent(JVisaEventType.SERVICE_REQ);
 
             /*
@@ -106,17 +114,25 @@ public class EventExample {
              *
              * What bits to turn on will depend on your instrument and what you want to do. Refer to your instrument's manual.
              */
-            // Turn on a bit in the Service Request Enable register
-//            instr.write("*SRE " + (1 << 3));
-            // Turn on a bit in the quesiontable status enable register
-//            instr.write("status:questionable:enable 1");
-//             Do something which will trigger the event. You'll need to change this step for your instrument.
+            // Turn on a bit in the Service Request Enable register to
+            // enable events from the Questionalbe Status register.
+            instr.write("*SRE " + (1 << 3));
+
+            // Turn on a bit in the Quesiontable Status Enable register.
+            // For the instrument I'm using, the bit is for constant current mode.
+            instr.write("status:questionable:enable 1");
+
+            // Turn voltage down for saftey
+            instr.write("voltage 1V");
+
+            // Do something which will trigger the event. You'll need to change this step for your instrument.
             instr.write("output:state on");
             instr.write("output:state off");
+
             instr.sendAndReceiveString("*SRE?");
 
-            // uninstall handler also disablbes the event if no handlers remain
-//            instr.disableEvent(JVisaEventType.SERVICE_REQ);
+            // Uninstalling the event handler also disabled the event if no handlers remain
+            instr.disableEvent(JVisaEventType.SERVICE_REQ);
             instr.removeEventHandler(EVENT_HANDLER);
             instr.close();
             rm.close();

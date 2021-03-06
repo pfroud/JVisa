@@ -27,7 +27,9 @@ import java.nio.ByteBuffer;
 import static jvisa.JVisaUtils.stringToByteBuffer;
 
 /**
- * The Visa resource manager manages and communicates with resources, attributes, events, etc.
+ * The Visa resource manager "scans the system to find all the devices connected to it through the various interface buses and then controls the access to them."
+ *
+ * https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/resourcemanager/
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
  * @author Peter Froud

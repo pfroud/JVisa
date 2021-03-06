@@ -5,7 +5,9 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 
 /**
- * Info about how to use the JNA Callback interface: https://github.com/java-native-access/jna/blob/master/www/CallbacksAndClosures.md https://github.com/java-native-access/jna/issues/830
+ * Info about how to use the JNA Callback interface:<br>
+ * https://github.com/java-native-access/jna/blob/master/www/CallbacksAndClosures.md<br>
+ * https://github.com/java-native-access/jna/issues/830
  */
 public interface JVisaEventCallback extends Callback {
 

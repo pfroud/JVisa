@@ -30,7 +30,7 @@ import jvisa.eventhandling.JVisaEventType;
 /**
  * Represents a Visa instrument. This is a wrapper around the native C instrument handle.
  *
- * To use, call openInstrument() from a JVisaResourceManager instance.
+ * To use this class, call openInstrument() from a JVisaResourceManager instance.
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
  * @author Peter Froud
