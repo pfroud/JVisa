@@ -36,7 +36,7 @@ public enum JVisaEventType {
 
     static {
         final JVisaEventType[] allTypes = JVisaEventType.values();
-        valueMap = new HashMap(allTypes.length, 1);
+        valueMap = new HashMap<>(allTypes.length, 1);
         for (JVisaEventType type : allTypes) {
             valueMap.put(type.VALUE, type);
         }
