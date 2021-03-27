@@ -27,17 +27,17 @@ You must install a VISA implementation to use JVisa. **[National Instrument NI-V
 
 As far as I know, four companies have written their own VISA implementation: Keysight, National Instruments, Rohde & Schwarz, and Tektronix.
 
-The Nation Instruments implementation appears to be the most common. For instance, [PyVISA](https://pyvisa.readthedocs.io/en/master/getting.html) only supports NI-VISA, and Rigol software uses NI-VISA.
+The Nation Instruments implementation appears to be the most common. For instance, [PyVISA](https://pyvisa.readthedocs.io/en/latest/introduction/getting.html#backend) only supports NI-VISA, and Rigol software uses NI-VISA.
 
-I tried out all four implementations and took notes and screenshots. See my [comparison of VISA implementations](comparison-of-visa-implementations)..
+I tried out all four implementations and took notes and screenshots. See my [comparison of VISA implementations](comparison-of-visa-implementations).
 
 ### Example code
 
 The [`jvisa_example`](src/jvisa_example) folder contains a few example files. 
 
-The file `LowLevelExample.java` shows how to use the JVisa classes directly.
+The file [`SimpleExample.java`](src/jvisa_example/lowlevel/SimpleExample.java) shows how to use the JVisa classes directly.
 
-There is also a small example of how to make a higher-level abstraction. The file `HighLevelExample.java` shows how `AbstractInstrument.java` and `PowerSupplyExample.java` let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
+There is also a small example of how to make a higher-level abstraction. The file [`HighLevelExample.java`](src/jvisa_example/highlevel/HighLevelExample.java)  shows how [`AbstractInstrument.java`](src/jvisa_example/highlevel/AbstractInstrument.java) and [`PowerSupplyExample.java`](src/jvisa_example/highlevel/PowerSupplyExample.java) let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
 
 ## Limitations
 
