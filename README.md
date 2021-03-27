@@ -33,7 +33,7 @@ I tried out all four implementations and took notes and screenshots. See my [com
 
 ### Example code
 
-The `[jvisa_example](jvisa_example)` folder contains a few example files. 
+The [`jvisa_example`](src/jvisa_example) folder contains a few example files. 
 
 The file `LowLevelExample.java` shows how to use the JVisa classes directly.
 
