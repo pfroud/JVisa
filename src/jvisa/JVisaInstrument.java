@@ -35,7 +35,7 @@ import jvisa.eventhandling.JVisaEventType;
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
  * @author Peter Froud
  */
-public class JVisaInstrument {
+public class JVisaInstrument implements AutoCloseable {
 
     private final static int DEFAULT_BUFFER_SIZE = 1024;
 
@@ -202,6 +202,7 @@ public class JVisaInstrument {
      *
      * @throws jvisa.JVisaException if the instrument couldn't be closed
      */
+    @Override
     public void close() throws JVisaException {
         final NativeLong visaStatus = VISA_LIBRARY.viClose(INSTRUMENT_HANDLE);
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viClose");
