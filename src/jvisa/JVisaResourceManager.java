@@ -55,7 +55,20 @@ public class JVisaResourceManager {
      */
     @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
-        VISA_LIBRARY = (JVisaLibrary) Native.load("nivisa64.dll", JVisaLibrary.class);
+        /*
+        You do NOT need to specify the file extension.
+
+        JNA does a bunch of checks and might use java.lang.System.mapLibraryName().
+
+        You can see what JNA is doing here:
+        https://github.com/java-native-access/jna/blob/master/src/com/sun/jna/NativeLibrary.java
+
+        Here's a helpful StackOverflow answer:
+        https://stackoverflow.com/a/37329511/7376577
+         */
+        final String nativeLibraryName = "nivisa64";
+
+        VISA_LIBRARY = (JVisaLibrary) Native.load(nativeLibraryName, JVisaLibrary.class);
 
         final NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
         final NativeLong nativeStatus = VISA_LIBRARY.viOpenDefaultRM(pointerToResourceManagerHandle);
