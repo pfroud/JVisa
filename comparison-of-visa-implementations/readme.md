@@ -21,6 +21,6 @@ The four implementations:
 
 Not recommended! It's possible but complicated. Here are two links to get you started.
 
-* [Interoperating With Two VISA Implementations on the Same Computer](https://www.keysight.com/upload/cmc_upload/All/knowledge_code_02_dual_visa_readme.pdf) (pdf)
+* [Interoperating-With-Two-VISA-Implementations-on-the-Same-Computer.pdf](Interoperating-With-Two-VISA-Implementations-on-the-Same-Computer.pdf) which I am re-hosting from [here](https://www.keysight.com/us/en/assets/9018-06513/programming-guides/9018-06513.pdf)
 * [After Installing 3rd Party VISA Software NI VISA No Longer Works](https://knowledge.ni.com/KnowledgeArticleDetails?id=kA00Z0000019KoXSAU&l=en-US)
 
