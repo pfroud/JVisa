@@ -153,6 +153,8 @@ public class JVisaResourceManager {
          National Instruments says the filter is a regular expression but they're liars.
          Here, the question mark "matches any one character" which is not what it does in a regex.
          The star does the same thing as in a real regular expression.
+
+         The filter expression "?*" matches all resources.
          */
         final ByteBuffer filterExpression = stringToByteBuffer("?*");
 
@@ -170,12 +172,18 @@ public class JVisaResourceManager {
         final String[] foundResources = new String[foundCount];
 
         if (foundCount > 0) {
-            // The buffer gets populated with the first result
+            /*
+            The viFindRsrc() function populates the buffer with the first result.
+            If more than one instrument was found, you have to use viFindNext().
+             */
             foundResources[0] = new String(descrBufFirst.array()).trim();
         }
 
         for (int i = 1; i < foundCount; i++) {
-            // If more than one resources were found, we need to allocate a new buffer and call another function
+            /*
+            If more than one resource was found, we need to allocate another
+            buffer and call another Visa function for each one.
+             */
             final ByteBuffer descrBufNext = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
             // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindnext/

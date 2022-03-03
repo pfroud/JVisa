@@ -101,7 +101,7 @@ public class HighLevelExample {
 
             if (manufacturer.equals(PowerSupplyExample.DESIRED_MANUFACTURER)
                     && PowerSupplyExample.DESIRED_MODELS.contains(model)) {
-                System.out.printf("Found a power supply that will work with this example. Model %s, serial number %s\n", model, instrument.getSerialNumber());
+                System.out.printf("Found a power supply that will work with this example. Model %s, serial number %s\n", model, instrument.getUsbSerialNumber());
                 return new PowerSupplyExample(instrument);
             } else {
                 instrument.close();

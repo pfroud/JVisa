@@ -235,14 +235,17 @@ public class JVisaInstrument implements AutoCloseable {
     }
 
     public String getManufacturerName() throws JVisaException {
+        // https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_manf_name/
         return getAttribute(JVisaLibrary.VI_ATTR_MANF_NAME);
     }
 
     public String getModelName() throws JVisaException {
+        // https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_model_name/
         return getAttribute(JVisaLibrary.VI_ATTR_MODEL_NAME);
     }
 
-    public String getSerialNumber() throws JVisaException {
+    public String getUsbSerialNumber() throws JVisaException {
+        // https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_usb_serial_num/
         return getAttribute(JVisaLibrary.VI_ATTR_USB_SERIAL_NUM);
     }
 
