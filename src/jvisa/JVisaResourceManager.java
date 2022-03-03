@@ -144,8 +144,6 @@ public class JVisaResourceManager {
     /**
      * Search for connected VISA resources.
      *
-     * Currently it is set to only search for USB instruments. You can change the filterExpression.
-     *
      * @return array of VISA resource names found.
      * @throws JVisaException if the process for finding instruments failed, or if no instruments were found.
      */
@@ -156,7 +154,7 @@ public class JVisaResourceManager {
          Here, the question mark "matches any one character" which is not what it does in a regex.
          The star does the same thing as in a real regular expression.
          */
-        final ByteBuffer filterExpression = stringToByteBuffer("USB?*");
+        final ByteBuffer filterExpression = stringToByteBuffer("?*");
 
         final NativeLongByReference countPtr = new NativeLongByReference();
         final NativeLongByReference findListPtr = new NativeLongByReference();
