@@ -47,32 +47,87 @@ public class JVisaResourceManager {
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viopendefaultrm/
      *
-     * 32-bit Windows is not supported.<br>
-     * See http://stackoverflow.com/questions/21486086/cant-load-personal-dll-with-jna-from-netbeans
      *
      * @throws JVisaException if the resource manager couldn't be opened
      * @throws UnsatisfiedLinkError if the native shared library (.dll or .so or .dylib file) couldn't be loaded
      */
     @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
+
+        final String nativeLibraryName;
+
         /*
-        You do NOT need to specify the file extension.
+        You do NOT need to include the file extension when passing the library name to JNA.
 
-        JNA does a bunch of checks and might use java.lang.System.mapLibraryName().
-
-        You can see what JNA is doing here:
-        https://github.com/java-native-access/jna/blob/master/src/com/sun/jna/NativeLibrary.java
+        If the library name is "asdf", the actual file loaded depends on the OS:
+            Windows: "asdf.dll"
+            macOS:   "libasdf.dylib"
+            Linus:   "libasdf.so"
 
         Here's a helpful StackOverflow answer:
         https://stackoverflow.com/a/37329511/7376577
+
+        You can see what JNA is doing here:
+        https://github.com/java-native-access/jna/blob/69bf22f5051853e95a3b9725ca19b92cdcfd793f/src/com/sun/jna/NativeLibrary.java#L757
          */
-        final String nativeLibraryName = "nivisa64";
+        if (System.getProperty("os.name").startsWith("Windows")) {
+            /*
+            I'm pretty sure that the bitness of the OS, JVM, and Visa DLL must match.
+
+            When you run a 32-bit program on 64-bit Windows, it runs in a
+            compatibility layer called WOW64 (Windows-32-bit on Windows-64-bit).
+
+            The WOW64 system lies to 32-bit programs and tells them that the OS bitness
+            is 32-bit. So, a 32-bit JVM running on 64-bit Windows will have the "os.arch"
+            system property set to "x86".
+
+            To find the actual OS bitness, we need to check some environment variables.
+
+            These environment variables tell us the bitness of the operating system,
+            NOT the architecture of the physical hardware CPU.
+
+            On 64-bit Windows:
+                To get 64-bit Command Prompt, run C:\Windows\System32\cmd.exe.
+                    PROCESSOR_ARCHITECTURE is "AMD64"
+                    PROCESSOR_ARCHITEW6432 is not defined.
+                To get 32-bit Command Prompt, run C:\Windows\SysWOW64\cmd.exe.
+                    PROCESSOR_ARCHITECTURE is "x86".
+                    PROCESSOR_ARCHITEW6432 is "AMD64".
+            On 32-bit Windows:
+                There is only C:\Windows\System32\cmd.exe.
+                    PROCESSOR_ARCHITECTURE is "x86".
+                    PROCESSOR_ARCHITEW6432 is not defined.
+
+            See https://stackoverflow.com/a/5940770/7376577
+             */
+            final String PROCESSOR_ARCHITECTURE = System.getenv("PROCESSOR_ARCHITECTURE");
+            final String PROCESSOR_ARCHITEW6432 = System.getenv("PROCESSOR_ARCHITEW6432");
+            final boolean isWindows64bit
+                    = (PROCESSOR_ARCHITECTURE != null && PROCESSOR_ARCHITECTURE.endsWith("64"))
+                    || (PROCESSOR_ARCHITEW6432 != null && PROCESSOR_ARCHITEW6432.endsWith("64"));
+
+            if (isWindows64bit) {
+                // 64-bit Windows. Verify the JVM is also 64-bit.
+                final String architectureOfJvmNotWindows = System.getProperty("os.arch");
+                if (architectureOfJvmNotWindows.endsWith("64")) {
+                    nativeLibraryName = "visa64";
+                } else {
+                    throw new RuntimeException("it appears this is a 32-bit JVM running on 64-bit Windows - JNA will not work!");
+                }
+            } else {
+                // 32-bit Windows
+                nativeLibraryName = "visa32";
+            }
+
+        } else {
+            // not Windows, probably macOS or Linux
+            nativeLibraryName = "visa";
+        }
 
         VISA_LIBRARY = (JVisaLibrary) Native.load(nativeLibraryName, JVisaLibrary.class);
 
         final NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
         final NativeLong nativeStatus = VISA_LIBRARY.viOpenDefaultRM(pointerToResourceManagerHandle);
-
         JVisaUtils.throwForStatus(this, nativeStatus, "viOpenDefaultRM");
         RESOURCE_MANAGER_HANDLE = pointerToResourceManagerHandle.getValue();
     }
