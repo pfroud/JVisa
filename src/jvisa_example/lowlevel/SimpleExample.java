@@ -28,7 +28,7 @@ import jvisa.JVisaResourceManager;
  * Here's what it does:<br>
  * (1) Opens the default resource manager<br>
  * (2) Searches for USB VISA instruments<br>
- * (3) If any are instruments are found, it does this for each instrtument:<br>
+ * (3) If any are instruments are found, it does this for each instrument:<br>
  * A. Opens the instrument<br>
  * B. Sends the *IDN? command and prints the response<br>
  * C. Closes the instrument<br>
@@ -40,6 +40,7 @@ import jvisa.JVisaResourceManager;
  */
 public class SimpleExample {
 
+    @SuppressWarnings("ConvertToTryWithResources")
     public static void main(String[] args) {
         JVisaResourceManager resourceManager;
 
@@ -69,14 +70,18 @@ public class SimpleExample {
             return;
         }
 
-        System.out.printf("Found %d VISA instrument(s):\n", foundCount);
+        System.out.printf("Found %d VISA resource(s).\n", foundCount);
+
         for (int i = 0; i < foundCount; i++) {
+            System.out.printf("\nTrying resource %d / %d\n", i + 1, foundCount);
+            final String resourceName = resourceNames[i];
+            System.out.printf("   Resource name: \"%s\"\n", resourceName);
             try {
-                final JVisaInstrument instrument = resourceManager.openInstrument(resourceNames[i]);
-                System.out.printf("%d / %d: \"%s\"\n", i + 1, foundCount, instrument.sendAndReceiveString("*IDN?"));
+                final JVisaInstrument instrument = resourceManager.openInstrument(resourceName);
+                System.out.printf("   Identification query returned: \"%s\"\n", instrument.sendAndReceiveString("*IDN?"));
                 instrument.close();
             } catch (JVisaException ex) {
-                ex.printStackTrace();
+                System.out.printf("   Failed to open the resource: %s\n", ex.getMessage());
             }
 
         }
