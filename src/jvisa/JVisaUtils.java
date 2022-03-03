@@ -52,7 +52,7 @@ public class JVisaUtils {
      *
      * @param rm the resource manager used for this VISA session
      * @param nativeStatus the value returned by a JVisaLibrary call
-     * @param cFunctionName name of the C function corresponding to the DLL call
+     * @param cFunctionName name of the C function corresponding to the a call to the native shared library (.dll or .so or .dylib file)
      * @throws JVisaException if the status code means the call failed
      */
     protected static void throwForStatus(JVisaResourceManager rm, NativeLong nativeStatus, String cFunctionName) throws JVisaException {

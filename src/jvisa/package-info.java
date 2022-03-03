@@ -22,7 +22,7 @@
  * </p>
  *
  * <p>
- * This package is the low-level Java code to interface the the visa DLL.
+ * This package is the low-level Java code to interface the the Visa native shared library (.dll or .so or .dylib file).
  * <p/>
  * <p>
  * To see a examples and higher-level abstractions, look in the {@code jvisa_example} package.

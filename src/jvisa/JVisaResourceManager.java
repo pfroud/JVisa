@@ -51,7 +51,7 @@ public class JVisaResourceManager {
      * See http://stackoverflow.com/questions/21486086/cant-load-personal-dll-with-jna-from-netbeans
      *
      * @throws JVisaException if the resource manager couldn't be opened
-     * @throws UnsatisfiedLinkError if the Visa DLL couldn't be loaded
+     * @throws UnsatisfiedLinkError if the native shared library (.dll or .so or .dylib file) couldn't be loaded
      */
     @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
@@ -94,7 +94,7 @@ public class JVisaResourceManager {
      *
      * If you're using NI-VISA, aliases are stored in "C:\ProgramData\National Instruments\NIvisa\visaconf.ini".<br>
      * You can also use NI MAX (National Instruments Measurement &amp; Automation Explorer) to read and change aliases.<br>
-     * I think the DLL only lets you read aliases, not change them.
+     * I think the native shared library (.dll or .so or .dylib file) only lets you read aliases, not change them.
      *
      * @param resourceName name of the resource to get the alias for
      * @return the alias, or empty string(?) if the specified resource doesn't have an alias
@@ -192,7 +192,7 @@ public class JVisaResourceManager {
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vistatusdesc/
      *
-     * @param statusCode return value from a DLL call
+     * @param statusCode return value from a call to the native shared library (.dll or .so or .dylib file)
      * @return human-readable description about the error code
      */
     public String getStatusDescription(NativeLong statusCode) {

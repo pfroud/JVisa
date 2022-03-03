@@ -50,7 +50,7 @@ public class SimpleExample {
             ex.printStackTrace();
             return;
         } catch (UnsatisfiedLinkError err) {
-            System.err.println("Couldn't load nivisa.dll");
+            System.err.println("Couldn't load the VISA native shared library (.dll or .so or .dylib file)");
             err.printStackTrace();
             return;
         }

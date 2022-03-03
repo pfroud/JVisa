@@ -26,7 +26,7 @@
  * </p>
  *
  * <p>
- * To see the low-level Java code which communicates with the DLL, look at the {@code jvisa} package.
+ * To see the low-level Java code which communicates with the native shared library (.dll or .so or .dylib file), look at the {@code jvisa} package.
  * </p>
  *
  * @author Peter Froud
