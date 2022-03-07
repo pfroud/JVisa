@@ -19,6 +19,10 @@ However, there are some issues in the original JVisa:
 
 This fork of JVisa addresses those issues.
 
+## Supported platforms
+
+JVisa has been tested on Windows 7, Windows 10, and macOS 10.15. I think it should work on Linux too.
+
 ## Getting started
 
 ### Installing a VISA implementation
@@ -41,9 +45,7 @@ There is also a small example of how to make a higher-level abstraction. The fil
 
 ## Limitations
 
-This fork of JVisa has only been tested on 64-bit Windows 7 and 10.
-
-Not all VISA command have methods implemented, but it's definitley enough to do instrument automation.
+A small number of VISA functions been implemented, but it's definitely enough to do instrument automation.
 
 ## Glossary
 
