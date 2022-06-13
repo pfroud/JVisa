@@ -1,7 +1,7 @@
-package jvisa.eventhandling;
+package xyz.froud.jvisa.eventhandling;
 
 import java.util.HashMap;
-import jvisa.JVisaLibrary;
+import xyz.froud.jvisa.JVisaLibrary;
 
 /**
  *

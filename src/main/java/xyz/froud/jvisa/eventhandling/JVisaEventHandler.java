@@ -1,4 +1,4 @@
-package jvisa.eventhandling;
+package xyz.froud.jvisa.eventhandling;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;

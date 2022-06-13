@@ -16,11 +16,11 @@
  * limitations under the License.
  *
  */
-package jvisa_example.highlevel;
+package xyz.froud.jvisa_example.highlevel;
 
-import jvisa.JVisaException;
-import jvisa.JVisaInstrument;
-import jvisa.JVisaResourceManager;
+import xyz.froud.jvisa.JVisaException;
+import xyz.froud.jvisa.JVisaInstrument;
+import xyz.froud.jvisa.JVisaResourceManager;
 
 /**
  * High-level abstraction around JVisaInstrument.

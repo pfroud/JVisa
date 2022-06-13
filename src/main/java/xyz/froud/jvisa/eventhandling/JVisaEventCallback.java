@@ -1,4 +1,4 @@
-package jvisa.eventhandling;
+package xyz.froud.jvisa.eventhandling;
 
 import com.sun.jna.Callback;
 import com.sun.jna.NativeLong;
@@ -18,7 +18,7 @@ public interface JVisaEventCallback extends Callback {
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vieventhandler/
      *
-     * @todo Needs to return ViStatus (probably as a NativeLong) somehow
+     * @TODO Needs to return ViStatus (probably as a NativeLong) somehow
      *
      * @param instrumentHandle equals the JVisaInstrument.INSTRUMENT_HANDLE that the event handler was installed on
      *

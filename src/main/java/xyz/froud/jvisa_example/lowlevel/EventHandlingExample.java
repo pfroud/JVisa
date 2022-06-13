@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 Peter Froud.
  *
@@ -13,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jvisa_example.lowlevel;
+package xyz.froud.jvisa_example.lowlevel;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
-import jvisa.JVisaInstrument;
-import jvisa.JVisaResourceManager;
-import jvisa.eventhandling.JVisaEventCallback;
-import jvisa.eventhandling.JVisaEventHandler;
-import jvisa.eventhandling.JVisaEventType;
+import xyz.froud.jvisa.JVisaInstrument;
+import xyz.froud.jvisa.JVisaResourceManager;
+import xyz.froud.jvisa.eventhandling.JVisaEventCallback;
+import xyz.froud.jvisa.eventhandling.JVisaEventHandler;
+import xyz.froud.jvisa.eventhandling.JVisaEventType;
+
+
 
 /**
  * This is a rudimentary example of how to use JVisa event handling.

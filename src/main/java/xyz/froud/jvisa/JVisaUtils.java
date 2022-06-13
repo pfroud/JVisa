@@ -20,7 +20,7 @@
 /**
  * Modifications by Peter Froud, June 2018
  */
-package jvisa;
+package xyz.froud.jvisa;
 
 import com.sun.jna.NativeLong;
 import java.nio.ByteBuffer;

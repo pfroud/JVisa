@@ -18,14 +18,14 @@
 /**
  * Modifications by Peter Froud, June 2018
  */
-package jvisa;
+package xyz.froud.jvisa;
 
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import java.nio.ByteBuffer;
-import jvisa.eventhandling.JVisaEventHandler;
-import jvisa.eventhandling.JVisaEventType;
+import xyz.froud.jvisa.eventhandling.JVisaEventHandler;
+import xyz.froud.jvisa.eventhandling.JVisaEventType;
 
 /**
  * Represents a Visa instrument. This is a wrapper around the native C instrument handle.
@@ -57,7 +57,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @param command string to send
      * @param bufferSize size of buffer to allocate. The size can be set smaller since it gets allocated with readCount.
      * @return response from instrument as a String
-     * @throws jvisa.JVisaException if the write fails or the read fails
+     * @throws JVisaException if the write fails or the read fails
      */
     public String sendAndReceiveString(String command, int bufferSize) throws JVisaException {
         write(command);
@@ -69,7 +69,7 @@ public class JVisaInstrument implements AutoCloseable {
      *
      * @param command string to send
      * @return response from instrument as a String
-     * @throws jvisa.JVisaException if the write fails or the read fails
+     * @throws JVisaException if the write fails or the read fails
      */
     public String sendAndReceiveString(String command) throws JVisaException {
         write(command);
@@ -82,7 +82,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @param command string to send
      * @param bufferSize size of buffer to allocate. The size can be set smaller since it gets allocated with readCount.
      * @return response from instrument as a ByteBuffer
-     * @throws jvisa.JVisaException if the write fails or the read fails
+     * @throws .JVisaException if the write fails or the read fails
      */
     public ByteBuffer sendAndReceiveBytes(String command, int bufferSize) throws JVisaException {
         write(command);
@@ -94,7 +94,7 @@ public class JVisaInstrument implements AutoCloseable {
      *
      * @param command string to send
      * @return response from instrument as a ByteBuffer
-     * @throws jvisa.JVisaException if the write fails or the read fails
+     * @throws JVisaException if the write fails or the read fails
      */
     public ByteBuffer sendAndReceiveBytes(String command) throws JVisaException {
         write(command);
@@ -107,7 +107,7 @@ public class JVisaInstrument implements AutoCloseable {
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viwrite/
      *
      * @param command the command to send
-     * @throws jvisa.JVisaException if the write fails
+     * @throws JVisaException if the write fails
      */
     public void write(String command) throws JVisaException {
         final ByteBuffer buffer = JVisaUtils.stringToByteBuffer(command);
@@ -132,7 +132,7 @@ public class JVisaInstrument implements AutoCloseable {
      *
      * @param bufferSize size of response buffer in bytes
      * @return response from instrument as bytes
-     * @throws jvisa.JVisaException if the read fails
+     * @throws JVisaException if the read fails
      */
     protected ByteBuffer readBytes(int bufferSize) throws JVisaException {
         final NativeLongByReference readCountNative = new NativeLongByReference();
@@ -156,7 +156,7 @@ public class JVisaInstrument implements AutoCloseable {
      *
      * @param bufferSize size of response buffer in bytes
      * @return response from the instrument as a String
-     * @throws jvisa.JVisaException if the read fails
+     * @throws JVisaException if the read fails
      */
     public String readString(int bufferSize) throws JVisaException {
         final NativeLongByReference readCountNative = new NativeLongByReference();
@@ -177,7 +177,7 @@ public class JVisaInstrument implements AutoCloseable {
      * reads a string from the instrument, usually a command response.
      *
      * @return status of the operation
-     * @throws jvisa.JVisaException if the read fails
+     * @throws JVisaException if the read fails
      */
     public String readString() throws JVisaException {
         return readString(DEFAULT_BUFFER_SIZE);
@@ -188,7 +188,7 @@ public class JVisaInstrument implements AutoCloseable {
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclear/
      *
-     * @throws jvisa.JVisaException if the clear operation failed
+     * @throws JVisaException if the clear operation failed
      */
     public void clear() throws JVisaException {
         final NativeLong visaStatus = VISA_LIBRARY.viClear(INSTRUMENT_HANDLE);
@@ -200,7 +200,7 @@ public class JVisaInstrument implements AutoCloseable {
      *
      * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclose/
      *
-     * @throws jvisa.JVisaException if the instrument couldn't be closed
+     * @throws JVisaException if the instrument couldn't be closed
      */
     @Override
     public void close() throws JVisaException {

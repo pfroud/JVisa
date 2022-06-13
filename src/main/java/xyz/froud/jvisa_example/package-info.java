@@ -18,11 +18,15 @@
  * </p>
  *
  * <p>
- * This package shows an example of how to make an abstracted class for a specific instrument, in this case a power supply.
+ * This package contains examples of how to use JVisa. There are examples of two abstractions levels:
  * </p>
  *
  * <p>
- * To see examples of how to use the classes {@code JVisaResourceManager} and {@code JVisaInstrument}, look at the {@code lowlevel} package.
+ * The {@code lowlevel} package uses the classes {@code JVisaResourceManager} and {@code JVisaInstrument}.
+ * </p>
+ *
+ * <p>
+ * The {@code highlevel} package shows how to make an abstracted class for a specific instrument, in this case a power supply.
  * </p>
  *
  * <p>
@@ -31,4 +35,4 @@
  *
  * @author Peter Froud
  */
-package jvisa_example.highlevel;
+package xyz.froud.jvisa_example;

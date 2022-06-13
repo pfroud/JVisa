@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright 2014-2018 Günter Fuchs (gfuchs@acousticmicroscopy.com)
+ * Copyright 2018-2020 Peter Froud
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,33 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
-/**
- * Modifications by Peter Froud, June 2018
- */
-package jvisa;
+package xyz.froud.jvisa_example.highlevel;
 
 /**
- * Exception for VISA operations.
+ * The JVisaException class is from the lower abstraction level, so we don't want to throw that from our higher abstraction level.
  *
- * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
+ * This exception is just so you can throw something at the same abstraction level as AbstractInstrument.
+ *
  * @author Peter Froud
  */
-public class JVisaException extends Exception {
+public class InstrumentException extends Exception {
 
-    public JVisaException() {
+    public InstrumentException() {
         super();
     }
 
-    public JVisaException(String message) {
+    public InstrumentException(String message) {
         super(message);
     }
 
-    public JVisaException(Throwable cause) {
+    public InstrumentException(Throwable cause) {
         super(cause);
     }
 
-    public JVisaException(String message, Throwable cause) {
+    public InstrumentException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public JVisaException(long statusCode, String cFunctionName, String errorDescription) {
-        super(String.format("in %s(): %s (0x%H)", cFunctionName, errorDescription, statusCode));
     }
 
 }

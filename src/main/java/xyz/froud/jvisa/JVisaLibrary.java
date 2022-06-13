@@ -18,9 +18,9 @@
 /**
  * Modifications by Peter Froud, June 2018
  */
-package jvisa;
+package xyz.froud.jvisa;
 
-import jvisa.eventhandling.JVisaEventCallback;
+import xyz.froud.jvisa.eventhandling.JVisaEventCallback;
 import com.sun.jna.Library;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;

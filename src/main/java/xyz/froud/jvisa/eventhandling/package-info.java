@@ -34,4 +34,4 @@
  * @version 0.6
  * @since February 12, 2018
  */
-package jvisa.eventhandling;
+package xyz.froud.jvisa.eventhandling;

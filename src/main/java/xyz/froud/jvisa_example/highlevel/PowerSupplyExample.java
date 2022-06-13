@@ -16,12 +16,12 @@
  * limitations under the License.
  *
  */
-package jvisa_example.highlevel;
+package xyz.froud.jvisa_example.highlevel;
 
 import java.util.Arrays;
 import java.util.List;
-import jvisa.JVisaInstrument;
-import jvisa.JVisaResourceManager;
+import xyz.froud.jvisa.JVisaInstrument;
+import xyz.froud.jvisa.JVisaResourceManager;
 
 /**
  * Example of how you can make a class for each instrument then make high-level calls.

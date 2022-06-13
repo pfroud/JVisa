@@ -18,13 +18,13 @@
 /**
  * Modifications by Peter Froud, June 2018
  */
-package jvisa;
+package xyz.froud.jvisa;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import java.nio.ByteBuffer;
-import static jvisa.JVisaUtils.stringToByteBuffer;
+import static xyz.froud.jvisa.JVisaUtils.stringToByteBuffer;
 
 /**
  * The Visa resource manager "scans the system to find all the devices connected to it through the various interface buses and then controls the access to them."
