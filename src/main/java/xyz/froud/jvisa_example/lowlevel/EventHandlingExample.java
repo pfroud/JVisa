@@ -28,15 +28,15 @@ import xyz.froud.jvisa.eventhandling.JVisaEventType;
 
 /**
  * This is a rudimentary example of how to use JVisa event handling.
- *
+ * <p>
  * To use Visa event handling, you will need to be familiar with SCPI registers. Here are two articles I found helpful:<br>
  * http://literature.cdn.keysight.com/litweb/pdf/ads2001/vsaprog/progfeat3.html<br>
  * https://www.envox.hr/eez/bench-power-supply/psu-scpi-reference-manual/psu-scpi-registers-and-queues.html
- *
+ * <p>
  * You will also need to know about the registers used by your instrument. Refer to your instrument's user manual or programming manual.
- *
+ * <p>
  * The project was my first exposure to instrument registers and SCPI registers. Further, I think the instrument I used to develop the JVisa event handling code does not implement event handling very well.
- *
+ * <p>
  * Consequently, I did not get event handling working reliably.
  *
  * @author Peter Froud

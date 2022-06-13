@@ -14,8 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/**
+ *
  * Modifications by Peter Froud, June 2018
  */
 package xyz.froud.jvisa;
@@ -29,8 +28,8 @@ import xyz.froud.jvisa.eventhandling.JVisaEventType;
 
 /**
  * Represents a Visa instrument. This is a wrapper around the native C instrument handle.
- *
- * To use this class, call openInstrument() from a JVisaResourceManager instance.
+ * <p>
+ * To use this class, call {@link JVisaResourceManager#openInstrument} from a JVisaResourceManager instance.
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
  * @author Peter Froud
@@ -82,7 +81,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @param command string to send
      * @param bufferSize size of buffer to allocate. The size can be set smaller since it gets allocated with readCount.
      * @return response from instrument as a ByteBuffer
-     * @throws .JVisaException if the write fails or the read fails
+     * @throws JVisaException if the write fails or the read fails
      */
     public ByteBuffer sendAndReceiveBytes(String command, int bufferSize) throws JVisaException {
         write(command);
@@ -104,7 +103,7 @@ public class JVisaInstrument implements AutoCloseable {
     /**
      * Sends a command to the instrument.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viwrite/
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viwrite.html">viWrite</a>
      *
      * @param command the command to send
      * @throws JVisaException if the write fails
@@ -128,7 +127,7 @@ public class JVisaInstrument implements AutoCloseable {
     /**
      * Reads data from the instrument, e.g. a command response or data.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viread/
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viread.html">viRead</a>
      *
      * @param bufferSize size of response buffer in bytes
      * @return response from instrument as bytes
@@ -152,7 +151,7 @@ public class JVisaInstrument implements AutoCloseable {
     /**
      * Reads a string from the instrument, e.g. a command response.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viread/
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viread.html">viRead</a>
      *
      * @param bufferSize size of response buffer in bytes
      * @return response from the instrument as a String
@@ -186,7 +185,7 @@ public class JVisaInstrument implements AutoCloseable {
     /**
      * Clears the device input and output buffers. The corresponding VISA function is not implemented in the libreVisa library.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclear/
+     *  @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viclear.html">viClear</a>
      *
      * @throws JVisaException if the clear operation failed
      */
@@ -198,7 +197,7 @@ public class JVisaInstrument implements AutoCloseable {
     /**
      * Closes an instrument session.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclose/
+     *  @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viclosehtml">viClose</a>
      *
      * @throws JVisaException if the instrument couldn't be closed
      */
@@ -208,9 +207,10 @@ public class JVisaInstrument implements AutoCloseable {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viClose");
     }
 
-    /*
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_tmo_value/
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/visetattribute/
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_tmo_value.html">VI_ATTR_TMO_VALUE</a>
+     *
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
     public void setTimeout(int timeoutMilliseconds) throws JVisaException {
         final NativeLong visaStatus = VISA_LIBRARY.viSetAttribute(INSTRUMENT_HANDLE,
@@ -221,8 +221,8 @@ public class JVisaInstrument implements AutoCloseable {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viSetAttribute");
     }
 
-    /*
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vigetattribute/
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vigetattribute.html">viGetAttribute</a>
      */
     public String getAttribute(int attr) throws JVisaException {
         final Memory mem = new Memory(256);
@@ -234,23 +234,29 @@ public class JVisaInstrument implements AutoCloseable {
         return mem.getString(0, new String());
     }
 
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_manf_name.html">VI_ATTR_MANF_NAME</a>
+     */
     public String getManufacturerName() throws JVisaException {
-        // https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_manf_name/
         return getAttribute(JVisaLibrary.VI_ATTR_MANF_NAME);
     }
 
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_model_name.html">VI_ATTR_MODEL_NAME</a>
+     */
     public String getModelName() throws JVisaException {
-        // https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_model_name/
         return getAttribute(JVisaLibrary.VI_ATTR_MODEL_NAME);
     }
 
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_usb_serial_num.html">VI_ATTR_SERIAL_NUM</a>
+     */
     public String getUsbSerialNumber() throws JVisaException {
-        // https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vi_attr_usb_serial_num/
         return getAttribute(JVisaLibrary.VI_ATTR_USB_SERIAL_NUM);
     }
 
-    /*
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viinstallhandler/
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viinstallhandler.html">viInstallHandler</a>
      */
     public void addEventHandler(JVisaEventHandler handle) throws JVisaException {
         final NativeLong visaStatus = VISA_LIBRARY.viInstallHandler(INSTRUMENT_HANDLE,
@@ -261,8 +267,8 @@ public class JVisaInstrument implements AutoCloseable {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viInstallHandler");
     }
 
-    /*
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viuninstallhandler/
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viuninstallhandler.html">viUninstallHandler</a>
      */
     public void removeEventHandler(JVisaEventHandler handle) throws JVisaException {
         final NativeLong statusUninstall = VISA_LIBRARY.viUninstallHandler(INSTRUMENT_HANDLE,
@@ -273,8 +279,8 @@ public class JVisaInstrument implements AutoCloseable {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusUninstall, "viUninstallHandler");
     }
 
-    /*
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vienableevent/
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vienableevent.html">viEnableEvent</a>
      */
     public void enableEvent(JVisaEventType eventType) throws JVisaException {
 
@@ -287,8 +293,8 @@ public class JVisaInstrument implements AutoCloseable {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viEnableEvent");
     }
 
-    /*
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vidisableevent/
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vidisableevent.html">viDisableEvent</a>
      */
     public void disableEvent(JVisaEventType eventType) throws JVisaException {
 
@@ -300,8 +306,8 @@ public class JVisaInstrument implements AutoCloseable {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viDisableEvent");
     }
 
-    /*
-     * https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vidiscardevents/
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vidiscardevents.html">viDiscardEvents</a>
      */
     public void discardEvents(JVisaEventType eventType) throws JVisaException {
         final NativeLong stauts = VISA_LIBRARY.viDiscardEvents(

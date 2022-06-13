@@ -20,7 +20,7 @@ package xyz.froud.jvisa_example.highlevel;
 
 /**
  * The JVisaException class is from the lower abstraction level, so we don't want to throw that from our higher abstraction level.
- *
+ * <p>
  * This exception is just so you can throw something at the same abstraction level as AbstractInstrument.
  *
  * @author Peter Froud

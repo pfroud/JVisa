@@ -14,8 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/**
+ *
  * Modifications by Peter Froud, June 2018
  */
 package xyz.froud.jvisa;
@@ -29,7 +28,7 @@ import static xyz.froud.jvisa.JVisaUtils.stringToByteBuffer;
 /**
  * The Visa resource manager "scans the system to find all the devices connected to it through the various interface buses and then controls the access to them."
  *
- * https://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/resourcemanager/
+ * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/resourcemanager.html">The Resource Manager</a>
  *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
  * @author Peter Froud
@@ -45,7 +44,7 @@ public class JVisaResourceManager {
     /**
      * Creates a session for a default resource manager.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viopendefaultrm/
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopendefaultrm.html">viOpenDefaultRM</a>
      *
      *
      * @throws JVisaException if the resource manager couldn't be opened
@@ -135,9 +134,9 @@ public class JVisaResourceManager {
     /**
      * Closes the resource manager.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viclose/
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viclose.html">viClose</a>
      *
-     * @throws jvisa.JVisaException if the resource manager couldn't be closed
+     * @throws JVisaException if the resource manager couldn't be closed
      */
     public void close() throws JVisaException {
         final NativeLong nativeStatus = VISA_LIBRARY.viClose(RESOURCE_MANAGER_HANDLE);
@@ -153,7 +152,7 @@ public class JVisaResourceManager {
      *
      * @param resourceName name of the resource to get the alias for
      * @return the alias, or empty string(?) if the specified resource doesn't have an alias
-     * @throws jvisa.JVisaException if the API call to get the alias failed
+     * @throws JVisaException if the API call to get the alias failed
      */
     public String getInstrumentAlias(String resourceName) throws JVisaException {
         final ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
@@ -176,11 +175,11 @@ public class JVisaResourceManager {
     /**
      * Opens an instrument session.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viopen/
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopen.html">viOpen</a>
      *
      * @param resourceName name of the resource to open, for example TCPIP::192.168.1.106::INSTR
      * @return a JVisaInstrument instance for the instrument
-     * @throws jvisa.JVisaException if the instrument couldn't be opened
+     * @throws JVisaException if the instrument couldn't be opened
      */
     public JVisaInstrument openInstrument(String resourceName) throws JVisaException {
         final NativeLongByReference instrumentHandle = new NativeLongByReference();
@@ -253,7 +252,7 @@ public class JVisaResourceManager {
     /**
      * Converts a VISA status code to a human-readable description.
      *
-     * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vistatusdesc/
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vistatusdesc.html">viStatusDesc</a>
      *
      * @param statusCode return value from a call to the native shared library (.dll or .so or .dylib file)
      * @return human-readable description about the error code

@@ -24,9 +24,9 @@ import xyz.froud.jvisa.JVisaResourceManager;
 
 /**
  * High-level abstraction around JVisaInstrument.
- *
+ * <p>
  * This class has object-oriented ways to open instruments, built-in error-checking, and a few pre-defined VISA calls.
- *
+ * <p>
  * To use it, make a class extending AbstractInstrument and add commands from your instrument's programming manual. See PowerSupplyExample for an example.
  *
  * @author Peter Froud
@@ -190,9 +190,8 @@ public abstract class AbstractInstrument {
      *
      * The "*OPC?" command is a standard IEEE-488 (GPIB) command.
      *
-     * More info:<br>
-     * https://www.rohde-schwarz.com/us/driver-pages/remote-control/measurements-synchronization_231248.html<br>
-     * http://www.ni.com/white-paper/4629/en/#toc4
+     * @see <a href="https://www.rohde-schwarz.com/us/driver-pages/remote-control/measurements-synchronization_231248.html">Measurement Synchronization</a>
+     * @see <a href="https://web.archive.org/web/20181017093514/http://www.ni.com/white-paper/4629/en/">Using Service Requests in your GPIB application</a>
      *
      * @throws InstrumentException
      */

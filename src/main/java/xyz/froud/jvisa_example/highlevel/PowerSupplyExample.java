@@ -25,8 +25,10 @@ import xyz.froud.jvisa.JVisaResourceManager;
 
 /**
  * Example of how you can make a class for each instrument then make high-level calls.
+ * <p>
+ * This class is for a BK Precision 9201 power supply.
  *
- * This class is for a BK Precision 9201 power supply. https://www.bkprecision.com/products/power-supplies/9201-200w-multi-range-60v-10a-dc-power-supply.html
+ * @see <a href="https://www.bkprecision.com/products/power-supplies/9201-200w-multi-range-60v-10a-dc-power-supply.html">Model 9201</a>
  *
  * @author Peter Froud
  */

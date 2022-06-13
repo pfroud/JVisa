@@ -16,8 +16,7 @@
  * limitations under the License.
  *
  * @version 0.6
- */
-/**
+ *
  * Modifications by Peter Froud, June 2018
  */
 package xyz.froud.jvisa;

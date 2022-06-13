@@ -23,18 +23,24 @@ import xyz.froud.jvisa.JVisaInstrument;
 import xyz.froud.jvisa.JVisaResourceManager;
 
 /**
- * Example showing how to use JVisaResourceManager and JVisaInstrument.
+ * <p>Example showing how to use JVisaResourceManager and JVisaInstrument.</p>
  *
- * Here's what it does:<br>
- * (1) Opens the default resource manager<br>
- * (2) Searches for USB VISA instruments<br>
- * (3) If any are instruments are found, it does this for each instrument:<br>
- * A. Opens the instrument<br>
- * B. Sends the *IDN? command and prints the response<br>
- * C. Closes the instrument<br>
- * (4) Closes the resource manager
+ * <p>Here's what it does:</p>
  *
- * This is a low-level example. To see how you could use higher-level classes, look at HighLevelExample.java.
+ * <ol>
+ *     <li>Opens the default resource manager</li>
+ *     <li>Searches for VISA instruments</li>
+ *     <li>If any are instruments are found, it does this for each instrument:</li>
+ *         <ol>
+ *             <li>Opens the instrument</li>
+ *             <li>Sends the *IDN? command and prints the response</li>
+ *             <li>Closes the instrument</li>
+ *         </ol>
+ *     <li>Closes the resource manager</li>
+ *
+ * </ol>
+ *
+ * <p>This is a low-level example. To see how you could use higher-level classes, look at HighLevelExample.java.</p>
  *
  * @author Peter Froud
  */

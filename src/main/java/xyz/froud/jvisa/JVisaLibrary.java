@@ -14,8 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/**
+ *
  * Modifications by Peter Froud, June 2018
  */
 package xyz.froud.jvisa;
@@ -31,7 +30,7 @@ import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
 /**
- * Documentation of the VISA functions can be found at http://zone.ni.com/reference/en-XX/help/370131S-01/
+ * Documentation of the VISA functions can be found at https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/help_file_title.html
  *
  * Location of visa.h: "C:\Program Files\IVI Foundation\VISA\Win64\Include\visa.h"
  *
