@@ -15,7 +15,7 @@ The four implementations:
 
 [According](https://www.tek.com/support/faqs/what-tekvisa-and-how-can-i-use-it-communicate-and-control-my-instrument) to Tektronix,
 
->Each VISA [implementation] is comprised of a communications driver, a USBTMC driver (USB Test and Measurement Class driver), a VISA software library and documentation, an instrument connection manager, an instrument communication tool, and an instrument communication logger.
+>Each VISA implementation is comprised of a communications driver, a USBTMC driver (USB Test and Measurement Class driver), a VISA software library and documentation, an instrument connection manager, an instrument communication tool, and an instrument communication logger.
 
 ## Multiple VISA implementations installed at the same time
 

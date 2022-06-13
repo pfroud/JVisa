@@ -35,7 +35,7 @@ Some TekVISA utilities have a Tools dropdown menu where you can launch other Tek
 </p>
 
 The Talker Lister program has Notepad in its Tools menu (above left). When you click it, Windows Notepad opens like normal, but then Talker Listener starts typing into the blank Notepad file: `Talker Listener Script: <<Script0>>`
-How weird! That would be super confusing if you're weren't expecting it.
+How weird! That would be super confusing if you weren't expecting it.
 
 You can't open the programming manual or examples from any of the Help menus.
 
@@ -55,7 +55,7 @@ TekVisa gets installed in this folder: `C:\Program Files\IVI Foundation\VISA\Win
 
 That's *inside* the folder for [IVI Foundation](https://www.ivifoundation.org/), which is the group who maintains the VISA specification. \
 
-The other three VISA implementations make their own folder in Program Files. This should fdollow the saem convention.
+The other three VISA implementations make their own folder in Program Files. This should follow the same convention.
 
 TekVISA should be installed in its own folder in Program Files, but there's no way to change the install location.
 

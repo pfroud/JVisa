@@ -7,7 +7,6 @@ import com.sun.jna.Pointer;
  * You (the programmer) must keep a reference to otherwise it will be garbage collected and the callback won't work.
  *
  * @see <a href="https://github.com/java-native-access/jna/blob/master/www/CallbacksAndClosures.md">Callbacks, Function Pointers and Closures</a>
- *
  * @see <a href="https://github.com/java-native-access/jna/issues/830">How to receive callback from jna?</a>
  */
 public class JVisaEventHandler {

@@ -1,31 +1,30 @@
 /**
- * @license
- *
- * Copyright 2018 Günter Fuchs (gfuchs@acousticmicroscopy.com)
- *
+ * @license Copyright 2018 Günter Fuchs (gfuchs@acousticmicroscopy.com)
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
+ * <p>
  * Modifications by Peter Froud, June 2018
  */
 package xyz.froud.jvisa;
 
-import xyz.froud.jvisa.eventhandling.JVisaEventCallback;
 import com.sun.jna.Library;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
+import xyz.froud.jvisa.eventhandling.JVisaEventCallback;
+
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
@@ -39,6 +38,7 @@ import java.nio.ShortBuffer;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>. public interface VisaLibrary extends StdCallLibrary {
  */
+@SuppressWarnings("ALL")
 public interface JVisaLibrary extends Library {
 
     /** <i>native declaration : visa.h</i>
@@ -1575,6 +1575,7 @@ public interface JVisaLibrary extends Library {
 //    public NativeLong viStatus = new NativeLong();
 //    public interface ViStatus extends NativeLong {
 //    };
+
     /**
      * - Resource Manager Functions and Operations -------------------------------<br>
      * Original signature : <code>ViStatus viOpenDefaultRM(ViPSession)</code><br>
@@ -1785,6 +1786,7 @@ public interface JVisaLibrary extends Library {
      * @return status of the operation
     NativeLong viInstallHandler(NativeLong vi, NativeLong eventType, JVisaLibrary.ViHndlr handler, Pointer userHandle);
      */
+
     /**
      * Original signature : <code>ViStatus viInstallHandler(ViSession, ViEventType, ViHndlr, ViAddr)</code><br>
      * <i>native declaration : visa.h:106</i>
@@ -1811,6 +1813,7 @@ public interface JVisaLibrary extends Library {
      * @return status of the operation
       NativeLong viUninstallHandler(NativeLong vi, NativeLong eventType, JVisaLibrary.ViHndlr handler, Pointer userHandle);
      */
+
     /**
      * Original signature : <code>ViStatus viUninstallHandler(ViSession, ViEventType, ViHndlr, ViAddr)</code><br>
      * <i>native declaration : visa.h:108</i>
@@ -2878,7 +2881,9 @@ public interface JVisaLibrary extends Library {
         public ViVAList() {
             super();
         }
-    };
+    }
+
+    ;
 
     public static class ViAUInt64 extends PointerType {
 
@@ -2889,7 +2894,9 @@ public interface JVisaLibrary extends Library {
         public ViAUInt64() {
             super();
         }
-    };
+    }
+
+    ;
 
     public static class ViBusAddress64 extends PointerType {
 
@@ -2900,7 +2907,9 @@ public interface JVisaLibrary extends Library {
         public ViBusAddress64() {
             super();
         }
-    };
+    }
+
+    ;
 
     public static class ViPUInt64 extends PointerType {
 
@@ -2911,7 +2920,9 @@ public interface JVisaLibrary extends Library {
         public ViPUInt64() {
             super();
         }
-    };
+    }
+
+    ;
 
     public static class ViUInt64 extends PointerType {
 
@@ -2922,7 +2933,9 @@ public interface JVisaLibrary extends Library {
         public ViUInt64() {
             super();
         }
-    };
+    }
+
+    ;
 
     public static class ViPBusAddress64 extends PointerType {
 
@@ -2933,7 +2946,9 @@ public interface JVisaLibrary extends Library {
         public ViPBusAddress64() {
             super();
         }
-    };
+    }
+
+    ;
 
     /*
     // This class was generatd by JNAerator, but I think it does not work. -PF 23 May 2020

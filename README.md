@@ -37,11 +37,11 @@ I tried out all four implementations and took notes and screenshots. See my [com
 
 ### Example code
 
-The [`jvisa_example`](src/jvisa_example) folder contains a few example files. 
+The [`jvisa_example`](src/main/java/xyz/froud/jvisa_example) folder contains a few example files. 
 
-The file [`SimpleExample.java`](src/jvisa_example/lowlevel/SimpleExample.java) shows how to use the JVisa classes directly.
+The file [`SimpleExample.java`](src/main/java/xyz/froud/jvisa_example/lowlevel/SimpleExample.java) shows how to use the JVisa classes directly.
 
-There is also a small example of how to make a higher-level abstraction. The file [`HighLevelExample.java`](src/jvisa_example/highlevel/HighLevelExample.java)  shows how [`AbstractInstrument.java`](src/jvisa_example/highlevel/AbstractInstrument.java) and [`PowerSupplyExample.java`](src/jvisa_example/highlevel/PowerSupplyExample.java) let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
+There is also a small example of how to make a higher-level abstraction. The file [`HighLevelExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/HighLevelExample.java)  shows how [`AbstractInstrument.java`](src/main/java/xyz/froud/jvisa_example/highlevel/AbstractInstrument.java) and [`PowerSupplyExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/PowerSupplyExample.java) let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
 
 ## Limitations
 

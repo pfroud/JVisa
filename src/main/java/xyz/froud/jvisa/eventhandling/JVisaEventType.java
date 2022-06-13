@@ -1,10 +1,10 @@
 package xyz.froud.jvisa.eventhandling;
 
-import java.util.HashMap;
 import xyz.froud.jvisa.JVisaLibrary;
 
+import java.util.HashMap;
+
 /**
- *
  * @author Peter Froud
  */
 public enum JVisaEventType {
@@ -27,7 +27,7 @@ public enum JVisaEventType {
 
     public final int VALUE;
 
-    private JVisaEventType(int value) {
+    JVisaEventType(int value) {
         this.VALUE = value;
 
     }

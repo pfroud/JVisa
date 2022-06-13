@@ -22,7 +22,7 @@ This is a very simple VISA implementation, with a small install size to match. T
 
 RsVisaTester has buttons to open RsVisaConfigure and RsVisaTrace.
 
-The conflict manager is inside a "RsVisa Properties" window, which you get to by clicking by clicking on the wrench icon in RsVisaConfigure.
+The conflict manager is inside a "RsVisa Properties" window, which you get to by clicking on the wrench icon in RsVisaConfigure.
 
 You can't open the programming manual or examples from any of the Help menus.
 

@@ -1,27 +1,25 @@
 /**
- * @license
- *
- * Copyright 2018-2020 Peter Froud
- *
+ * @license Copyright 2018-2020 Peter Froud
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package xyz.froud.jvisa_example.highlevel;
 
-import java.util.Arrays;
-import java.util.List;
 import xyz.froud.jvisa.JVisaInstrument;
 import xyz.froud.jvisa.JVisaResourceManager;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Example of how you can make a class for each instrument then make high-level calls.
@@ -35,7 +33,7 @@ import xyz.froud.jvisa.JVisaResourceManager;
 public class PowerSupplyExample extends AbstractInstrument {
 
     public static final String DESIRED_MANUFACTURER = "B&K Precision";
-    public static final List<String> DESIRED_MODELS = Arrays.asList(new String[]{"9201", "9202"});
+    public static final List<String> DESIRED_MODELS = Arrays.asList("9201", "9202");
 
     public PowerSupplyExample(JVisaResourceManager resourceManager, String resourceName) throws InstrumentException {
         super(resourceManager, resourceName);

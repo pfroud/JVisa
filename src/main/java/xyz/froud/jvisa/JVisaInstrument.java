@@ -1,20 +1,18 @@
 /**
- * @license
- *
- * Copyright 2014-2018 Günter Fuchs (gfuchs@acousticmicroscopy.com)
- *
+ * @license Copyright 2014-2018 Günter Fuchs (gfuchs@acousticmicroscopy.com)
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
+ * <p>
  * Modifications by Peter Froud, June 2018
  */
 package xyz.froud.jvisa;
@@ -22,9 +20,10 @@ package xyz.froud.jvisa;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
-import java.nio.ByteBuffer;
 import xyz.froud.jvisa.eventhandling.JVisaEventHandler;
 import xyz.froud.jvisa.eventhandling.JVisaEventType;
+
+import java.nio.ByteBuffer;
 
 /**
  * Represents a Visa instrument. This is a wrapper around the native C instrument handle.
@@ -231,7 +230,7 @@ public class JVisaInstrument implements AutoCloseable {
         JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viGetAttribute");
 
         // apparently we can't dispose or free or finalize a Memory, just need to let JVM call finalize()
-        return mem.getString(0, new String());
+        return mem.getString(0, "UTF-8");
     }
 
     /**
@@ -310,12 +309,12 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vidiscardevents.html">viDiscardEvents</a>
      */
     public void discardEvents(JVisaEventType eventType) throws JVisaException {
-        final NativeLong stauts = VISA_LIBRARY.viDiscardEvents(
+        final NativeLong status = VISA_LIBRARY.viDiscardEvents(
                 INSTRUMENT_HANDLE,
                 new NativeLong(eventType.VALUE),
                 (short) JVisaLibrary.VI_ALL_MECH //mechanism
         );
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, stauts, "viDiscardEvents");
+        JVisaUtils.throwForStatus(RESOURCE_MANAGER, status, "viDiscardEvents");
     }
 
 }

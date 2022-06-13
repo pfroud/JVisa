@@ -25,13 +25,12 @@ import xyz.froud.jvisa.eventhandling.JVisaEventHandler;
 import xyz.froud.jvisa.eventhandling.JVisaEventType;
 
 
-
 /**
  * This is a rudimentary example of how to use JVisa event handling.
  * <p>
  * To use Visa event handling, you will need to be familiar with SCPI registers. Here are two articles I found helpful:<br>
- * http://literature.cdn.keysight.com/litweb/pdf/ads2001/vsaprog/progfeat3.html<br>
- * https://www.envox.hr/eez/bench-power-supply/psu-scpi-reference-manual/psu-scpi-registers-and-queues.html
+ * <a href="http://literature.cdn.keysight.com/litweb/pdf/ads2001/vsaprog/progfeat3.html">(dead link)</a><br>
+ * <a href="https://www.envox.hr/eez/bench-power-supply/psu-scpi-reference-manual/psu-scpi-registers-and-queues.html">Registers and queues</a>
  * <p>
  * You will also need to know about the registers used by your instrument. Refer to your instrument's user manual or programming manual.
  * <p>
@@ -44,7 +43,7 @@ import xyz.froud.jvisa.eventhandling.JVisaEventType;
 public class EventHandlingExample {
 
     /*
-     * Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
+     * Make sure you keep a strong reference to the event handler so the JVM doesn't garbage collect it!
      * See https://github.com/java-native-access/jna/issues/830
      */
     private final static JVisaEventHandler EVENT_HANDLER;
@@ -82,13 +81,13 @@ public class EventHandlingExample {
          * When installing an event handler, you can supply arbitrary data which will be made available as an argument in the callback.
          * http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/userhandleparameter/
          *
-         * Currently the userData is a String, but you could easily change it to be any Java primitive type:
+         * The userData is a String currently, but you could easily change it to be any Java primitive type:
          * In JVisaEventHandler, call a different set() method on USER_DATA.
          * In the JVisaEventCallback implementation, call a different get() method on userData.
          * https://java-native-access.github.io/jna/4.5.0/javadoc/com/sun/jna/Memory.html
          * https://java-native-access.github.io/jna/4.5.0/javadoc/com/sun/jna/Pointer.html
          *
-         * I don't know how to send a an Object or C struct.
+         * I don't know how to send an Object or C struct.
          */
         final String userData = "Hello, world! This is userData.";
 
@@ -102,7 +101,7 @@ public class EventHandlingExample {
             // Open the first instrument found
             JVisaInstrument instr = rm.openInstrument(rm.findResources()[0]);
 
-            // Make sure you keep a strong reference to the event handler so the JVM doesn't getbage collect it!
+            // Make sure you keep a strong reference to the event handler so the JVM doesn't garbage collect it!
             // See https://github.com/java-native-access/jna/issues/830
             instr.addEventHandler(EVENT_HANDLER);
 
@@ -118,14 +117,14 @@ public class EventHandlingExample {
              * What bits to turn on will depend on your instrument and what you want to do. Refer to your instrument's manual.
              */
             // Turn on a bit in the Service Request Enable register to
-            // enable events from the Questionalbe Status register.
+            // enable events from the Questionable Status register.
             instr.write("*SRE " + (1 << 3));
 
-            // Turn on a bit in the Quesiontable Status Enable register.
+            // Turn on a bit in the Questionable Status Enable register.
             // For the instrument I'm using, the bit is for constant current mode.
             instr.write("status:questionable:enable 1");
 
-            // Turn voltage down for saftey
+            // Turn voltage down for safety
             instr.write("voltage 1V");
 
             // Do something which will trigger the event. You'll need to change this step for your instrument.
