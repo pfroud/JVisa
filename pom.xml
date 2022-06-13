@@ -117,4 +117,12 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>git@github.com:pfroud/JVisa.git</url>
+        </repository>
+    </distributionManagement>
+
 </project>
