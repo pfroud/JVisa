@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SimpleExample" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="xyz.froud.jvisa_example.lowlevel.SimpleExample" />
+    <module name="JVisa" />
+    <option name="VM_PARAMETERS" value="-XX:+ShowCodeDetailsInExceptionMessages" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
