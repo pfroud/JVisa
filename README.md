@@ -21,7 +21,7 @@ This fork of JVisa addresses those issues.
 
 ## Supported platforms
 
-JVisa has been tested on Windows 7, Windows 10, and macOS 10.15. I think it should work on Linux too.
+JVisa has been tested on Windows 7, Windows 10, Windows 11, and macOS 10.15. I think it should work on Linux too.
 
 ## Getting started
 
