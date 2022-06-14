@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- https://maven.apache.org/pom.html -->
 
     <groupId>xyz.froud</groupId>
     <artifactId>JVisa</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0</version>
 
     <name>JVisa</name>
     <description>Java library for VISA (Virtual Instrument Software Architecture) instruments</description>
@@ -98,11 +99,9 @@
                 <version>3.2.2</version>
                 <configuration>
                     <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
-                        </manifest>
+                        <manifestEntries>
+                            <JVisa-Version>${project.version}</JVisa-Version>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -119,7 +118,7 @@
                         </goals>
                         <configuration>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>shaded</shadedClassifierName>
+                            <shadedClassifierName>with-dependencies</shadedClassifierName>
                         </configuration>
                     </execution>
                 </executions>
