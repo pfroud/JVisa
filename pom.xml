@@ -8,7 +8,9 @@
 
     <groupId>xyz.froud</groupId>
     <artifactId>JVisa</artifactId>
-    <version>1.0</version>
+
+    <!-- Semantic Versioning https://semver.org/ -->
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>JVisa</name>
     <description>Java library for VISA (Virtual Instrument Software Architecture) instruments</description>
