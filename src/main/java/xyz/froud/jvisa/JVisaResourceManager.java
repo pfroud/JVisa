@@ -45,7 +45,6 @@ public class JVisaResourceManager implements  AutoCloseable {
      *
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopendefaultrm.html">viOpenDefaultRM</a>
      *
-     *
      * @throws JVisaException if the resource manager couldn't be opened
      * @throws UnsatisfiedLinkError if the native shared library (.dll or .so or .dylib file) couldn't be loaded
      */
@@ -145,7 +144,7 @@ public class JVisaResourceManager implements  AutoCloseable {
 
     /**
      * Returns the alias for an instrument. The instrument does not need to be opened.
-     *
+     * <p>
      * If you're using NI-VISA, aliases are stored in "C:\ProgramData\National Instruments\NIvisa\visaconf.ini".<br>
      * You can also use NI MAX (National Instruments Measurement &amp; Automation Explorer) to read and change aliases.<br>
      * I think the native shared library (.dll or .so or .dylib file) only lets you read aliases, not change them.
