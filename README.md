@@ -4,6 +4,9 @@ VISA (Virtual Instrument Software Architecture) is an API for communicating with
 
 JVisa is a library for using VISA instruments in a Java program.
 
+JVisa has been tested on Windows 7, Windows 10, Windows 11, and macOS 10.15. I think it should work on Linux too.
+
+A small number of VISA functions been implemented, but it's definitely enough to do instrument automation.
 
 ## Motivation
 
@@ -11,7 +14,7 @@ This project is a fork of G&uuml;nter Fuchs's [project of the same name](https:/
 
 G&uuml;nter set up [JNAerator](https://github.com/nativelibs4java/JNAerator) and [Java Native Access](https://github.com/java-native-access/jna) to interact with VISA DLLs. That was a significant step forward.
 
-However, there are some issues in the original JVisa:
+However, there were some issues in the original JVisa:
 
 * Confusing inheritance between the `JVisa` and `JVisaInstrument` classes 
 * Only one instrument can be opened at a time
@@ -19,13 +22,9 @@ However, there are some issues in the original JVisa:
 
 This fork of JVisa addresses those issues.
 
-## Supported platforms
-
-JVisa has been tested on Windows 7, Windows 10, Windows 11, and macOS 10.15. I think it should work on Linux too.
-
 ## Getting started
 
-### Installing a VISA implementation
+### Install a VISA implementation
 
 You must install a VISA implementation to use JVisa. **[National Instrument NI-VISA](https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html) is recommended.**
 
@@ -35,7 +34,77 @@ The Nation Instruments implementation appears to be the most common. For instanc
 
 I tried out all four implementations and took notes and screenshots. See my [comparison of VISA implementations](comparison-of-visa-implementations).
 
-### Example code
+### Add JVisa to your project
+
+#### Using Maven, Gradle, etc
+
+Theoretically you can use [JitPack](https://jitpack.io/) although I have not tried it with JVisa.
+
+Example for Maven:
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+```xml
+<dependency>
+    <groupId>com.github.pfroud</groupId>
+    <artifactId>JVisa</artifactId>
+    <version>JVisa-1.0</version>
+</dependency>
+```
+
+#### Using a Jar file
+
+To manually download JVisa jar files, go to https://github.com/pfroud/JVisa/releases.
+
+JVisa depends on the [Java Native Access (JNA)](https://github.com/java-native-access/jna) library.
+
+If you want a single jar file containing both JVisa and JNA, use `JVisa-[version]-with-dependencies.jar`.
+
+If you already have a JNA jar file, you can use `JVisa-[version].jar`.
+
+To download JNA jar files, I recommend https://mvnrepository.com/artifact/net.java.dev.jna/jna. First, click the version number of the newest version. Then, find the table row labeled "Files" and click on "jar".
+ 
+
+### Basic usage
+
+Start by creating a Resource Manager:
+
+```java
+JVisaResourceManager rm = new JVisaResourceManager();
+```
+
+You can search for available instruments, or you can directly open an instrument if you already know its resource name:
+```java
+String[] resourcesNames = rm.findResources();
+
+JVisaInstrument instrument = rm.openInstrument("USB0::0xFFFF::0x1234::123456789123456789::INSTR");
+```
+
+
+Examples of how to interact with the instrument:
+```java
+String manufacturerName = instrument.getManufacturerName();
+String modelName = instrument.getModelName();
+
+instrument.write("source:voltage 12V");
+instrument.write("output on");
+String response = instrument.sendAndReceiveString("measure:current?");
+```
+
+When finished:
+```java
+instrument.close();
+rm.close();
+```
+
+### Complete example code files
 
 The [`jvisa_example`](src/main/java/xyz/froud/jvisa_example) folder contains a few example files. 
 
@@ -43,9 +112,21 @@ The file [`SimpleExample.java`](src/main/java/xyz/froud/jvisa_example/lowlevel/S
 
 There is also a small example of how to make a higher-level abstraction. The file [`HighLevelExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/HighLevelExample.java)  shows how [`AbstractInstrument.java`](src/main/java/xyz/froud/jvisa_example/highlevel/AbstractInstrument.java) and [`PowerSupplyExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/PowerSupplyExample.java) let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
 
-## Limitations
+### Run examples from jar file
 
-A small number of VISA functions been implemented, but it's definitely enough to do instrument automation.
+It is possible to run `SimpleExample` directly from the jar file.
+
+If you a JVisa jar file which contains the JNA dependency:
+```bash
+java -classpath "C:\path\to\JVisa-[version]-with-dependencies.jar" xyz.froud.jvisa_example.SimpleExample
+```
+
+Otherwise, specify a path to a JNA jar file, separated with a semicolon:
+```bash
+java -classpath "C:\path\to\JVisa-[version].jar;C:\path\to\jna-[version].jar" xyz.froud.jvisa_example.SimpleExample
+```
+
+For documentation about the `java` command, see https://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html.
 
 ## Glossary
 
