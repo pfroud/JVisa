@@ -23,7 +23,6 @@ import com.sun.jna.ptr.NativeLongByReference;
 
 import java.nio.ByteBuffer;
 
-import static xyz.froud.jvisa.JVisaUtils.stringToByteBuffer;
 
 /**
  * The Visa resource manager "scans the system to find all the devices connected to it through the various interface buses and then controls the access to them."
@@ -211,7 +210,7 @@ public class JVisaResourceManager implements  AutoCloseable {
 
          The filter expression "?*" matches all resources.
          */
-        final ByteBuffer filterExpression = stringToByteBuffer("?*");
+        final ByteBuffer filterExpression = JVisaUtils.stringToByteBuffer("?*");
 
         final NativeLongByReference countPtr = new NativeLongByReference();
         final NativeLongByReference findListPtr = new NativeLongByReference();
