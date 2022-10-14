@@ -34,7 +34,7 @@ import static xyz.froud.jvisa.JVisaUtils.stringToByteBuffer;
  * @author Peter Froud
  *
  */
-public class JVisaResourceManager {
+public class JVisaResourceManager implements  AutoCloseable {
 
     // A unique logical identifier to the Visa session. In the C API, this is called ViSession.
     private final NativeLong RESOURCE_MANAGER_HANDLE;
@@ -138,6 +138,7 @@ public class JVisaResourceManager {
      *
      * @throws JVisaException if the resource manager couldn't be closed
      */
+    @Override
     public void close() throws JVisaException {
         final NativeLong nativeStatus = VISA_LIBRARY.viClose(RESOURCE_MANAGER_HANDLE);
         JVisaUtils.throwForStatus(this, nativeStatus, "viClose");
