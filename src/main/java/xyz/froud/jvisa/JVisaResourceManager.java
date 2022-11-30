@@ -124,8 +124,8 @@ public class JVisaResourceManager implements  AutoCloseable {
         VISA_LIBRARY = Native.load(nativeLibraryName, JVisaLibrary.class);
 
         final NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
-        final NativeLong nativeStatus = VISA_LIBRARY.viOpenDefaultRM(pointerToResourceManagerHandle);
-        JVisaUtils.throwForStatus(this, nativeStatus, "viOpenDefaultRM");
+        final NativeLong errorCode = VISA_LIBRARY.viOpenDefaultRM(pointerToResourceManagerHandle);
+        JVisaUtils.checkError(this, errorCode, "viOpenDefaultRM");
         RESOURCE_MANAGER_HANDLE = pointerToResourceManagerHandle.getValue();
     }
 
@@ -138,8 +138,8 @@ public class JVisaResourceManager implements  AutoCloseable {
      */
     @Override
     public void close() throws JVisaException {
-        final NativeLong nativeStatus = VISA_LIBRARY.viClose(RESOURCE_MANAGER_HANDLE);
-        JVisaUtils.throwForStatus(this, nativeStatus, "viClose");
+        final NativeLong errorCode = VISA_LIBRARY.viClose(RESOURCE_MANAGER_HANDLE);
+        JVisaUtils.checkError(this, errorCode, "viClose");
     }
 
     /**
@@ -158,7 +158,7 @@ public class JVisaResourceManager implements  AutoCloseable {
         final ByteBuffer aliasBuf = ByteBuffer.allocate(128);
 
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viparsersrcex/
-        final NativeLong visaStatus = VISA_LIBRARY.viParseRsrcEx(
+        final NativeLong errorCode = VISA_LIBRARY.viParseRsrcEx(
                 RESOURCE_MANAGER_HANDLE,
                 resourceNameBuf,
                 new NativeLongByReference(), //ViPUInt16 intfType
@@ -167,7 +167,7 @@ public class JVisaResourceManager implements  AutoCloseable {
                 ByteBuffer.allocate(128), //ViChar expandedUnaliasedName[]
                 aliasBuf //ViChar aliasIfExists[]
         );
-        JVisaUtils.throwForStatus(this, visaStatus, "viParseRsrcEx");
+        JVisaUtils.checkError(this, errorCode, "viParseRsrcEx");
         return new String(aliasBuf.array()).trim();
     }
 
@@ -184,13 +184,13 @@ public class JVisaResourceManager implements  AutoCloseable {
         final NativeLongByReference instrumentHandle = new NativeLongByReference();
         final ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
 
-        final NativeLong visaStatus = VISA_LIBRARY.viOpen(RESOURCE_MANAGER_HANDLE,
+        final NativeLong errorCode = VISA_LIBRARY.viOpen(RESOURCE_MANAGER_HANDLE,
                 resourceNameBuf,
                 new NativeLong(0), // ViAccessMode accessMode - 0 for default access mode
                 new NativeLong(0), // ViUInt32 openTimeout - how long to wait before returning error. Only when the access mode equals locking?
                 instrumentHandle
         );
-        JVisaUtils.throwForStatus(this, visaStatus, "viOpen");
+        JVisaUtils.checkError(this, errorCode, "viOpen");
         return new JVisaInstrument(this, instrumentHandle, resourceName);
     }
 
@@ -217,9 +217,9 @@ public class JVisaResourceManager implements  AutoCloseable {
         final ByteBuffer descrBufFirst = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
         // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindrsrc/
-        final NativeLong visaStatus = VISA_LIBRARY.viFindRsrc(RESOURCE_MANAGER_HANDLE,
+        final NativeLong errorCode = VISA_LIBRARY.viFindRsrc(RESOURCE_MANAGER_HANDLE,
                 filterExpression, findListPtr, countPtr, descrBufFirst);
-        JVisaUtils.throwForStatus(this, visaStatus, "viFindRsrc");
+        JVisaUtils.checkError(this, errorCode, "viFindRsrc");
 
         final int foundCount = (int) countPtr.getValue().longValue();
         final String[] foundResources = new String[foundCount];
@@ -240,8 +240,8 @@ public class JVisaResourceManager implements  AutoCloseable {
             final ByteBuffer descrBufNext = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
             // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindnext/
-            final NativeLong visaStatus2 = VISA_LIBRARY.viFindNext(findListPtr.getValue(), descrBufNext);
-            JVisaUtils.throwForStatus(this, visaStatus2, "viFindNext");
+            final NativeLong errorCode2 = VISA_LIBRARY.viFindNext(findListPtr.getValue(), descrBufNext);
+            JVisaUtils.checkError(this, errorCode2, "viFindNext");
 
             foundResources[i] = new String(descrBufNext.array()).trim();
         }

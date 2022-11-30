@@ -112,9 +112,9 @@ public class JVisaInstrument implements AutoCloseable {
         final int commandLength = command.length();
 
         final NativeLongByReference returnCount = new NativeLongByReference();
-        final NativeLong visaStatus = VISA_LIBRARY.viWrite(INSTRUMENT_HANDLE, buffer, new NativeLong(commandLength), returnCount);
+        final NativeLong errorCode = VISA_LIBRARY.viWrite(INSTRUMENT_HANDLE, buffer, new NativeLong(commandLength), returnCount);
 
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viWrite");
+        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viWrite");
 
         final long count = returnCount.getValue().longValue();
         if (count != commandLength) {
@@ -136,8 +136,8 @@ public class JVisaInstrument implements AutoCloseable {
         final NativeLongByReference readCountNative = new NativeLongByReference();
         final ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
 
-        final NativeLong visaStatus = VISA_LIBRARY.viRead(INSTRUMENT_HANDLE, responseBuf, new NativeLong(bufferSize), readCountNative);
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viRead");
+        final NativeLong errorCode = VISA_LIBRARY.viRead(INSTRUMENT_HANDLE, responseBuf, new NativeLong(bufferSize), readCountNative);
+        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viRead");
 
         final long readCount = readCountNative.getValue().longValue();
         if (readCount < 1) {
@@ -160,8 +160,8 @@ public class JVisaInstrument implements AutoCloseable {
         final NativeLongByReference readCountNative = new NativeLongByReference();
         final ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
 
-        final NativeLong visaStatus = VISA_LIBRARY.viRead(INSTRUMENT_HANDLE, responseBuf, new NativeLong(bufferSize), readCountNative);
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viRead");
+        final NativeLong errorCode = VISA_LIBRARY.viRead(INSTRUMENT_HANDLE, responseBuf, new NativeLong(bufferSize), readCountNative);
+        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viRead");
 
         final long readCount = readCountNative.getValue().longValue();
         if (readCount < 1) {
@@ -189,8 +189,8 @@ public class JVisaInstrument implements AutoCloseable {
      * @throws JVisaException if the clear operation failed
      */
     public void clear() throws JVisaException {
-        final NativeLong visaStatus = VISA_LIBRARY.viClear(INSTRUMENT_HANDLE);
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viClear");
+        final NativeLong errorCode = VISA_LIBRARY.viClear(INSTRUMENT_HANDLE);
+        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viClear");
     }
 
     /**
@@ -202,8 +202,8 @@ public class JVisaInstrument implements AutoCloseable {
      */
     @Override
     public void close() throws JVisaException {
-        final NativeLong visaStatus = VISA_LIBRARY.viClose(INSTRUMENT_HANDLE);
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viClose");
+        final NativeLong errorCode = VISA_LIBRARY.viClose(INSTRUMENT_HANDLE);
+        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viClose");
     }
 
     /**
@@ -212,12 +212,12 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
     public void setTimeout(int timeoutMilliseconds) throws JVisaException {
-        final NativeLong visaStatus = VISA_LIBRARY.viSetAttribute(INSTRUMENT_HANDLE,
+        final NativeLong errorCode = VISA_LIBRARY.viSetAttribute(INSTRUMENT_HANDLE,
                 new NativeLong(JVisaLibrary.VI_ATTR_TMO_VALUE),
                 new NativeLong(timeoutMilliseconds)
         );
 
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viSetAttribute");
+        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viSetAttribute");
     }
 
     /**
@@ -226,8 +226,8 @@ public class JVisaInstrument implements AutoCloseable {
     public String getAttribute(int attr) throws JVisaException {
         final Memory mem = new Memory(256);
 
-        final NativeLong visaStatus = VISA_LIBRARY.viGetAttribute(INSTRUMENT_HANDLE, new NativeLong(attr), mem);
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viGetAttribute");
+        final NativeLong errorCode = VISA_LIBRARY.viGetAttribute(INSTRUMENT_HANDLE, new NativeLong(attr), mem);
+        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viGetAttribute");
 
         // apparently we can't dispose or free or finalize a Memory, just need to let JVM call finalize()
         return mem.getString(0, "UTF-8");
@@ -258,12 +258,12 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viinstallhandler.html">viInstallHandler</a>
      */
     public void addEventHandler(JVisaEventHandler handle) throws JVisaException {
-        final NativeLong visaStatus = VISA_LIBRARY.viInstallHandler(INSTRUMENT_HANDLE,
+        final NativeLong errorCode = VISA_LIBRARY.viInstallHandler(INSTRUMENT_HANDLE,
                 new NativeLong(handle.EVENT_TYPE.VALUE),
                 handle.CALLBACK,
                 handle.USER_DATA
         );
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, visaStatus, "viInstallHandler");
+        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viInstallHandler");
     }
 
     /**
@@ -275,7 +275,7 @@ public class JVisaInstrument implements AutoCloseable {
                 handle.CALLBACK,
                 handle.USER_DATA
         );
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusUninstall, "viUninstallHandler");
+        JVisaUtils.checkError(RESOURCE_MANAGER, statusUninstall, "viUninstallHandler");
     }
 
     /**
@@ -289,7 +289,7 @@ public class JVisaInstrument implements AutoCloseable {
                 (short) JVisaLibrary.VI_HNDLR, //mechanism
                 new NativeLong(0) //context
         );
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viEnableEvent");
+        JVisaUtils.checkError(RESOURCE_MANAGER, statusEnableEvent, "viEnableEvent");
     }
 
     /**
@@ -302,7 +302,7 @@ public class JVisaInstrument implements AutoCloseable {
                 new NativeLong(eventType.VALUE),
                 (short) JVisaLibrary.VI_HNDLR //mechanism
         );
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, statusEnableEvent, "viDisableEvent");
+        JVisaUtils.checkError(RESOURCE_MANAGER, statusEnableEvent, "viDisableEvent");
     }
 
     /**
@@ -314,7 +314,7 @@ public class JVisaInstrument implements AutoCloseable {
                 new NativeLong(eventType.VALUE),
                 (short) JVisaLibrary.VI_ALL_MECH //mechanism
         );
-        JVisaUtils.throwForStatus(RESOURCE_MANAGER, status, "viDiscardEvents");
+        JVisaUtils.checkError(RESOURCE_MANAGER, status, "viDiscardEvents");
     }
 
 }

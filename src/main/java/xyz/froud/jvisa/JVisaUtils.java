@@ -52,7 +52,7 @@ public class JVisaUtils {
      * @param cFunctionName name of the C function corresponding to the call to the native shared library (.dll or .so or .dylib file)
      * @throws JVisaException if the status code means the call failed
      */
-    protected static void throwForStatus(JVisaResourceManager rm, NativeLong nativeStatus, String cFunctionName) throws JVisaException {
+    protected static void checkError(JVisaResourceManager rm, NativeLong nativeStatus, String cFunctionName) throws JVisaException {
         long statusCode = nativeStatus.longValue();
         if (statusCode != 0) {
             throw new JVisaException(statusCode, cFunctionName, rm.getStatusDescription(nativeStatus));
