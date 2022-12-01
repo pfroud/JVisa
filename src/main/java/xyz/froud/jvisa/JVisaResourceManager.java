@@ -27,15 +27,15 @@ import java.nio.ByteBuffer;
 /**
  * The Visa resource manager "scans the system to find all the devices connected to it through the various interface buses and then controls the access to them."
  *
- * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/resourcemanager.html">The Resource Manager</a>
- *
  * @author Günter Fuchs (gfuchs@acousticmicroscopy.com)
  * @author Peter Froud
- *
+ * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/resourcemanager.html">The Resource Manager</a>
  */
 public class JVisaResourceManager implements  AutoCloseable {
 
-    // A unique logical identifier to the Visa session. In the C API, this is called ViSession.
+    /**
+     * A unique logical identifier to the Visa session. In the C API, this is called ViSession.
+     */
     private final NativeLong RESOURCE_MANAGER_HANDLE;
 
     public final JVisaLibrary VISA_LIBRARY;
@@ -43,10 +43,9 @@ public class JVisaResourceManager implements  AutoCloseable {
     /**
      * Creates a session for a default resource manager.
      *
-     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopendefaultrm.html">viOpenDefaultRM</a>
-     *
      * @throws JVisaException if the resource manager couldn't be opened
      * @throws UnsatisfiedLinkError if the native shared library (.dll or .so or .dylib file) couldn't be loaded
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopendefaultrm.html">viOpenDefaultRM</a>
      */
     @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
@@ -132,9 +131,8 @@ public class JVisaResourceManager implements  AutoCloseable {
     /**
      * Closes the resource manager.
      *
-     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viclose.html">viClose</a>
-     *
      * @throws JVisaException if the resource manager couldn't be closed
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viclose.html">viClose</a>
      */
     @Override
     public void close() throws JVisaException {
@@ -143,24 +141,23 @@ public class JVisaResourceManager implements  AutoCloseable {
     }
 
     /**
-     * Returns the alias for an instrument. The instrument does not need to be opened.
+     * Returns the alias for a resource. The resource does not need to be opened.
      * <p>
      * If you're using NI-VISA, aliases are stored in "C:\ProgramData\National Instruments\NIvisa\visaconf.ini".<br>
      * You can also use NI MAX (National Instruments Measurement &amp; Automation Explorer) to read and change aliases.<br>
      * I think the native shared library (.dll or .so or .dylib file) only lets you read aliases, not change them.
      *
-     * @param resourceName name of the resource to get the alias for
+     * @param resourceName resource name to get the alias for
+     *
      * @return the alias, or empty string(?) if the specified resource doesn't have an alias
      * @throws JVisaException if the API call to get the alias failed
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viparsersrcex.html">viParseRsrcEx</a>
      */
     public String getInstrumentAlias(String resourceName) throws JVisaException {
-        final ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
         final ByteBuffer aliasBuf = ByteBuffer.allocate(128);
 
-        // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/viparsersrcex/
-        final NativeLong errorCode = VISA_LIBRARY.viParseRsrcEx(
-                RESOURCE_MANAGER_HANDLE,
-                resourceNameBuf,
+        final NativeLong errorCode = VISA_LIBRARY.viParseRsrcEx(RESOURCE_MANAGER_HANDLE,
+                JVisaUtils.stringToByteBuffer(resourceName), // ViRsrc rsrcName
                 new NativeLongByReference(), //ViPUInt16 intfType
                 new NativeLongByReference(), //ViPUInt16 intfNum
                 new NativeLongByReference(), //ViChar rsrcClass[]
@@ -168,25 +165,25 @@ public class JVisaResourceManager implements  AutoCloseable {
                 aliasBuf //ViChar aliasIfExists[]
         );
         JVisaUtils.checkError(this, errorCode, "viParseRsrcEx");
-        return new String(aliasBuf.array()).trim();
+        return JVisaUtils.byteBufferToString(aliasBuf);
     }
 
     /**
      * Opens an instrument session.
      *
-     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopen.html">viOpen</a>
+     * @param resourceName resource name to open
      *
-     * @param resourceName name of the resource to open, for example TCPIP::192.168.1.106::INSTR
      * @return a JVisaInstrument instance for the instrument
-     * @throws JVisaException if the instrument couldn't be opened
+     * @throws JVisaException if the resource couldn't be opened
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopen.html">viOpen</a>
      */
     public JVisaInstrument openInstrument(String resourceName) throws JVisaException {
+
         final NativeLongByReference instrumentHandle = new NativeLongByReference();
-        final ByteBuffer resourceNameBuf = JVisaUtils.stringToByteBuffer(resourceName);
 
         final NativeLong errorCode = VISA_LIBRARY.viOpen(RESOURCE_MANAGER_HANDLE,
-                resourceNameBuf,
-                new NativeLong(0), // ViAccessMode accessMode - 0 for default access mode
+                JVisaUtils.stringToByteBuffer(resourceName),
+                new NativeLong(0), // ViAccessMode accessMode - 0 (VI_NULL) for default access mode
                 new NativeLong(0), // ViUInt32 openTimeout - how long to wait before returning error. Only when the access mode equals locking?
                 instrumentHandle
         );
@@ -249,27 +246,27 @@ public class JVisaResourceManager implements  AutoCloseable {
     }
 
     /**
-     * Converts a VISA status code to a human-readable description.
+     * Converts a VISA error code to a human-readable description.
      *
-     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vistatusdesc.html">viStatusDesc</a>
+     * @param errorCodeToGetDescriptionFor return value from a call to the native shared library (.dll or .so or .dylib file)
      *
-     * @param statusCode return value from a call to the native shared library (.dll or .so or .dylib file)
      * @return human-readable description about the error code
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vistatusdesc.html">viStatusDesc</a>
      */
-    public String getStatusDescription(NativeLong statusCode) {
+    public String getMessageForErrorCode(NativeLong errorCodeToGetDescriptionFor) {
 
         // "Note  The size of the desc parameter should be at least 256 bytes."
-        final ByteBuffer errDescBuf = ByteBuffer.allocate(256);
+        final ByteBuffer messageBuf = ByteBuffer.allocate(256);
 
-        final NativeLong errorCode2 = VISA_LIBRARY.viStatusDesc(RESOURCE_MANAGER_HANDLE, statusCode, errDescBuf);
+        final NativeLong errorCodeFromViStatusDesc = VISA_LIBRARY.viStatusDesc(RESOURCE_MANAGER_HANDLE, errorCodeToGetDescriptionFor, messageBuf);
 
-        long errorCode2Long = errorCode2.longValue();
+        long errorCode2Long = errorCodeFromViStatusDesc.longValue();
         if (errorCode2Long != 0) {
             System.err.printf("viStatusDesc() returned 0x%H while trying to get description for code 0x%H\n",
-                    errorCode2Long, statusCode.longValue());
-            return String.format("<couldn't get description for the status code %d>", statusCode.longValue());
+                    errorCode2Long, errorCodeToGetDescriptionFor.longValue());
+            return String.format("<couldn't get description for the status code %d>", errorCodeToGetDescriptionFor.longValue());
         }
-        return new String(errDescBuf.array()).trim();
+        return JVisaUtils.byteBufferToString(messageBuf);
     }
 
 }

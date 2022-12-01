@@ -17,6 +17,7 @@ package xyz.froud.jvisa_example.lowlevel;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
+import xyz.froud.jvisa.JVisaException;
 import xyz.froud.jvisa.JVisaInstrument;
 import xyz.froud.jvisa.JVisaResourceManager;
 import xyz.froud.jvisa.eventhandling.JVisaEventCallback;
@@ -49,7 +50,7 @@ public class EventHandlingExample {
 
     static {
         @SuppressWarnings("Convert2Lambda")
-        JVisaEventCallback callback = new JVisaEventCallback() {
+        final JVisaEventCallback callback = new JVisaEventCallback() {
             @Override
             public void invoke(NativeLong instrumentHandle, NativeLong eventType, NativeLong eventContext, Pointer userData) {
                 System.out.println("+-----------------------------------------------------------------------------------");
@@ -93,54 +94,49 @@ public class EventHandlingExample {
         EVENT_HANDLER = new JVisaEventHandler(JVisaEventType.SERVICE_REQ, callback, userData);
     }
 
-    public static void main(String[] args) {
-        try {
-            JVisaResourceManager rm = new JVisaResourceManager();
+    public static void main(String[] args) throws JVisaException {
+        final JVisaResourceManager rm = new JVisaResourceManager();
 
-            // Open the first instrument found
-            JVisaInstrument instr = rm.openInstrument(rm.findResources()[0]);
+        // Open the first instrument found
+        final JVisaInstrument instr = rm.openInstrument(rm.findResources()[0]);
 
-            // Make sure you keep a strong reference to the event handler so the JVM doesn't garbage collect it!
-            // See https://github.com/java-native-access/jna/issues/830
-            instr.addEventHandler(EVENT_HANDLER);
+        // Make sure you keep a strong reference to the event handler so the JVM doesn't garbage collect it!
+        // See https://github.com/java-native-access/jna/issues/830
+        instr.addEventHandler(EVENT_HANDLER);
 
-            // Event handler must be added before enabling the event type
-            instr.enableEvent(JVisaEventType.SERVICE_REQ);
+        // Event handler must be added before enabling the event type
+        instr.enableEvent(JVisaEventType.SERVICE_REQ);
 
-            /*
-             * To trigger a service request event, we need to turn on some register bits.
-             * Recommended reading:
-             * http://literature.cdn.keysight.com/litweb/pdf/ads2001/vsaprog/progfeat3.html
-             * https://www.envox.hr/eez/bench-power-supply/psu-scpi-reference-manual/psu-scpi-registers-and-queues.html
-             *
-             * What bits to turn on will depend on your instrument and what you want to do. Refer to your instrument's manual.
-             */
-            // Turn on a bit in the Service Request Enable register to
-            // enable events from the Questionable Status register.
-            instr.write("*SRE " + (1 << 3));
+        /*
+         * To trigger a service request event, we need to turn on some register bits.
+         * Recommended reading:
+         * http://literature.cdn.keysight.com/litweb/pdf/ads2001/vsaprog/progfeat3.html
+         * https://www.envox.hr/eez/bench-power-supply/psu-scpi-reference-manual/psu-scpi-registers-and-queues.html
+         *
+         * What bits to turn on will depend on your instrument and what you want to do. Refer to your instrument's manual.
+         */
+        // Turn on a bit in the Service Request Enable register to
+        // enable events from the Questionable Status register.
+        instr.write("*SRE " + (1 << 3));
 
-            // Turn on a bit in the Questionable Status Enable register.
-            // For the instrument I'm using, the bit is for constant current mode.
-            instr.write("status:questionable:enable 1");
+        // Turn on a bit in the Questionable Status Enable register.
+        // For the instrument I'm using, the bit is for constant current mode.
+        instr.write("status:questionable:enable 1");
 
-            // Turn voltage down for safety
-            instr.write("voltage 1V");
+        // Turn voltage down for safety
+        instr.write("voltage 1V");
 
-            // Do something which will trigger the event. You'll need to change this step for your instrument.
-            instr.write("output:state on");
-            instr.write("output:state off");
+        // Do something which will trigger the event. You'll need to change this step for your instrument.
+        instr.write("output:state on");
+        instr.write("output:state off");
 
-            instr.sendAndReceiveString("*SRE?");
+        instr.sendAndReceiveString("*SRE?");
 
-            // Uninstalling the event handler also disabled the event if no handlers remain
-            instr.disableEvent(JVisaEventType.SERVICE_REQ);
-            instr.removeEventHandler(EVENT_HANDLER);
-            instr.close();
-            rm.close();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        // Uninstalling the event handler also disabled the event if no handlers remain
+        instr.disableEvent(JVisaEventType.SERVICE_REQ);
+        instr.removeEventHandler(EVENT_HANDLER);
+        instr.close();
+        rm.close();
 
     }
 

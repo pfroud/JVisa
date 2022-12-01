@@ -25,20 +25,8 @@ package xyz.froud.jvisa;
  */
 public class JVisaException extends Exception {
 
-    public JVisaException() {
-        super();
-    }
-
     public JVisaException(String message) {
         super(message);
-    }
-
-    public JVisaException(Throwable cause) {
-        super(cause);
-    }
-
-    public JVisaException(String message, Throwable cause) {
-        super(message, cause);
     }
 
     public JVisaException(long statusCode, String cFunctionName, String errorDescription) {

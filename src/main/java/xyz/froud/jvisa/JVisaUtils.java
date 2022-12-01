@@ -32,16 +32,20 @@ import java.nio.ByteBuffer;
 public class JVisaUtils {
 
     /**
-     * converts a Java String to a ByteBuffer / C-type string.
+     * Converts a Java String to a ByteBuffer with a zero terminator.
      *
      * @param source string to convert
      * @return Java string converted to C-type string (0 terminated)
      */
     protected static ByteBuffer stringToByteBuffer(String source) {
-        ByteBuffer dest = ByteBuffer.allocate(source.length() + 1);
-        dest.put(source.getBytes());
-        dest.position(0);
-        return dest;
+        final ByteBuffer rv = ByteBuffer.allocate(source.length() + 1);
+        rv.put(source.getBytes());
+        rv.position(0);
+        return rv;
+    }
+
+    protected static String byteBufferToString(ByteBuffer buf){
+        return new String(buf.array()).trim();
     }
 
     /**
@@ -53,9 +57,9 @@ public class JVisaUtils {
      * @throws JVisaException if the status code means the call failed
      */
     protected static void checkError(JVisaResourceManager rm, NativeLong nativeStatus, String cFunctionName) throws JVisaException {
-        long statusCode = nativeStatus.longValue();
+        final long statusCode = nativeStatus.longValue();
         if (statusCode != 0) {
-            throw new JVisaException(statusCode, cFunctionName, rm.getStatusDescription(nativeStatus));
+            throw new JVisaException(statusCode, cFunctionName, rm.getMessageForErrorCode(nativeStatus));
         }
     }
 
