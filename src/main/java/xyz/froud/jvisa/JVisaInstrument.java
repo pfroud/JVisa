@@ -146,6 +146,7 @@ public class JVisaInstrument implements AutoCloseable {
         JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viRead");
 
         final long readCount = readCountNative.getValue().longValue();
+        responseBuf.limit((int) readCount);
         return responseBuf;
     }
 
@@ -158,18 +159,9 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viread.html">viRead</a>
      */
     public String readString(int bufferSize) throws JVisaException {
-        final NativeLongByReference readCountNative = new NativeLongByReference();
-        final ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
-
-        final NativeLong errorCode = VISA_LIBRARY.viRead(INSTRUMENT_HANDLE, responseBuf, new NativeLong(bufferSize), readCountNative);
-        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viRead");
-
-        final long readCount = readCountNative.getValue().longValue();
-        if (readCount < 1) {
-            throw new JVisaException("read zero bytes from instrument");
-        }
-
-        return new String(responseBuf.array(), 0, (int) readCount).trim();
+        final ByteBuffer buf = readBytes(bufferSize);
+        // TODO check for off-by-one error
+        return new String(buf.array(), 0, buf.limit()).trim();
     }
 
     /**
