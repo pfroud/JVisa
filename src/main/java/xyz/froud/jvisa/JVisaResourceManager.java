@@ -211,8 +211,8 @@ public class JVisaResourceManager implements  AutoCloseable {
         // Will be set to "a handle identifying this search session".
         final NativeLongByReference findListPtr = new NativeLongByReference();
 
-        // The resource name gets populated in this buffer.
-        final ByteBuffer resourceNameBuf = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
+        // The resource name gets repeatledly populated in this buffer.
+        ByteBuffer resourceNameBuf = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
             /*
         The viFindRsrc() function only populates the buffer with the first resource name found.
@@ -236,7 +236,7 @@ public class JVisaResourceManager implements  AutoCloseable {
 
         for (int i = 1; i < resourcesFoundCount; i++) {
             // Now we need to call viFindNext() for all remaining resources.
-            resourceNameBuf.clear();
+            resourceNameBuf = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
             final NativeLong errorCodeFindNext = VISA_LIBRARY.viFindNext(
                     findListPtr.getValue(), //ViFindList findList
                     resourceNameBuf //ViChar instrDesc[]
