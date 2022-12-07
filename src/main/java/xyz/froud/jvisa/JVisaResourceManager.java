@@ -76,7 +76,7 @@ public class JVisaResourceManager implements  AutoCloseable {
 
         final NativeLongByReference pointerToResourceManagerHandle = new NativeLongByReference();
         final NativeLong errorCode = VISA_LIBRARY.viOpenDefaultRM(pointerToResourceManagerHandle);
-        JVisaUtils.checkError(this, errorCode, "viOpenDefaultRM");
+        checkError(errorCode, "viOpenDefaultRM");
 
         RESOURCE_MANAGER_HANDLE = pointerToResourceManagerHandle.getValue();
     }
@@ -90,7 +90,7 @@ public class JVisaResourceManager implements  AutoCloseable {
     @Override
     public void close() throws JVisaException {
         final NativeLong errorCode = VISA_LIBRARY.viClose(RESOURCE_MANAGER_HANDLE);
-        JVisaUtils.checkError(this, errorCode, "viClose");
+        checkError(errorCode, "viClose");
     }
 
     /**
@@ -117,7 +117,7 @@ public class JVisaResourceManager implements  AutoCloseable {
                 ByteBuffer.allocate(128), //ViChar expandedUnaliasedName[]
                 aliasBuf //ViChar aliasIfExists[]
         );
-        JVisaUtils.checkError(this, errorCode, "viParseRsrcEx");
+        checkError(errorCode, "viParseRsrcEx");
         return JVisaUtils.byteBufferToString(aliasBuf);
     }
 
@@ -140,7 +140,7 @@ public class JVisaResourceManager implements  AutoCloseable {
                 new NativeLong(0), // ViUInt32 openTimeout - how long to wait before returning error. Only when the access mode equals locking?
                 instrumentHandle
         );
-        JVisaUtils.checkError(this, errorCode, "viOpen");
+        checkError(errorCode, "viOpen");
         return new JVisaInstrument(this, instrumentHandle, resourceName);
     }
 
@@ -224,7 +224,7 @@ public class JVisaResourceManager implements  AutoCloseable {
                 countPtr, //ViPUInt32 retcnt
                 resourceNameBuf //ViChar instrDesc[]
         );
-        JVisaUtils.checkError(this, errorCodeFindRsrc, "viFindRsrc");
+        checkError(errorCodeFindRsrc, "viFindRsrc");
 
         final int resourcesFoundCount = (int) countPtr.getValue().longValue();
         final String[] rv = new String[resourcesFoundCount];
@@ -241,13 +241,13 @@ public class JVisaResourceManager implements  AutoCloseable {
                     findListPtr.getValue(), //ViFindList findList
                     resourceNameBuf //ViChar instrDesc[]
             );
-            JVisaUtils.checkError(this, errorCodeFindNext, "viFindNext");
+            checkError(errorCodeFindNext, "viFindNext");
             rv[i] = JVisaUtils.byteBufferToString(resourceNameBuf);
         }
 
         // Close the findList after use.
         final NativeLong errorCodeClose = VISA_LIBRARY.viClose(findListPtr.getValue());
-        JVisaUtils.checkError(this, errorCodeClose, "viClose");
+        checkError(errorCodeClose, "viClose");
 
         return rv;
     }
@@ -260,7 +260,7 @@ public class JVisaResourceManager implements  AutoCloseable {
      * @return human-readable description about the error code
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vistatusdesc.html">viStatusDesc</a>
      */
-    public String getMessageForErrorCode(NativeLong errorCodeToGetDescriptionFor) {
+    private String getMessageForErrorCode(NativeLong errorCodeToGetDescriptionFor) {
 
         // "Note  The size of the desc parameter should be at least 256 bytes."
         final ByteBuffer messageBuf = ByteBuffer.allocate(256);
@@ -274,6 +274,22 @@ public class JVisaResourceManager implements  AutoCloseable {
             return String.format("<couldn't get description for the status code %d>", errorCodeToGetDescriptionFor.longValue());
         }
         return JVisaUtils.byteBufferToString(messageBuf);
+    }
+
+      /**
+     * If the status code indicates an error, this method will get a human-readable message for the error code and throw a JVisaException.
+     *
+     * @param rm the resource manager used for this VISA session
+     * @param errorCode the value returned by a JVisaLibrary call
+     * @param cFunctionName name of the C function corresponding to the call to the native shared library (.dll or .so or .dylib file)
+     * @throws JVisaException if the status code means the call failed
+     */
+    protected void checkError(NativeLong errorCode, String cFunctionName) throws JVisaException {
+        final long statusCode = errorCode.longValue();
+        if (statusCode != 0) {
+            final String messageForErrorCode = getMessageForErrorCode(errorCode);
+            throw new JVisaException(statusCode, cFunctionName, messageForErrorCode);
+        }
     }
 
 }

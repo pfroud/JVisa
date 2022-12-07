@@ -18,7 +18,6 @@
  */
 package xyz.froud.jvisa;
 
-import com.sun.jna.NativeLong;
 
 import java.nio.ByteBuffer;
 
@@ -48,19 +47,6 @@ public class JVisaUtils {
         return new String(buf.array()).trim();
     }
 
-    /**
-     * If the status code indicates an error, this method will get a human-readable message for the error code and throw a JVisaException.
-     *
-     * @param rm the resource manager used for this VISA session
-     * @param nativeStatus the value returned by a JVisaLibrary call
-     * @param cFunctionName name of the C function corresponding to the call to the native shared library (.dll or .so or .dylib file)
-     * @throws JVisaException if the status code means the call failed
-     */
-    protected static void checkError(JVisaResourceManager rm, NativeLong nativeStatus, String cFunctionName) throws JVisaException {
-        final long statusCode = nativeStatus.longValue();
-        if (statusCode != 0) {
-            throw new JVisaException(statusCode, cFunctionName, rm.getMessageForErrorCode(nativeStatus));
-        }
-    }
+
 
 }

@@ -117,7 +117,7 @@ public class JVisaInstrument implements AutoCloseable {
                 new NativeLong(commandLength),
                 returnCount
         );
-        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viWrite");
+        RESOURCE_MANAGER.checkError(errorCode, "viWrite");
 
         final long count = returnCount.getValue().longValue();
         if (count != commandLength) {
@@ -143,7 +143,7 @@ public class JVisaInstrument implements AutoCloseable {
                 new NativeLong(bufferSize),
                 readCountNative
         );
-        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viRead");
+        RESOURCE_MANAGER.checkError(errorCode, "viRead");
 
         final long readCount = readCountNative.getValue().longValue();
         responseBuf.limit((int) readCount);
@@ -182,7 +182,7 @@ public class JVisaInstrument implements AutoCloseable {
      */
     public void clear() throws JVisaException {
         final NativeLong errorCode = VISA_LIBRARY.viClear(INSTRUMENT_HANDLE);
-        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viClear");
+        RESOURCE_MANAGER.checkError(errorCode, "viClear");
     }
 
     /**
@@ -194,7 +194,7 @@ public class JVisaInstrument implements AutoCloseable {
     @Override
     public void close() throws JVisaException {
         final NativeLong errorCode = VISA_LIBRARY.viClose(INSTRUMENT_HANDLE);
-        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viClose");
+        RESOURCE_MANAGER.checkError(errorCode, "viClose");
     }
 
     /**
@@ -207,7 +207,7 @@ public class JVisaInstrument implements AutoCloseable {
                 new NativeLong(timeoutMilliseconds)
         );
 
-        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viSetAttribute");
+        RESOURCE_MANAGER.checkError(errorCode, "viSetAttribute");
     }
 
     /**
@@ -217,7 +217,7 @@ public class JVisaInstrument implements AutoCloseable {
         final Memory mem = new Memory(256);
 
         final NativeLong errorCode = VISA_LIBRARY.viGetAttribute(INSTRUMENT_HANDLE, new NativeLong(attr), mem);
-        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viGetAttribute");
+        RESOURCE_MANAGER.checkError(errorCode, "viGetAttribute");
 
         // apparently we can't dispose or free or finalize a Memory, just need to let JVM call finalize()
         return mem.getString(0, "UTF-8");
@@ -253,7 +253,7 @@ public class JVisaInstrument implements AutoCloseable {
                 handle.CALLBACK,
                 handle.USER_DATA
         );
-        JVisaUtils.checkError(RESOURCE_MANAGER, errorCode, "viInstallHandler");
+        RESOURCE_MANAGER.checkError(errorCode, "viInstallHandler");
     }
 
     /**
@@ -265,7 +265,7 @@ public class JVisaInstrument implements AutoCloseable {
                 handle.CALLBACK,
                 handle.USER_DATA
         );
-        JVisaUtils.checkError(RESOURCE_MANAGER, statusUninstall, "viUninstallHandler");
+        RESOURCE_MANAGER.checkError(statusUninstall, "viUninstallHandler");
     }
 
     /**
@@ -279,7 +279,7 @@ public class JVisaInstrument implements AutoCloseable {
                 (short) JVisaLibrary.VI_HNDLR, //mechanism
                 new NativeLong(0) //context
         );
-        JVisaUtils.checkError(RESOURCE_MANAGER, statusEnableEvent, "viEnableEvent");
+        RESOURCE_MANAGER.checkError(statusEnableEvent, "viEnableEvent");
     }
 
     /**
@@ -292,7 +292,7 @@ public class JVisaInstrument implements AutoCloseable {
                 new NativeLong(eventType.VALUE),
                 (short) JVisaLibrary.VI_HNDLR //mechanism
         );
-        JVisaUtils.checkError(RESOURCE_MANAGER, statusEnableEvent, "viDisableEvent");
+        RESOURCE_MANAGER.checkError(statusEnableEvent, "viDisableEvent");
     }
 
     /**
@@ -304,7 +304,7 @@ public class JVisaInstrument implements AutoCloseable {
                 new NativeLong(eventType.VALUE),
                 (short) JVisaLibrary.VI_ALL_MECH //mechanism
         );
-        JVisaUtils.checkError(RESOURCE_MANAGER, status, "viDiscardEvents");
+        RESOURCE_MANAGER.checkError(status, "viDiscardEvents");
     }
 
 }
