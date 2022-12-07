@@ -192,57 +192,111 @@ public class JVisaResourceManager implements  AutoCloseable {
     }
 
     /**
-     * Search for connected VISA resources.
+     * Search for connected VISA resources (without filtering).
      *
      * @return array of VISA resource names found.
-     * @throws JVisaException if the process for finding instruments failed, or if no instruments were found.
+     * @throws JVisaException if the process of finding resources failed, or if no resources were found.
+     * @see #findResources(String)
      */
     public String[] findResources() throws JVisaException {
+        // question mark matches any one character
+        return findResources("?*");
+    }
 
-        /*
-         National Instruments says the filter is a regular expression, but they're liars.
-         Here, the question mark "matches any one character" which is not what it does in a regex.
-         The star does the same thing as in a real regular expression.
-
-         The filter expression "?*" matches all resources.
+    /**
+     * Search for connected VISA resources with a filter on the resource name.
+     *
+     * @param filterExpression it says it's a regular expression but it's not. Use {@code "?*"} to match all resources.
+     * <table>
+     *     <tr>
+     *         <th>Special Characters and Operators</th>
+     *         <th>Meaning</th>
+     *     </tr>
+     *     <tr>
+     *         <td><code>?</code></td>
+     *         <td>Matches any one character.</td>
+     *     </tr>
+     *     <tr>
+     *         <td><code>\</code></td>
+     *         <td>Escape the next character.</td>
+     *     </tr>
+     *     <tr>
+     *         <td><code>[list]</code></td>
+     *         <td>Matches any one character from the enclosed list. You can use a hyphen to match a range of characters.</td> </tr>
+     *     <tr>
+     *         <td><code>[^list]</code></td>
+     *         <td>Matches any character NOT in the enclosed list. You can use a hyphen to match a range of characters.</td> </tr>
+     *     <tr>
+     *         <td><code>*</code></td>
+     *         <td>Matches zero or more occurrences of the preceding character or expression.</td>
+     *     </tr>
+     *     <tr>
+     *         <td><code>+</code></td>
+     *         <td>Matches one or more occurrences of the preceding character or expression.</td>
+     *     </tr>
+     *     <tr>
+     *         <td><code>Exp|exp</code></td>
+     *         <td>Matches either the preceding or following expression. The or operator <code>|</code> matches the
+     *         entire expression that precedes or follows it and not just the character that precedes or follows it.
+     *         For example, <code>VXI|GPIB</code> means <code>(VXI)|(GPIB)</code>, not <code>VX(I|G)PIB</code>.</td> </tr>
+     *     <tr>
+     *         <td><code>(exp)</code></td>
+     *         <td>Grouping characters or expressions.</td>
+     *     </tr>
+     * </table>
+     *
+     * @return array of VISA resource names found.
+     * @throws JVisaException if the process for finding resources failed, or if no resources were found.
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vifindrsrc.html">viFindRsrc</a>
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vifindnext.html">viFindNext</a>
          */
-        final ByteBuffer filterExpression = JVisaUtils.stringToByteBuffer("?*");
+    public String[] findResources(String filterExpression) throws JVisaException {
 
+        // Will be set to the number of resources found.
         final NativeLongByReference countPtr = new NativeLongByReference();
+
+        // Will be set to "a handle identifying this search session".
         final NativeLongByReference findListPtr = new NativeLongByReference();
 
-        final ByteBuffer descrBufFirst = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
+        // The resource name gets populated in this buffer.
+        final ByteBuffer resourceNameBuf = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
-        // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindrsrc/
-        final NativeLong errorCode = VISA_LIBRARY.viFindRsrc(RESOURCE_MANAGER_HANDLE,
-                filterExpression, findListPtr, countPtr, descrBufFirst);
-        JVisaUtils.checkError(this, errorCode, "viFindRsrc");
-
-        final int foundCount = (int) countPtr.getValue().longValue();
-        final String[] foundResources = new String[foundCount];
-
-        if (foundCount > 0) {
             /*
-            The viFindRsrc() function populates the buffer with the first result.
-            If more than one instrument was found, you have to use viFindNext().
+        The viFindRsrc() function only populates the buffer with the first resource name found.
+        If more than one resource is found, you have to repeatedly call viFindNext().
              */
-            foundResources[0] = new String(descrBufFirst.array()).trim();
+        final NativeLong errorCodeFindRsrc = VISA_LIBRARY.viFindRsrc(RESOURCE_MANAGER_HANDLE,
+                JVisaUtils.stringToByteBuffer(filterExpression), //ViString expr
+                findListPtr, // ViPFindList findList
+                countPtr, //ViPUInt32 retcnt
+                resourceNameBuf //ViChar instrDesc[]
+        );
+        JVisaUtils.checkError(this, errorCodeFindRsrc, "viFindRsrc");
+
+        final int resourcesFoundCount = (int) countPtr.getValue().longValue();
+        final String[] rv = new String[resourcesFoundCount];
+
+        if (resourcesFoundCount > 0) {
+            // The first resource name is returned from viFindRsrc().
+            rv[0] = JVisaUtils.byteBufferToString(resourceNameBuf);
         }
 
-        for (int i = 1; i < foundCount; i++) {
-            /*
-            If more than one resource was found, we need to allocate another
-            buffer and call another Visa function for each one.
-             */
-            final ByteBuffer descrBufNext = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
-
-            // http://zone.ni.com/reference/en-XX/help/370131S-01/ni-visa/vifindnext/
-            final NativeLong errorCode2 = VISA_LIBRARY.viFindNext(findListPtr.getValue(), descrBufNext);
-            JVisaUtils.checkError(this, errorCode2, "viFindNext");
-
-            foundResources[i] = new String(descrBufNext.array()).trim();
+        for (int i = 1; i < resourcesFoundCount; i++) {
+            // Now we need to call viFindNext() for all remaining resources.
+            resourceNameBuf.clear();
+            final NativeLong errorCodeFindNext = VISA_LIBRARY.viFindNext(
+                    findListPtr.getValue(), //ViFindList findList
+                    resourceNameBuf //ViChar instrDesc[]
+            );
+            JVisaUtils.checkError(this, errorCodeFindNext, "viFindNext");
+            rv[i] = JVisaUtils.byteBufferToString(resourceNameBuf);
         }
-        return foundResources;
+
+        // Close the findList after use.
+        final NativeLong errorCodeClose = VISA_LIBRARY.viClose(findListPtr.getValue());
+        JVisaUtils.checkError(this, errorCodeClose, "viClose");
+
+        return rv;
     }
 
     /**
