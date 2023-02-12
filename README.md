@@ -148,3 +148,4 @@ http://www.ivifoundation.org/shared_components/Default.aspx) library
 
 * VXI: [VME eXtensions for Instrumentation](https://en.wikipedia.org/wiki/VME_eXtensions_for_Instrumentation). Communicate with test & measurement instruments over the [VMEbus](https://en.wikipedia.org/wiki/VMEbus).
 
+* ASRL [stands for](https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visaresourcesyntaxandexamples.html) asynchronous serial. When using NI-VISA on Windows, the VISA resource name to comunicate through a serial port starts with "ASRL" instead of "COM". But watch out because the ASRL number may be different from the COM number!
