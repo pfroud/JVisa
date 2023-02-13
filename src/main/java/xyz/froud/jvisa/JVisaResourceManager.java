@@ -50,6 +50,19 @@ public class JVisaResourceManager implements  AutoCloseable {
      */
     @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
+        this(null);
+    }
+
+    /**
+     * Creates a session for a default resource manager.
+     *
+     * @param nativeLibraryName VISA native library name
+     * @throws JVisaException if the resource manager couldn't be opened
+     * @throws UnsatisfiedLinkError if the native shared library (.dll or .so or .dylib file) couldn't be loaded
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopendefaultrm.html">viOpenDefaultRM</a>
+     */
+    @SuppressWarnings("LeakingThisInConstructor")
+    public JVisaResourceManager(String nativeLibraryName) throws JVisaException, UnsatisfiedLinkError {
 
         /*
         You do NOT need to include the file extension when passing the library name to JNA.
@@ -65,11 +78,13 @@ public class JVisaResourceManager implements  AutoCloseable {
         You can see what JNA is doing here:
         https://github.com/java-native-access/jna/blob/69bf22f5051853e95a3b9725ca19b92cdcfd793f/src/com/sun/jna/NativeLibrary.java#L757
          */
-        final String nativeLibraryName;
-        if (Platform.isWindows()) {
-            nativeLibraryName = Platform.is64Bit() ? "visa64" : "visa32";
-        } else {
-            nativeLibraryName = "visa";
+        if (nativeLibraryName == null) {
+            // If the native library name is not specified, Inferring from the environment.
+            if (Platform.isWindows()) {
+                nativeLibraryName = Platform.is64Bit() ? "visa64" : "visa32";
+            } else {
+                nativeLibraryName = "visa";
+            }
         }
 
         VISA_LIBRARY = Native.load(nativeLibraryName, JVisaLibrary.class);
