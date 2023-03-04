@@ -111,7 +111,7 @@ The [`jvisa_example`](src/main/java/xyz/froud/jvisa_example) folder contains a f
 * The file [`FindResourcesExample.java`](src/main/java/xyz/froud/jvisa_example/FindResourcesExample.java) is a ready-to-run example of the `ResourceManager#findResources()` method.
 * The file [`IdentificationQueryExample.java`](src/main/java/xyz/froud/jvisa_example/IdentificationQueryExample.java) shows how to open instruments and send a query.
 
-There is also a small example of how to make a higher-level abstraction. The file [`AbstractionExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/AbstractionExample.java) shows how [`AbstractInstrument.java`](src/main/java/xyz/froud/jvisa_example/highlevel/AbstractInstrument.java) and [`PowerSupplyExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/PowerSupplyExample.java) let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
+There is also a small example of how to make a higher-level abstraction. The file [`AbstractionExample.java`](src/main/java/xyz/froud/jvisa_example/abstraction/AbstractionExample.java) shows how [`AbstractInstrument.java`](src/main/java/xyz/froud/jvisa_example/abstraction/AbstractInstrument.java) and [`PowerSupplyExample.java`](src/main/java/xyz/froud/jvisa_example/abstraction/PowerSupplyExample.java) let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
 
 ### Run examples from jar file
 
