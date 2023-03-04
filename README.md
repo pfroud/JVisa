@@ -95,7 +95,7 @@ String modelName = instrument.getModelName();
 
 instrument.write("source:voltage 12V");
 instrument.write("output on");
-String response = instrument.sendAndReceiveString("measure:current?");
+String response = instrument.queryString("measure:current?");
 ```
 
 When finished:

@@ -75,7 +75,7 @@ public class IdentificationQueryExample {
         }
 
         try {
-            System.out.printf("   Identification query returned: \"%s\"\n", instrument.sendAndReceiveString("*IDN?"));
+            System.out.printf("   Identification query returned: \"%s\"\n", instrument.queryString("*IDN?"));
         } catch (JVisaException ex) {
             System.out.println("   Identification query failed: " + ex);
             return;

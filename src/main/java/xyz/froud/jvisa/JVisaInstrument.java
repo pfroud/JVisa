@@ -65,7 +65,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @return response from instrument as a String
      * @throws JVisaException if the write operation fails or the read operation fails
      */
-    public String sendAndReceiveString(String command, int bufferSize) throws JVisaException {
+    public String queryString(String command, int bufferSize) throws JVisaException {
         write(command);
         return readString(bufferSize);
     }
@@ -77,7 +77,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @return response from instrument as a String
      * @throws JVisaException if the write operation fails or the read operation fails
      */
-    public String sendAndReceiveString(String command) throws JVisaException {
+    public String queryString(String command) throws JVisaException {
         write(command);
         return readString(DEFAULT_BUFFER_SIZE);
     }
@@ -90,7 +90,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @return response from instrument as a ByteBuffer
      * @throws JVisaException if the write operation fails or the read operation fails
      */
-    public ByteBuffer sendAndReceiveBytes(String command, int bufferSize) throws JVisaException {
+    public ByteBuffer queryBytes(String command, int bufferSize) throws JVisaException {
         write(command);
         return readBytes(bufferSize);
     }
@@ -102,7 +102,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @return response from instrument as a ByteBuffer
      * @throws JVisaException if the write operation fails or the read operation fails
      */
-    public ByteBuffer sendAndReceiveBytes(String command) throws JVisaException {
+    public ByteBuffer queryBytes(String command) throws JVisaException {
         write(command);
         return readBytes(DEFAULT_BUFFER_SIZE);
     }
@@ -149,7 +149,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @throws JVisaException if the read operation fails
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viread.html">viRead</a>
      */
-    protected ByteBuffer readBytes(int bufferSize) throws JVisaException {
+    public ByteBuffer readBytes(int bufferSize) throws JVisaException {
         final NativeLongByReference readCountNative = new NativeLongByReference();
         final ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
 

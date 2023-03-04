@@ -112,7 +112,7 @@ public abstract class AbstractInstrument {
      */
     protected String queryWithoutCheckingErrorState(String command) throws InstrumentException {
         try {
-            return JVISA_INSTRUMENT.sendAndReceiveString(command);
+            return JVISA_INSTRUMENT.queryString(command);
         } catch (JVisaException ex) {
             throw new InstrumentException(ex);
         }

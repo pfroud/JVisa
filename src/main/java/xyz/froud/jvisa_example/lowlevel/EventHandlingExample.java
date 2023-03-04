@@ -130,7 +130,7 @@ public class EventHandlingExample {
         instr.write("output:state on");
         instr.write("output:state off");
 
-        instr.sendAndReceiveString("*SRE?");
+        instr.queryString("*SRE?");
 
         // Uninstalling the event handler also disabled the event if no handlers remain
         instr.disableEvent(JVisaEventType.SERVICE_REQ);
