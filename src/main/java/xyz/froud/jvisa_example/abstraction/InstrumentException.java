@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.froud.jvisa_example.highlevel;
+package xyz.froud.jvisa_example.abstraction;
 
 /**
  * The JVisaException class is from the lower abstraction level, so we don't want to throw that from our higher abstraction level.

@@ -106,11 +106,12 @@ rm.close();
 
 ### Complete example code files
 
-The [`jvisa_example`](src/main/java/xyz/froud/jvisa_example) folder contains a few example files. 
+The [`jvisa_example`](src/main/java/xyz/froud/jvisa_example) folder contains a few example files: 
 
-The [`lowlevel`](src/main/java/xyz/froud/jvisa_example/lowlevel) folder shows how to directly interact with the Visa library. The file [`FindResourcesExample.java`](src/main/java/xyz/froud/jvisa_example/lowlevel/FindResourcesExample.java) is a ready-to-run example of the `ResourceManager#findResources()` method. The file [`IdentificationQueryExample.java`](src/main/java/xyz/froud/jvisa_example/lowlevel/IdentificationQueryExample.java) shows how to open instruments and send a query.
+* The file [`FindResourcesExample.java`](src/main/java/xyz/froud/jvisa_example/FindResourcesExample.java) is a ready-to-run example of the `ResourceManager#findResources()` method.
+* The file [`IdentificationQueryExample.java`](src/main/java/xyz/froud/jvisa_example/IdentificationQueryExample.java) shows how to open instruments and send a query.
 
-There is also a small example of how to make a higher-level abstraction. The file [`HighLevelExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/HighLevelExample.java) shows how [`AbstractInstrument.java`](src/main/java/xyz/froud/jvisa_example/highlevel/AbstractInstrument.java) and [`PowerSupplyExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/PowerSupplyExample.java) let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
+There is also a small example of how to make a higher-level abstraction. The file [`AbstractionExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/AbstractionExample.java) shows how [`AbstractInstrument.java`](src/main/java/xyz/froud/jvisa_example/highlevel/AbstractInstrument.java) and [`PowerSupplyExample.java`](src/main/java/xyz/froud/jvisa_example/highlevel/PowerSupplyExample.java) let you call a method like `setVoltage(12)` instead of `write("source:voltage 12V")`. 
 
 ### Run examples from jar file
 
@@ -118,12 +119,12 @@ It is possible to run the examples directly from the jar file.
 
 If you have a JVisa jar file which contains the JNA dependency:
 ```bash
-java -classpath "C:\path\to\JVisa-[version]-with-dependencies.jar" xyz.froud.jvisa_example.lowlevel.FindResourcesExample
+java -classpath "C:\path\to\JVisa-[version]-with-dependencies.jar" xyz.froud.jvisa_example.FindResourcesExample
 ```
 
 Otherwise, specify a path to a JNA jar file, separated with a semicolon:
 ```bash
-java -classpath "C:\path\to\JVisa-[version].jar;C:\path\to\jna-[version].jar" xyz.froud.jvisa_example.lowlevel.FindResourcesExample
+java -classpath "C:\path\to\JVisa-[version].jar;C:\path\to\jna-[version].jar" xyz.froud.jvisa_example.FindResourcesExample
 ```
 
 For documentation about the `java` command, see https://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html.

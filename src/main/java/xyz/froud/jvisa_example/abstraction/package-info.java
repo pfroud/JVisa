@@ -31,4 +31,4 @@
  *
  * @author Peter Froud
  */
-package xyz.froud.jvisa_example.highlevel;
+package xyz.froud.jvisa_example.abstraction;

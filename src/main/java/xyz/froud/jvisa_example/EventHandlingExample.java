@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.froud.jvisa_example.lowlevel;
+package xyz.froud.jvisa_example;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;

@@ -16,7 +16,7 @@
  * <p>
  * Modifications by Peter Froud, June 2018
  */
-package xyz.froud.jvisa_example.lowlevel;
+package xyz.froud.jvisa_example;
 
 import xyz.froud.jvisa.JVisaException;
 import xyz.froud.jvisa.JVisaResourceManager;

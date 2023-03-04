@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.froud.jvisa_example.highlevel;
+package xyz.froud.jvisa_example.abstraction;
 
 import xyz.froud.jvisa.JVisaException;
 import xyz.froud.jvisa.JVisaInstrument;
@@ -30,7 +30,7 @@ import xyz.froud.jvisa.JVisaResourceManager;
  *
  * @author Peter Froud
  */
-public class HighLevelExample {
+public class AbstractionExample {
 
     public static void main(String[] args) {
         JVisaResourceManager resourceManager;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.froud.jvisa_example.highlevel;
+package xyz.froud.jvisa_example.abstraction;
 
 import xyz.froud.jvisa.JVisaException;
 import xyz.froud.jvisa.JVisaInstrument;

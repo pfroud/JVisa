@@ -18,19 +18,15 @@
  * </p>
  *
  * <p>
- * This package contains examples of how to use JVisa. There are examples of two abstractions levels:
+ * This package contains examples of how to use the classes {@code JVisaResourceManager} and {@code JVisaInstrument}.
  * </p>
  *
  * <p>
- * The {@code lowlevel} package uses the classes {@code JVisaResourceManager} and {@code JVisaInstrument}.
+ * The {@code abstraction} package shows how to make a high-level abstraction for a specific instrument, in this case a power supply.
  * </p>
  *
  * <p>
- * The {@code highlevel} package shows how to make an abstracted class for a specific instrument, in this case a power supply.
- * </p>
- *
- * <p>
- * To see the low-level Java code which communicates with the native shared library (.dll or .so or .dylib file), look at the {@code jvisa} package.
+ * To see the Java code which communicates with the native shared library (.dll or .so or .dylib file), look at the {@code jvisa} package.
  * </p>
  *
  * @author Peter Froud
