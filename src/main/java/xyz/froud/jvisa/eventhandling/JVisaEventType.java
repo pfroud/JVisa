@@ -17,10 +17,13 @@ package xyz.froud.jvisa.eventhandling;
 
 import xyz.froud.jvisa.JVisaLibrary;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Peter Froud
+ * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/supportedevents.html">Supported Events</a>
  */
 public enum JVisaEventType {
 
@@ -44,21 +47,14 @@ public enum JVisaEventType {
 
     JVisaEventType(int value) {
         this.VALUE = value;
-
     }
 
-    private static final HashMap<Integer, JVisaEventType> valueMap;
-
-    static {
-        final JVisaEventType[] allTypes = JVisaEventType.values();
-        valueMap = new HashMap<>(allTypes.length, 1);
-        for (JVisaEventType type : allTypes) {
-            valueMap.put(type.VALUE, type);
-        }
-    }
+    private static final Map<Integer, JVisaEventType> VALUE_MAP
+            = Stream.of(JVisaEventType.values())
+                    .collect(Collectors.toMap(e -> e.VALUE, e -> e));
 
     public static JVisaEventType parseInt(int value) {
-        return valueMap.get(value);
+        return VALUE_MAP.get(value);
     }
 
 }

@@ -216,13 +216,41 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_tmo_value.html">VI_ATTR_TMO_VALUE</a>
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
-    public void setTimeout(int timeoutMilliseconds) throws JVisaException {
-        final NativeLong errorCode = VISA_LIBRARY.viSetAttribute(INSTRUMENT_HANDLE,
-                new NativeLong(JVisaLibrary.VI_ATTR_TMO_VALUE),
-                new NativeLong(timeoutMilliseconds)
-        );
+    public void setTimeout(long timeoutMilliseconds) throws JVisaException {
+        setAttribute(JVisaLibrary.VI_ATTR_TMO_VALUE, timeoutMilliseconds);
+    }
 
-        RESOURCE_MANAGER.checkError(errorCode, "viSetAttribute");
+
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_baud.html">VI_ATTR_ASRL_BAUD</a>
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
+     */
+    public void setSerialBaudRate(int baudRate) throws JVisaException{
+        setAttribute(JVisaLibrary.VI_ATTR_ASRL_BAUD, baudRate);
+    }
+
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_flow_cntrl.html">VI_ATTR_ASRL_FLOW_CNTRL</a>
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
+     */
+    public void setSerialFlowControl(SerialFlowControl flowControl) throws JVisaException{
+        setAttribute(JVisaLibrary.VI_ATTR_ASRL_FLOW_CNTRL, flowControl.VALUE);
+    }
+
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_parity.html">VI_ATTR_ASRL_PARITY</a>
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
+     */
+    public void setSerialParity(SerialParity parity) throws JVisaException{
+        setAttribute(JVisaLibrary.VI_ATTR_ASRL_PARITY, parity.VALUE);
+    }
+
+    /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_stop_bits.html">VI_ATTR_ASRL_STOP_BITS</a>
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
+     */
+    public void setSerialStopBits(SerialStopBits stopBits) throws JVisaException{
+        setAttribute(JVisaLibrary.VI_ATTR_ASRL_STOP_BITS, stopBits.VALUE);
     }
 
     /**
