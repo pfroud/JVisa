@@ -229,6 +229,14 @@ public class JVisaInstrument implements AutoCloseable {
         setAttribute(JVisaLibrary.VI_ATTR_ASRL_BAUD, baudRate);
     }
 
+     /**
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_data_bits.html">VI_ATTR_ASRL_DATA_BITS</a>
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
+     */
+    public void setSerialDataBits(int dataBits) throws JVisaException {
+        setAttribute(JVisaLibrary.VI_ATTR_ASRL_DATA_BITS, dataBits);
+    }
+
     /**
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_flow_cntrl.html">VI_ATTR_ASRL_FLOW_CNTRL</a>
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
