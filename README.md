@@ -36,9 +36,11 @@ I tried out all four implementations and took notes and screenshots. See my [com
 
 ### Add JVisa to your project
 
-#### Using Maven, Gradle, etc
+#### Using build automation tools
 
-Theoretically you can use [JitPack](https://jitpack.io/) although I have not tried it with JVisa.
+You can use JitPack, visit https://jitpack.io/#xyz.froud/JVisa for details.
+
+Release JVisa-1.0 does not work with Jitpack - I will fix it in an upcoming JVisa release.
 
 Example for Maven:
 
@@ -49,15 +51,15 @@ Example for Maven:
         <url>https://jitpack.io</url>
     </repository>
 </repositories>
-```
-
-```xml
+...
 <dependency>
-    <groupId>com.github.pfroud</groupId>
+    <groupId>xyz.froud</groupId>
     <artifactId>JVisa</artifactId>
     <version>JVisa-1.0</version>
 </dependency>
 ```
+
+Jitpack also builds and hosts Javadoc: https://javadoc.jitpack.io/xyz/froud/JVisa/JVisa-1.0/javadoc/
 
 #### Using a Jar file
 
