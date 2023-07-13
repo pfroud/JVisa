@@ -29,6 +29,10 @@ public class JVisaException extends Exception {
         super(message);
     }
 
+    public JVisaException(String message, Throwable cause){
+        super(message, cause);
+    }
+
     public JVisaException(long statusCode, String cFunctionName, String errorDescription) {
         super(String.format("in %s(): %s (0x%H)", cFunctionName, errorDescription, statusCode));
     }

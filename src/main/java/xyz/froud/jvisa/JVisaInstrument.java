@@ -107,6 +107,11 @@ public class JVisaInstrument implements AutoCloseable {
         return readBytes(DEFAULT_BUFFER_SIZE);
     }
 
+    public byte[] queryBinaryBlock(String command) throws JVisaException {
+        write(command);
+        return readBinaryBlock();
+    }
+
     /**
      * Sends a command to the instrument. If setWriteTerminator() was called with a non-null string, the terminator will
      * be appended to the string before sending it to the instrument.
@@ -144,18 +149,18 @@ public class JVisaInstrument implements AutoCloseable {
     /**
      * Reads data from the instrument, e.g. a command response or data.
      *
-     * @param bufferSize size of response buffer in bytes
+     * @param byteCount how many bytes to read
      * @return response from instrument as bytes
      * @throws JVisaException if the read operation fails
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viread.html">viRead</a>
      */
-    public ByteBuffer readBytes(int bufferSize) throws JVisaException {
+    public ByteBuffer readBytes(int byteCount) throws JVisaException {
         final NativeLongByReference readCountNative = new NativeLongByReference();
-        final ByteBuffer responseBuf = ByteBuffer.allocate(bufferSize);
+        final ByteBuffer responseBuf = ByteBuffer.allocate(byteCount);
 
         final NativeLong errorCode = VISA_LIBRARY.viRead(INSTRUMENT_HANDLE,
                 responseBuf,
-                new NativeLong(bufferSize),
+                new NativeLong(byteCount),
                 readCountNative
         );
         RESOURCE_MANAGER.checkError(errorCode, "viRead");
@@ -190,7 +195,84 @@ public class JVisaInstrument implements AutoCloseable {
     }
 
     /**
-     * Clears the device input and output buffers. The corresponding VISA function is not implemented in the libreVisa library.
+     * @see
+     * <a href="https://github.com/pyvisa/pyvisa/blob/e01a7093b1df28f907631d96ba8699a8f0287023/pyvisa/resources/messagebased.py#L533">Function
+     * <code>read_binary_values</code> in PyVISA</a>
+     * @see
+     * <a href="https://github.com/pyvisa/pyvisa/blob/e01a7093b1df28f907631d96ba8699a8f0287023/pyvisa/util.py#L371">Function
+     * <code>parse_ieee_block_header</code> in PyVISA</a>
+     * @see "section 7.7.6 &lt;ARBITRARY BLOCK PROGRAM DATA&gt; of IEEE Std 488.2-1992"
+     * @see "section 8.7.9 &lt;DEFINITE LENGTH ARBITRARY BLOCK RESPONSE DATA&gt; of IEEE Std
+     * 488.2-1992"
+     * @return
+     * @throws JVisaException
+     */
+    public byte[] readBinaryBlock() throws JVisaException {
+        /*
+
+                                 /--------<-------\    /---------<--------\
+                  +----------+  |    +---------+   |   |   +------------+  |
+                  | <nonzero |   \   |         |  /    \   | <8 bit     | /
+        ---->#--->|  digit>  |------>| <digit> |---------->| data byte> |------->
+                  | 7.7.6.2  |       | 7.6.1.2 |     \     | 7.7.6.2    |   /
+                  +----------+       +---------+      \    +------------+  /
+                                                       --------->----------
+
+        <digit> is defined as a single ASCII-encoded byte in the range 30-39 (48-57 decimal).
+        <nonzero digit> is defined as a single ASCII encoded byte in the range of 31-39 (49-57 decimal)
+        <8 bit data byte> is defined as an 8 bit byte in the range of 00-FF (0-255 decimal).
+
+        7.7.6.4 Rules
+        The value of the <nonzero digit> element shall equal the number of <digit> elements that follow. The value of the
+        <digit> elements taken together as a decimal integer shall equal the number of <8 bit data byte> elements that follow.
+
+        Example from "waveform:data?":
+        #8 00488251 \80\80\80\80\80\80
+
+        Example from "display:data?":
+        #9 001152054 BM6\94\11\
+
+         */
+        final byte EXPECTED_START = '#';
+
+        final byte firstByte = readBytes(1).get(0);
+        if (firstByte != EXPECTED_START) {
+            throw new JVisaException(String.format(
+                    "the first byte is %d (0x%02X) ('%c'), expected %d (0x%02X) ('%c')",
+                    Byte.toUnsignedInt(firstByte), firstByte, (char) firstByte,
+                    Byte.toUnsignedInt(EXPECTED_START), EXPECTED_START, (char) EXPECTED_START
+            ));
+        }
+
+        final byte secondByte = readBytes(1).get(0);
+        if (!Character.isDigit(secondByte)) {
+            throw new JVisaException(String.format(
+                    "the second byte is %d (0x%02X) ('%c'), expected an ASCII digit",
+                    Byte.toUnsignedInt(secondByte), secondByte, (char) secondByte
+            ));
+        }
+
+        final int firstCount;
+        try {
+            firstCount = Integer.parseInt(Character.toString(secondByte));
+        } catch (NumberFormatException ex) {
+            throw new JVisaException("couldn't parse an integer from string \"" + (char) secondByte + "\"", ex);
+        }
+
+        final String secondCountString = new String(readBytes(firstCount).array());
+        final int secondCount;
+        try {
+            secondCount = Integer.parseInt(secondCountString);
+        } catch (NumberFormatException ex) {
+            throw new JVisaException("couldn't parse an integer from string \"" + secondCountString + "\"", ex);
+        }
+
+        return readBytes(secondCount).array();
+    }
+
+    /**
+     * Clears the device input and output buffers. The corresponding VISA function is not
+     * implemented in the libreVisa library.
      *
      * @throws JVisaException if the clear operation failed
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viclear.html">viClear</a>
@@ -225,11 +307,11 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_baud.html">VI_ATTR_ASRL_BAUD</a>
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
-    public void setSerialBaudRate(int baudRate) throws JVisaException{
+    public void setSerialBaudRate(int baudRate) throws JVisaException {
         setAttribute(JVisaLibrary.VI_ATTR_ASRL_BAUD, baudRate);
     }
 
-     /**
+    /**
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_data_bits.html">VI_ATTR_ASRL_DATA_BITS</a>
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
@@ -241,7 +323,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_flow_cntrl.html">VI_ATTR_ASRL_FLOW_CNTRL</a>
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
-    public void setSerialFlowControl(SerialFlowControl flowControl) throws JVisaException{
+    public void setSerialFlowControl(SerialFlowControl flowControl) throws JVisaException {
         setAttribute(JVisaLibrary.VI_ATTR_ASRL_FLOW_CNTRL, flowControl.VALUE);
     }
 
@@ -249,7 +331,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_parity.html">VI_ATTR_ASRL_PARITY</a>
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
-    public void setSerialParity(SerialParity parity) throws JVisaException{
+    public void setSerialParity(SerialParity parity) throws JVisaException {
         setAttribute(JVisaLibrary.VI_ATTR_ASRL_PARITY, parity.VALUE);
     }
 
@@ -257,7 +339,7 @@ public class JVisaInstrument implements AutoCloseable {
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_stop_bits.html">VI_ATTR_ASRL_STOP_BITS</a>
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
-    public void setSerialStopBits(SerialStopBits stopBits) throws JVisaException{
+    public void setSerialStopBits(SerialStopBits stopBits) throws JVisaException {
         setAttribute(JVisaLibrary.VI_ATTR_ASRL_STOP_BITS, stopBits.VALUE);
     }
 
@@ -311,7 +393,7 @@ public class JVisaInstrument implements AutoCloseable {
     /**
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
-    public void setAttribute(int attr, long value)throws JVisaException{
+    public void setAttribute(int attr, long value) throws JVisaException{
         final NativeLong status = VISA_LIBRARY.viSetAttribute(
                 INSTRUMENT_HANDLE,
                 new NativeLong(attr),

@@ -23,7 +23,7 @@ import com.sun.jna.Platform;
 import com.sun.jna.ptr.NativeLongByReference;
 
 import java.nio.ByteBuffer;
-
+import java.util.Set;
 
 /**
  * The Visa resource manager "scans the system to find all the devices connected to it through the various interface buses and then controls the access to them."
@@ -292,7 +292,53 @@ public class JVisaResourceManager implements  AutoCloseable {
     }
 
       /**
-     * If the status code indicates an error, this method will get a human-readable message for the error code and throw a JVisaException.
+     * @see
+     * <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/completion_codes.html">Completion
+     * Codes</a>
+     */
+    private final Set<Integer> SUCCESS_CODES = Set.of(
+            // VI_SUCCESS is defined in visatype.h which is not part of JVisaLibrary.java
+            //
+            // Specified event is already enabled for at least one of the specified mechanisms.
+            JVisaLibrary.VI_SUCCESS_EVENT_EN,
+            //
+            // Specified event is already disabled for at least one of the specified mechanisms.
+            JVisaLibrary.VI_SUCCESS_EVENT_DIS,
+            //
+            // Operation completed successfully, but queue was already empty.
+            JVisaLibrary.VI_SUCCESS_QUEUE_EMPTY,
+            //
+            // The specified termination character was read.
+            JVisaLibrary.VI_SUCCESS_TERM_CHAR,
+            //
+            // The number of bytes read is equal to the input count.
+            JVisaLibrary.VI_SUCCESS_MAX_CNT,
+            //
+            // Session opened successfully, but the device at the specified address is not responding.
+            JVisaLibrary.VI_SUCCESS_DEV_NPRESENT,
+            //
+            // The path from trigSrc to trigDest is already mapped.
+            JVisaLibrary.VI_SUCCESS_TRIG_MAPPED,
+            //
+            // Wait terminated successfully on receipt of an event notification. There is still at least one more event occurrence of the requested type(s) available for this session.
+            JVisaLibrary.VI_SUCCESS_QUEUE_NEMPTY,
+            //
+            // Event handled successfully. Do not invoke any other handlers on this session for this event.
+            JVisaLibrary.VI_SUCCESS_NCHAIN,
+            //
+            // Operation completed successfully, and this session has nested shared locks.
+            JVisaLibrary.VI_SUCCESS_NESTED_SHARED,
+            //
+            // Operation completed successfully, and this session has nested exclusive locks.
+            JVisaLibrary.VI_SUCCESS_NESTED_EXCLUSIVE,
+            //
+            // Asynchronous operation request was actually performed synchronously.
+            JVisaLibrary.VI_SUCCESS_SYNC
+    );
+
+    /**
+     * If the status code indicates an error, this method will get a human-readable message for the
+     * error code and throw a JVisaException.
      *
      * @param rm the resource manager used for this VISA session
      * @param errorCode the value returned by a JVisaLibrary call
@@ -301,7 +347,7 @@ public class JVisaResourceManager implements  AutoCloseable {
      */
     protected void checkError(NativeLong errorCode, String cFunctionName) throws JVisaException {
         final long statusCode = errorCode.longValue();
-        if (statusCode != 0) {
+        if (statusCode != 0 && !SUCCESS_CODES.contains((int)statusCode)) {
             final String messageForErrorCode = getMessageForErrorCode(errorCode);
             throw new JVisaException(statusCode, cFunctionName, messageForErrorCode);
         }
