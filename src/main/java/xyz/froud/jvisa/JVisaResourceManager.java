@@ -32,7 +32,7 @@ import java.util.Set;
  * @author Peter Froud
  * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/resourcemanager.html">The Resource Manager</a>
  */
-public class JVisaResourceManager implements  AutoCloseable {
+public class JVisaResourceManager implements AutoCloseable {
 
     /**
      * A unique logical identifier to the Visa session. In the C API, this is called ViSession.
@@ -226,7 +226,7 @@ public class JVisaResourceManager implements  AutoCloseable {
      * @throws JVisaException if the process for finding resources failed, or if no resources were found.
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vifindrsrc.html">viFindRsrc</a>
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vifindnext.html">viFindNext</a>
-         */
+     */
     public String[] findResources(String filterExpression) throws JVisaException {
 
         // Will be set to the number of resources found.
@@ -238,10 +238,10 @@ public class JVisaResourceManager implements  AutoCloseable {
         // The resource name gets repeatledly populated in this buffer.
         ByteBuffer resourceNameBuf = ByteBuffer.allocate(JVisaLibrary.VI_FIND_BUFLEN);
 
-            /*
+        /*
         The viFindRsrc() function only populates the buffer with the first resource name found.
         If more than one resource is found, you have to repeatedly call viFindNext().
-             */
+         */
         final NativeLong errorCodeFindRsrc = VISA_LIBRARY.viFindRsrc(RESOURCE_MANAGER_HANDLE,
                 JVisaUtils.stringToByteBuffer(filterExpression), //ViString expr
                 findListPtr, // ViPFindList findList
@@ -300,7 +300,7 @@ public class JVisaResourceManager implements  AutoCloseable {
         return JVisaUtils.byteBufferToString(messageBuf);
     }
 
-      /**
+    /**
      * @see
      * <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/completion_codes.html">Completion
      * Codes</a>
