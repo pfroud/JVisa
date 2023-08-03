@@ -195,76 +195,75 @@ public class JVisaInstrument implements AutoCloseable {
     }
 
     /**
+     * @see <a href="http://webuser.unicas.it/misure/MAQ_OLD%20(VO)/Dispense/DISP_7STANDARD%20IEEE%20488_2%201992.pdf">PDF of IEEE Std 488.2-1992</a>
+     * @see "section 7.7.6 &lt;ARBITRARY BLOCK PROGRAM DATA&gt; of IEEE Std 488.2-1992"
+     * @see "section 8.7.9 &lt;DEFINITE LENGTH ARBITRARY BLOCK RESPONSE DATA&gt; of IEEE Std
+     * 488.2-1992"
      * @see
      * <a href="https://github.com/pyvisa/pyvisa/blob/e01a7093b1df28f907631d96ba8699a8f0287023/pyvisa/resources/messagebased.py#L533">Function
      * <code>read_binary_values</code> in PyVISA</a>
      * @see
      * <a href="https://github.com/pyvisa/pyvisa/blob/e01a7093b1df28f907631d96ba8699a8f0287023/pyvisa/util.py#L371">Function
      * <code>parse_ieee_block_header</code> in PyVISA</a>
-     * @see "section 7.7.6 &lt;ARBITRARY BLOCK PROGRAM DATA&gt; of IEEE Std 488.2-1992"
-     * @see "section 8.7.9 &lt;DEFINITE LENGTH ARBITRARY BLOCK RESPONSE DATA&gt; of IEEE Std
-     * 488.2-1992"
-     * @return
-     * @throws JVisaException
+
      */
     public byte[] readBinaryBlock() throws JVisaException {
         /*
+        Diagram from section 8.7.9.2 (PDF page 101) of IEEE Std 488.2-1992:
 
-                                 /--------<-------\    /---------<--------\
-                  +----------+  |    +---------+   |   |   +------------+  |
-                  | <nonzero |   \   |         |  /    \   | <8 bit     | /
-        ---->#--->|  digit>  |------>| <digit> |---------->| data byte> |------->
-                  | 7.7.6.2  |       | 7.6.1.2 |     \     | 7.7.6.2    |   /
-                  +----------+       +---------+      \    +------------+  /
-                                                       --------->----------
-
-        <digit> is defined as a single ASCII-encoded byte in the range 30-39 (48-57 decimal).
-        <nonzero digit> is defined as a single ASCII encoded byte in the range of 31-39 (49-57 decimal)
-        <8 bit data byte> is defined as an 8 bit byte in the range of 00-FF (0-255 decimal).
+                                  /--------<--------\     /---------<----------\
+                  +----------+   |    +---------+    |   |    +------------+    |
+                  | <nonzero |    \   |         |   /     \   |  <8 bit    |   /
+        ---->#--->|  digit>  |------->| <digit> |------------>| data byte> |--------->
+                  | 7.7.6.2  |        | 7.6.1.2 |       \     | 7.7.6.2    |     /
+                  +----------+        +---------+        \    +------------+    /
+                                                          ----------->----------
+        where
+        * <digit> is defined as a single ASCII-encoded byte in the range 30-39 (48-57 decimal).
+        * <nonzero digit> is defined as a single ASCII encoded byte in the range of 31-39
+          (49-57 decimal).
+        * <8 bit data byte> is defined as an 8 bit byte in the range of 00-FF (0-255 decimal).
 
         7.7.6.4 Rules
-        The value of the <nonzero digit> element shall equal the number of <digit> elements that follow. The value of the
-        <digit> elements taken together as a decimal integer shall equal the number of <8 bit data byte> elements that follow.
+        The value of the <nonzero digit> element shall equal the number of <digit> elements that
+        follow. The value of the <digit> elements taken together as a decimal integer shall equal
+        the number of <8 bit data byte> elements that follow.
 
-        Example from "waveform:data?":
-        #8 00488251 \80\80\80\80\80\80
+        Examples with spaces added for readability:
+            Response from "waveform:data?":
+            #8 00488251 \80\80\80...
 
-        Example from "display:data?":
-        #9 001152054 BM6\94\11\
-
-         */
-        final byte EXPECTED_START = '#';
-
-        final byte firstByte = readBytes(1).get(0);
-        if (firstByte != EXPECTED_START) {
+            Response from "display:data?":
+            #9 001152054 BM6\94\11...
+        */
+        final byte EXPECTED_FIRST_BYTE = '#';
+        final byte actualFirstByte = readBytes(1).get(0);
+        if (actualFirstByte != EXPECTED_FIRST_BYTE) {
             throw new JVisaException(String.format(
-                    "the first byte is %d (0x%02X) ('%c'), expected %d (0x%02X) ('%c')",
-                    Byte.toUnsignedInt(firstByte), firstByte, (char) firstByte,
-                    Byte.toUnsignedInt(EXPECTED_START), EXPECTED_START, (char) EXPECTED_START
+                    "can't read binary block, the first byte is %d (0x%02X) ('%c'), expected %d (0x%02X) ('%c')",
+                    Byte.toUnsignedInt(actualFirstByte), actualFirstByte, (char) actualFirstByte,
+                    Byte.toUnsignedInt(EXPECTED_FIRST_BYTE), EXPECTED_FIRST_BYTE, (char) EXPECTED_FIRST_BYTE
             ));
         }
 
         final byte secondByte = readBytes(1).get(0);
+        if (secondByte == '0') {
+            throw new UnsupportedOperationException("can't read binary block, indefinite-length not supported");
+        }
         if (!Character.isDigit(secondByte)) {
             throw new JVisaException(String.format(
-                    "the second byte is %d (0x%02X) ('%c'), expected an ASCII digit",
+                    "can't read binary block, the second byte is %d (0x%02X) ('%c'), expected a nonzero ASCII digit (49 - 57) (0x31 - 0x39)",
                     Byte.toUnsignedInt(secondByte), secondByte, (char) secondByte
             ));
         }
 
-        final int firstCount;
-        try {
-            firstCount = Integer.parseInt(Character.toString(secondByte));
-        } catch (NumberFormatException ex) {
-            throw new JVisaException("couldn't parse an integer from string \"" + (char) secondByte + "\"", ex);
-        }
-
+        final int firstCount = secondByte - '0';
         final String secondCountString = new String(readBytes(firstCount).array());
         final int secondCount;
         try {
             secondCount = Integer.parseInt(secondCountString);
         } catch (NumberFormatException ex) {
-            throw new JVisaException("couldn't parse an integer from string \"" + secondCountString + "\"", ex);
+            throw new JVisaException("can't read binary block, couldn't parse an integer from string \"" + secondCountString + "\"", ex);
         }
 
         return readBytes(secondCount).array();
@@ -301,7 +300,6 @@ public class JVisaInstrument implements AutoCloseable {
     public void setTimeout(long timeoutMilliseconds) throws JVisaException {
         setAttribute(JVisaLibrary.VI_ATTR_TMO_VALUE, timeoutMilliseconds);
     }
-
 
     /**
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/vi_attr_asrl_baud.html">VI_ATTR_ASRL_BAUD</a>
