@@ -48,7 +48,6 @@ public class JVisaResourceManager implements  AutoCloseable {
      * @throws UnsatisfiedLinkError if the native shared library (.dll or .so or .dylib file) couldn't be loaded
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopendefaultrm.html">viOpenDefaultRM</a>
      */
-    @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager() throws JVisaException, UnsatisfiedLinkError {
         this(null);
     }
@@ -61,7 +60,6 @@ public class JVisaResourceManager implements  AutoCloseable {
      * @throws UnsatisfiedLinkError if the native shared library (.dll or .so or .dylib file) couldn't be loaded
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viopendefaultrm.html">viOpenDefaultRM</a>
      */
-    @SuppressWarnings("LeakingThisInConstructor")
     public JVisaResourceManager(String nativeLibraryName) throws JVisaException, UnsatisfiedLinkError {
 
         /*
@@ -345,7 +343,7 @@ public class JVisaResourceManager implements  AutoCloseable {
      * @param cFunctionName name of the C function corresponding to the call to the native shared library (.dll or .so or .dylib file)
      * @throws JVisaException if the status code means the call failed
      */
-    protected void checkError(NativeLong errorCode, String cFunctionName) throws JVisaException {
+    protected final void checkError(NativeLong errorCode, String cFunctionName) throws JVisaException {
         final long statusCode = errorCode.longValue();
         if (statusCode != 0 && !SUCCESS_CODES.contains((int)statusCode)) {
             final String messageForErrorCode = getMessageForErrorCode(errorCode);
