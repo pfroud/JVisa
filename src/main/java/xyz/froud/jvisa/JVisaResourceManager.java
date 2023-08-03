@@ -70,11 +70,22 @@ public class JVisaResourceManager implements  AutoCloseable {
             macOS:   "libasdf.dylib"
             Linus:   "libasdf.so"
 
-        Here's a helpful StackOverflow answer:
-        https://stackoverflow.com/a/37329511/7376577
+        Here's a helpful StackOverflow answer: https://stackoverflow.com/a/37329511/7376577
 
-        You can see what JNA is doing here:
-        https://github.com/java-native-access/jna/blob/69bf22f5051853e95a3b9725ca19b92cdcfd793f/src/com/sun/jna/NativeLibrary.java#L757
+        The interesting calls as of JNA version 5.13.0 are:
+            1. com.sun.jna.Native.load(String, Class, Map) https://github.com/java-native-access/jna/blob/4962fd7758493b7395e86578705d8a32f6238872/src/com/sun/jna/Native.java#L615
+            2. com.sun.jna.Library.Handler(String, Class, Map) https://github.com/java-native-access/jna/blob/e96f30192e9455e7cc4117cce06fc3fa80bead55/src/com/sun/jna/Library.java#L176
+            3. com.sun.jna.NativeLibrary.getInstance(String, Map) https://github.com/java-native-access/jna/blob/e96f30192e9455e7cc4117cce06fc3fa80bead55/src/com/sun/jna/NativeLibrary.java#L462
+            4. com.sun.jna.NativeLibrary.loadLibrary(String, Map) https://github.com/java-native-access/jna/blob/e96f30192e9455e7cc4117cce06fc3fa80bead55/src/com/sun/jna/NativeLibrary.java#L173
+            5. com.sun.jna.NativeLibrary.findLibraryPath(String, Collection) https://github.com/java-native-access/jna/blob/e96f30192e9455e7cc4117cce06fc3fa80bead55/src/com/sun/jna/NativeLibrary.java#L734
+            6. com.sun.jna.NativeLibrary.mapSharedLibraryName(String) https://github.com/java-native-access/jna/blob/e96f30192e9455e7cc4117cce06fc3fa80bead55/src/com/sun/jna/NativeLibrary.java#L777
+            7. java.lang.System.mapLibraryName(String) https://download.java.net/java/GA/jdk14/docs/api/java.base/java/lang/System.html#mapLibraryName(java.lang.String)
+
+        To enable logging, call this Java code:
+            System.setProperty("jna.debug_load", "true");
+        or add this argument to java.exe:
+            -Djna.debug_load=true
+
          */
         if (nativeLibraryName == null) {
             // If the native library name is not specified, Inferring from the environment.
