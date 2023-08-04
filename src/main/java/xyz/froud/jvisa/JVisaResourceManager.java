@@ -185,6 +185,7 @@ public class JVisaResourceManager implements AutoCloseable {
      *
      * @param filterExpression it says it's a regular expression but it's not. Use {@code "?*"} to match all resources.
      * <table>
+     *      <caption>Filter expression for resource discovery</caption>
      *     <tr>
      *         <th>Special Characters and Operators</th>
      *         <th>Meaning</th>
@@ -349,7 +350,6 @@ public class JVisaResourceManager implements AutoCloseable {
      * If the status code indicates an error, this method will get a human-readable message for the
      * error code and throw a JVisaException.
      *
-     * @param rm the resource manager used for this VISA session
      * @param errorCode the value returned by a JVisaLibrary call
      * @param cFunctionName name of the C function corresponding to the call to the native shared library (.dll or .so or .dylib file)
      * @throws JVisaException if the status code means the call failed

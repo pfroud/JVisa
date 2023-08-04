@@ -20,6 +20,8 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 
 /**
+ * Interface with a method which may be called asynchronously.
+ *
  * @see <a href="https://github.com/java-native-access/jna/blob/master/www/CallbacksAndClosures.md">Callbacks, Function Pointers and Closures</a><br>
  * @see <a href="https://github.com/java-native-access/jna/issues/830">How to receive callback from jna?</a>
  */

@@ -22,7 +22,7 @@ import xyz.froud.jvisa.JVisaException;
 import xyz.froud.jvisa.JVisaResourceManager;
 
 /**
- * Example showing usage of JVisaResourceManager#findResources().
+ * Example showing usage of {@link JVisaResourceManager#findResources()}.
  *
  * @author Peter Froud
  */

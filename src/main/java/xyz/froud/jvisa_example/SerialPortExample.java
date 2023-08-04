@@ -7,6 +7,10 @@ import xyz.froud.jvisa.SerialFlowControl;
 import xyz.froud.jvisa.SerialParity;
 import xyz.froud.jvisa.SerialStopBits;
 
+/**
+ * Shows how to set serial port parameters.
+ * @author Peter Froud
+ */
 public class SerialPortExample {
 
     public static void main(String[] args) throws JVisaException {

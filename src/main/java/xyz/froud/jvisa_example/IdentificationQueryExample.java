@@ -23,26 +23,24 @@ import xyz.froud.jvisa.JVisaInstrument;
 import xyz.froud.jvisa.JVisaResourceManager;
 
 /**
- * <p>
- * Example showing how to search for instruments and send a query.</p>
+ * Example showing how to search for instruments and send a query.
  *
  * <p>
- * Here's what it does:</p>
+ * Here's what it does:
  *
  * <ol>
  *     <li>Opens the default resource manager</li>
  *     <li>Searches for VISA instruments</li>
- *     <li>If any are instruments are found, it does this for each instrument:</li>
+ *     <li>If any instruments are found, it does this for each instrument:
  *         <ol>
  *             <li>Opens the instrument</li>
  *             <li>Sends the *IDN? command and prints the response</li>
  *             <li>Closes the instrument</li>
  *         </ol>
+ *      </li>
  *     <li>Closes the resource manager</li>
  * </ol>
  *
- * <p>
- * This is a low-level example. To see how you could use higher-level classes, look at HighLevelExample.java.</p>
  *
  * @author Peter Froud
  */

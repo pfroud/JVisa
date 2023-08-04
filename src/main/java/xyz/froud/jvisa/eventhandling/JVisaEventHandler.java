@@ -19,6 +19,8 @@ import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 
 /**
+ * Container for event type, callback, and user data.
+ * <p>
  * You (the programmer) must keep a reference to otherwise it will be garbage collected and the callback won't work.
  *
  * @see <a href="https://github.com/java-native-access/jna/blob/master/www/CallbacksAndClosures.md">Callbacks, Function Pointers and Closures</a>
