@@ -38,9 +38,7 @@ I tried out all four implementations and took notes and screenshots. See my [com
 
 #### Using build automation tools
 
-You can use JitPack, visit https://jitpack.io/#xyz.froud/JVisa for details.
-
-Release JVisa-1.0 does not work with Jitpack - I will fix it in an upcoming JVisa release.
+You can use JitPack, visit https://jitpack.io/#xyz.froud/JVisa/2.0.0 for details.
 
 Example for Maven:
 
@@ -55,11 +53,11 @@ Example for Maven:
 <dependency>
     <groupId>xyz.froud</groupId>
     <artifactId>JVisa</artifactId>
-    <version>JVisa-1.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
-Jitpack also builds and hosts Javadoc: https://javadoc.jitpack.io/xyz/froud/JVisa/JVisa-1.0/javadoc/
+Jitpack also builds and hosts Javadoc: https://javadoc.jitpack.io/xyz/froud/JVisa/2.0.0/javadoc
 
 #### Using a Jar file
 
