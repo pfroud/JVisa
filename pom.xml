@@ -10,7 +10,7 @@
     <artifactId>JVisa</artifactId>
 
     <!-- Semantic Versioning https://semver.org/ -->
-    <version>1.0.1-SNAPSHOT</version>
+    <version>2.0.0</version>
 
     <name>JVisa</name>
     <description>Java library for VISA (Virtual Instrument Software Architecture) instruments</description>
