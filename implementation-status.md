@@ -51,7 +51,7 @@ This document corresponds to Revision 7.2 from May 19, 2022. Direct link to that
 | 3.7.3.3           | [`viDiscardEvents()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vidiscardevents.html)       | Discard event occurrences for specified event types and mechanisms in a session. | ✅ `JVisaInstrument.discardEvents()`      |
 | 3.7.3.4           | [`viWaitOnEvent()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/viwaitonevent.html)           | Wait for an occurrence of the specified event for a given session.               | Not written                              |
 | 3.7.3.5           | [`viInstallHandler()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/viinstallhandler.html)     | Install handlers for event callbacks.                                            | ✅ `JVisaInstrument.installHandler()`     |
-| 3.7.3.6           | [`viUninstallHandler()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/viuninstallHandler.html) | Uninstall handlers for events.                                                   | ✅ `JVisaInstrument.removeEventHandler()` |
+| 3.7.3.6           | [`viUninstallHandler()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/viuninstallhandler.html) | Uninstall handlers for events.                                                   | ✅ `JVisaInstrument.removeEventHandler()` |
 | 3.7.3.7           | [`viEventHandler()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vieventhandler.html)         | Event service handler procedure prototype.                                       | ✅ `interface JVisaEventCallback`         |
 
 
@@ -155,12 +155,12 @@ This document corresponds to Revision 7.2 from May 19, 2022. Direct link to that
 
 ## 6.4 Shared Memory Services
 
-| VISA spec section | Function                                                                                                        | Purpose                                                                    | Status      |
-|-------------------|-----------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|-------------|
-| 6.4.1             | [`viMemAlloc()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vimemalloc.html)     | Allocate memory from a device’s memory region.                             | Not written |
-| 6.4.2             | [`viMemAllocEx()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vimemallocex.html) | Allocate memory from a device’s memory region.                             | Not written |
-| 6.4.3             | [`viMemFree()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vimemfree.html)       | Free memory previously allocated using `viMemAlloc()` or `viMemAllocEx()`. | Not written |
-| 6.4.4             | [`viMemFreeEx()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vimemfreeex.html)   | Free memory previously allocated using `viMemAlloc()` or `viMemAllocEx()`. | Not written |
+| VISA spec section | Function                                                                                                      | Purpose                                                                    | Status      |
+|-------------------|---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|-------------|
+| 6.4.1             | [`viMemAlloc()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vimemalloc.html)   | Allocate memory from a device’s memory region.                             | Not written |
+| 6.4.2             | [`viMemAllocEx()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vimemalloc.html) | Allocate memory from a device’s memory region.                             | Not written |
+| 6.4.3             | [`viMemFree()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vimemfree.html)     | Free memory previously allocated using `viMemAlloc()` or `viMemAllocEx()`. | Not written |
+| 6.4.4             | [`viMemFreeEx()`](https://www.ni.com/docs/en-US/bundle/ni-visa-api-ref/page/ni-visa-api-ref/vimemfree.html)   | Free memory previously allocated using `viMemAlloc()` or `viMemAllocEx()`. | Not written |
 
 
 ## 6.5 Interface Specific Services
