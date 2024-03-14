@@ -58,22 +58,38 @@ public class JVisaInstrument implements AutoCloseable {
     }
 
     /**
-     * Sends a command and receives its response. It insists in receiving at least a given number of bytes.
+     * Sends a command receives its response. If setWriteTerminator() was called with a non-null
+     * string, the terminator will be appended to the string before sending it to the instrument.
      *
-     * @param command string to send
-     * @param bufferSize size of buffer to allocate. The size can be set smaller since it gets allocated with readCount.
+     * @param command string to send to the instrument
+     * @param sizeOfReadBuffer size of buffer to allocate for reading the response
      * @return response from instrument as a String
      * @throws JVisaException if the write operation fails or the read operation fails
      */
-    public String queryString(String command, int bufferSize) throws JVisaException {
+    public String queryString(String command, int sizeOfReadBuffer) throws JVisaException {
         write(command);
-        return readString(bufferSize);
+        return readString(sizeOfReadBuffer);
     }
 
     /**
-     * Sends a command and receives its response. It receives as many bytes as the instrument is sending. (That is probably wrong, it can receive maximum DEFAULT_BUFFER_SIZE bytes)
+     * Sends a command receives its response. No write terminator is added.
      *
-     * @param command string to send
+     * @param command bytes to send to the instrument
+     * @param sizeOfReadBuffer size of buffer to allocate for reading the response
+     * @return response from instrument as a String
+     * @throws JVisaException if the write operation fails or the read operation fails
+     */
+    public String queryString(byte[] command, int sizeOfReadBuffer) throws JVisaException {
+        write(command);
+        return readString(sizeOfReadBuffer);
+    }
+
+    /**
+     * Sends a command and receives its response. If setWriteTerminator() was called with a non-null
+     * string, the terminator will be appended to the string before sending it to the instrument.
+     * It receives as many bytes as the instrument is sending. (That is probably wrong, it can receive maximum DEFAULT_BUFFER_SIZE bytes)
+     *
+     * @param command string to send to the instrument
      * @return response from instrument as a String
      * @throws JVisaException if the write operation fails or the read operation fails
      */
@@ -83,26 +99,70 @@ public class JVisaInstrument implements AutoCloseable {
     }
 
     /**
-     * Sends a command and receives its response. It insists in receiving at least a given number of bytes.
+     * Sends a command and receives its response. No write terminator is added. It receives as many
+     * bytes as the instrument is sending. (That is probably wrong, it can receive maximum DEFAULT_BUFFER_SIZE bytes)
      *
-     * @param command string to send
-     * @param bufferSize size of buffer to allocate. The size can be set smaller since it gets allocated with readCount.
-     * @return response from instrument as a ByteBuffer
+     * @param command bytes to send to the instrument
+     * @return response from instrument as a String
      * @throws JVisaException if the write operation fails or the read operation fails
      */
-    public ByteBuffer queryBytes(String command, int bufferSize) throws JVisaException {
+    public String queryString(byte[] command) throws JVisaException {
         write(command);
-        return readBytes(bufferSize);
+        return readString(DEFAULT_BUFFER_SIZE);
     }
 
     /**
-     * Sends a command and receives its response. It receives as many bytes as the instrument is sending.
+     * Sends a command and receives its response. If setWriteTerminator() was called with a non-null
+     * string, the terminator will be appended to the string before sending it to the instrument.
+     * It insists in receiving at least a given number of bytes.
      *
-     * @param command string to send
+     * @param command string to send to the instrument
+     * @param sizeOfReadBuffer size of buffer to allocate. The size can be set smaller since it gets allocated with readCount.
+     * @return response from instrument as a ByteBuffer
+     * @throws JVisaException if the write operation fails or the read operation fails
+     */
+    public ByteBuffer queryBytes(String command, int sizeOfReadBuffer) throws JVisaException {
+        write(command);
+        return readBytes(sizeOfReadBuffer);
+    }
+
+    /**
+     * Sends a command and receives its response. No write terminator is added. It insists in
+     * receiving at least a given number of bytes.
+     *
+     * @param command bytes to send to the instrument
+     * @param sizeOfReadBuffer size of buffer to allocate. The size can be set smaller since it gets allocated with readCount.
+     * @return response from instrument as a ByteBuffer
+     * @throws JVisaException if the write operation fails or the read operation fails
+     */
+    public ByteBuffer queryBytes(byte[] command, int sizeOfReadBuffer) throws JVisaException {
+        write(command);
+        return readBytes(sizeOfReadBuffer);
+    }
+
+    /**
+     * Sends a command and receives its response. If setWriteTerminator() was called with a non-null
+     * string, the terminator will be appended to the string before sending it to the instrument.
+     * It receives as many bytes as the instrument is sending.
+     *
+     * @param command string to send to the instrument
      * @return response from instrument as a ByteBuffer
      * @throws JVisaException if the write operation fails or the read operation fails
      */
     public ByteBuffer queryBytes(String command) throws JVisaException {
+        write(command);
+        return readBytes(DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
+     * Sends a command and receives its response. No write terminator is added. It receives as many
+     * bytes as the instrument is sending.
+     *
+     * @param command bytes to send to the instrument
+     * @return response from instrument as a ByteBuffer
+     * @throws JVisaException if the write operation fails or the read operation fails
+     */
+    public ByteBuffer queryBytes(byte[] command) throws JVisaException {
         write(command);
         return readBytes(DEFAULT_BUFFER_SIZE);
     }
@@ -112,11 +172,16 @@ public class JVisaInstrument implements AutoCloseable {
         return readBinaryBlock();
     }
 
+    public byte[] queryBinaryBlock(byte[] command) throws JVisaException {
+        write(command);
+        return readBinaryBlock();
+    }
+
     /**
-     * Sends a command to the instrument. If setWriteTerminator() was called with a non-null string, the terminator will
-     * be appended to the string before sending it to the instrument.
+     * Sends a command to the instrument. If setWriteTerminator() was called with a non-null string,
+     * the terminator will be appended to the string before sending it to the instrument.
      *
-     * @param command the command to send
+     * @param command the command to send to the instrument
      *
      * @throws JVisaException if the write operation fails
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viwrite.html">viWrite</a>
@@ -128,8 +193,31 @@ public class JVisaInstrument implements AutoCloseable {
         } else {
             commandWithTerminator = command;
         }
-        final ByteBuffer buffer = JVisaUtils.stringToByteBuffer(commandWithTerminator);
-        final int commandLength = commandWithTerminator.length();
+        write(JVisaUtils.stringToByteBuffer(commandWithTerminator));
+    }
+
+    /**
+     * Sends a command to the instrument. No write terminator is added.
+     *
+     * @param command the command to send to the instrument
+     *
+     * @throws JVisaException if the write operation fails
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viwrite.html">viWrite</a>
+     */
+    public void write(byte[] bytes) throws JVisaException {
+        write(ByteBuffer.wrap(bytes));
+    }
+
+    /**
+     * Sends a command to the instrument. No write terminator is added.
+     *
+     * @param command the command to send to the instrument
+     *
+     * @throws JVisaException if the write operation fails
+     * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/viwrite.html">viWrite</a>
+     */
+    private void write(ByteBuffer buffer) throws JVisaException {
+        final int commandLength = buffer.limit();
 
         final NativeLongByReference returnCount = new NativeLongByReference();
         final NativeLong errorCode = VISA_LIBRARY.viWrite(INSTRUMENT_HANDLE,
@@ -391,7 +479,7 @@ public class JVisaInstrument implements AutoCloseable {
     /**
      * @see <a href="https://www.ni.com/docs/en-US/bundle/ni-visa/page/ni-visa/visetattribute.html">viSetAttribute</a>
      */
-    public void setAttribute(int attr, long value) throws JVisaException{
+    public void setAttribute(int attr, long value) throws JVisaException {
         final NativeLong status = VISA_LIBRARY.viSetAttribute(
                 INSTRUMENT_HANDLE,
                 new NativeLong(attr),
