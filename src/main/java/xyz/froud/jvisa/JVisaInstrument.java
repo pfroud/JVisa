@@ -297,7 +297,7 @@ public class JVisaInstrument implements AutoCloseable {
      */
     public byte[] readBinaryBlock() throws JVisaException {
         /*
-        Diagram from section 8.7.9.2 (PDF page 101) of IEEE Std 488.2-1992:
+        Diagram from section 8.7.9.2 (PDF page 102) of IEEE Std 488.2-1992:
 
                                   /--------<--------\     /---------<----------\
                   +----------+   |    +---------+    |   |    +------------+    |
